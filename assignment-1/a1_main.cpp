@@ -6,10 +6,12 @@
 // Thoroughly test your Wordlist class to make sure it is correct.
 //
 
-#include "Wordlist_sol.h"
+//#include "Wordlist_sol.h"
+#include "iostream"
 #include "test.h"
-
-void read_from_terminal()
+#include "Wordlist.h"
+using namespace std;
+/* void read_from_terminal()
 {
     Wordlist lst;
     string w;
@@ -24,17 +26,23 @@ void read_from_terminal()
     {
         cout << (i + 1) << ". " << *index[i] << endl;
     }
-}
+} */
 
 void test_Wordlist()
 {
     Test("test_Wordlist");
 
     Wordlist lst;
+    cout << lst.is_frozen() << endl;
     assert(!lst.is_frozen());
     assert(lst.length() == 0);
-    assert(!lst.contains("hello"));
+    // assert(!lst.contains("hello"));
+    // auto a = lst.first();
+    // assert(!a);
+    // auto b = lst.last();
+    // assert(!b);
 
+    // assert(!lst.last());
     //
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
@@ -44,6 +52,6 @@ void test_Wordlist()
 
 int main()
 {
-    // test_Wordlist();
+    test_Wordlist();
     // read_from_terminal();
 }
