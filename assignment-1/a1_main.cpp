@@ -11,6 +11,7 @@
 #include "test.h"
 #include "Wordlist.h"
 using namespace std;
+
 /* void read_from_terminal()
 {
     Wordlist lst;
@@ -33,16 +34,12 @@ void test_Wordlist()
     Test("test_Wordlist");
 
     Wordlist lst;
-    cout << lst.is_frozen() << endl;
     assert(!lst.is_frozen());
     assert(lst.length() == 0);
-    // assert(!lst.contains("hello"));
-    // auto a = lst.first();
-    // assert(!a);
-    // auto b = lst.last();
-    // assert(!b);
-
-    // assert(!lst.last());
+    assert(!lst.contains("hello"));
+    lst.add_word("hello");
+    assert(lst.contains("hello"));
+    lst.first();
     //
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.

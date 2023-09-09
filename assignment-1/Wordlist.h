@@ -29,16 +29,16 @@
 //
 // Do not use any other #includes
 //
-#include "Wordlist_base.h"
 #include <cassert>
 #include <fstream>
 #include <iostream>
 #include <string>
 
+#include "Wordlist_base.h"
+
 using namespace std;
 
-class Wordlist : public Wordlist_base
-{
+class Wordlist : public Wordlist_base {
   //
   // Use this Node to implement the doubly-linked list for the word list.
   // Don't change it any way!
@@ -50,65 +50,98 @@ class Wordlist : public Wordlist_base
     Node* prev;
   };
 
-int size;
-// Node* head;
-// Node* tail;
-bool frozen;
+  int size;
+  Node* head;
+  bool frozen;
 
-public: 
-Wordlist() {
-// Node* head = new Node;
-// Node* tail = new Node;
-// head = nullptr;
-// tail = nullptr;
-frozen = size = 0;
-}
+ public:
+  Wordlist() {
+    head = new Node;
+    frozen = size = 0;
+  }
+  ~Wordlist() {
+    Node* cursor = head;
+    while (cursor) {
+      Node* tmp = cursor->next;
+      delete cursor;
+      cursor = tmp;
+    }
+  }
 
-int length() const {
-  return size;
-}
+  int length() const { return size; }
 
+  bool is_empty() const { return size == 0; }
+  /* const string get_word(int pos) {
+  Node* start = head;
+  while (pos != 0) {
+  head++;
+  pos--;
+  }
+  return start->word;
+  }
+  */
 
-/* const string get_word(int pos) {
-Node* start = head;
-while (pos != 0) {
-head++;
-pos--;
-}
-return start->word;
-}
-*/
+  bool is_frozen() const { return frozen; }
 
-bool is_frozen() const {
-  return frozen;
-}
+  bool contains(const string& word) const {
+    for (Node* curr = head; curr < head + size; curr++) {
+      if (curr->word == word) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-// bool contains(const string& word) const {
-// for (Node* curr = head; curr < head + size; curr++) {
-// if (curr->word == word) {
-//   return true;
-// }
-// }
-// return false;
-// } 
+  bool at_end(Node* node) { return !node->next; }
 
-// bool first() {
-//   return !head;
-// }
+  bool same_word(Node* curr, string const& word) { return curr->word == word; }
 
-// bool last() {
-//   return !tail;
-// }
+  Node* make_node(string const& word) {
+    Node* new_word = new Node;
+    new_word->count = 1;
+    new_word->word = word;
+    return new_word;
+  }
 
-    //
-    // ... your code goes here ...
-    //
+  bool last_word_matches(Node* node, string const& word) {
+    return at_end(node) && same_word(node, word);
+  }
 
-    //
-    // ... you can write helper methods if you need them ...
-    //
+  void add_word(const string& word) {
+    if (is_empty()) {
+      Node* node = make_node(word);
+      head = node;
+      size++;
+      return;
+    }
+    Node* curr = head;
+    while (!at_end(curr) && !same_word(curr, word)) {
+      curr = curr->next;
+    }
+    if (!at_end(curr) || last_word_matches(curr, word)) {
+      curr->count++;
+    } else {
+      Node* new_word = make_node(word);
+      new_word->prev = curr;
+      curr->next = new_word;
+    }
+  }
 
-}; // class Wordlist
+  void first() { cout << head << endl; }
+
+  // bool last() {
+  //   return !tail;
+  // }
+
+  //
+  // ... your code goes here ...
+  //
+
+  //
+  // ... you can write helper methods if you need them ...
+  //
+
+};  // class Wordlist
 
 //
 // ... you can write helper functions here (or before Wordlist) if you need them
