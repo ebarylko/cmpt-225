@@ -57,7 +57,7 @@ class Wordlist : public Wordlist_base {
  public:
   Wordlist() {
     head = new Node;
-    frozen = size = 0;
+    frozen = (size = 0);
   }
   ~Wordlist() {
     Node* cursor = head;
