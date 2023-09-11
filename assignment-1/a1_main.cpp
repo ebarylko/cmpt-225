@@ -39,7 +39,6 @@ void test_Wordlist()
     assert(!lst.contains("hello"));
     lst.add_word("hello");
     assert(lst.contains("hello"));
-    lst.first();
     //
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
