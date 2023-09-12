@@ -53,12 +53,40 @@ class Wordlist : public Wordlist_base {
   int size;
   Node* head;
   bool frozen;
+  Node* last;
+
+Node* find_word (const string& target) {
+  Node* curr = this->head;
+  while (curr && curr->word != target) {
+    curr = curr->next;
+  }
+  return curr;
+}
+
+void copy_word(const Node& node) {
+  Node* tmp = new Node(node);
+  this->last->next = tmp;
+  tmp->prev = this->last;
+  this->last = tmp;
+  this->last->next = nullptr;
+}
 
  public:
   Wordlist() {
     head = nullptr;
+    last = nullptr;
     frozen = (size = 0);
   }
+
+  Wordlist(const Wordlist& source) {
+    Node* copy_from = source.head;
+    while (copy_from) {
+      this->copy_word(*copy_from);
+      copy_from = copy_from->next;
+    }
+    this->size = source.size;
+  }
+
   ~Wordlist() {
     Node* cursor = head;
     while (cursor) {
