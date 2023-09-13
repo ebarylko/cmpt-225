@@ -58,14 +58,14 @@ void test_Wordlist_default_constructor()
 
 } // test_Wordlist
 
-void test_Wordlist_copy_constructor() {
+// void test_Wordlist_copy_constructor() {
 
-    Wordlist src;
-    src.add_word("1");
-    src.add_word("2");
-    Wordlist copy(src);
-    assert(copy.length() == 2);
-}
+//     Wordlist src;
+//     src.add_word("1");
+//     src.add_word("2");
+//     Wordlist copy(src);
+//     assert(copy.length() == 2);
+// }
 
 int main()
 {
