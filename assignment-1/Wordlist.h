@@ -129,7 +129,6 @@ if (this->last) {
   bool contains(const string& word) const {
     Node* curr = head;
     while (curr && curr->word != word) {
-      cout << curr->word << endl;
       curr = curr->next;
     }
     return curr ? true : false;
@@ -190,8 +189,31 @@ if (this->last) {
     }
   }
 
+  /**
+   * @brief Returns the last word in the list
+   * 
+   * @return a string which is the last word 
+   */
   string last_word() const { return last->word;}
+
+  /**
+   * @brief Returns the first word in the list
+   * 
+   * @return a string which is the first word
+   */
   string first_word() const {return head->word;}
+
+  int word_occurences(const string& word) const {
+    Node* curr = head;
+    while (curr && curr->word != word) {
+      curr = curr->next;
+    }
+    if (curr) {
+      return curr->count;
+    } else {
+      return 0;
+    }
+  }
   // bool last() {
   //   return !tail;
   // }
