@@ -130,6 +130,7 @@ if (this->last) {
   bool contains(const string& word) const {
     Node* curr = head;
     while (curr && curr->word != word) {
+      cout << curr->word << endl;
       curr = curr->next;
     }
     return curr ? true : false;
