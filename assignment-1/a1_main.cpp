@@ -38,20 +38,16 @@ void test_Wordlist_default_constructor()
     assert(lst.length() == 0);
     assert(!lst.contains("hello"));
 
-    // Test("Add unique words");
-    // lst.add_word("hello");
-    // assert(lst.contains("hello"));
-    // assert(lst.length() == 1);
-    // assert(lst.first_word() == lst.last_word() && lst.last_word() == "hello");
-    // lst.add_word("hi");
-    // assert(lst.length() == 2);
-    // assert(lst.contains("hi"));
-    // assert(lst.first_word() == "hello" && lst.last_word() == "hi");
-    // cout << lst.get_occurences() << endl;
+    Test("Add unique words");
+    lst.add_word("hello");
+    assert(lst.contains("hello"));
+    assert(lst.length() == 1);
+    assert(lst.first_word() == lst.last_word() && lst.last_word() == "hello");
 
-    // assert(lst.length() == 2);
-    // assert(lst.contains("hi"));
-    //
+    lst.add_word("hi");
+    assert(lst.length() == 2);
+    assert(lst.contains("hi"));
+    assert(lst.first_word() == "hello" && lst.last_word() == "hi");
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
     //
