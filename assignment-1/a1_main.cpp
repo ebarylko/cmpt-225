@@ -29,16 +29,28 @@ using namespace std;
     }
 } */
 
-void test_Wordlist()
+void test_Wordlist_default_constructor()
 {
-    Test("test_Wordlist");
+    Test("Default constructor");
 
     Wordlist lst;
     assert(!lst.is_frozen());
     assert(lst.length() == 0);
     assert(!lst.contains("hello"));
+
+    Test("Add unique words");
     lst.add_word("hello");
     assert(lst.contains("hello"));
+    assert(lst.length() == 1);
+    assert(lst.first_word() == lst.last_word() && lst.last_word() == "hello");
+    lst.add_word("hi");
+    assert(lst.length() == 2);
+    assert(lst.contains("hi"));
+    assert(lst.first_word() == "hello" && lst.last_word() == "hi");
+    // cout << lst.get_occurences() << endl;
+
+    // assert(lst.length() == 2);
+    // assert(lst.contains("hi"));
     //
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
@@ -46,8 +58,18 @@ void test_Wordlist()
 
 } // test_Wordlist
 
+void test_Wordlist_copy_constructor() {
+
+    Wordlist src;
+    src.add_word("1");
+    src.add_word("2");
+    Wordlist copy(src);
+    assert(copy.length() == 2);
+}
+
 int main()
 {
-    test_Wordlist();
+    test_Wordlist_default_constructor();
+    // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }

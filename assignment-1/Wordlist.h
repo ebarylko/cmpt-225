@@ -63,10 +63,25 @@ Node* find_word (const string& target) {
   return curr;
 }
 
-void copy_word(const Node& node) {
-  Node* tmp = new Node(node);
+// if this->last is null, then I want to attach the node to the head and the tail of the list, and make the last of the node point to null
+// if this->last != null, then I want to assign the next node as the new node. i want to assign the tail to the new node, and have thee new node point back to the last node
+/**
+ * @brief Takes a node src and copies the information in src to another node 
+ * 
+ * @param src a const node reference
+ */
+void copy_word(const Node& src) {
+  Node* tmp = new Node(src);
+
+if (this->last) {
   this->last->next = tmp;
   tmp->prev = this->last;
+} else {
+  this->head = tmp;
+  this->head->prev = nullptr;
+}
+  // this->last->next = tmp;
+
   this->last = tmp;
   this->last->next = nullptr;
 }
@@ -120,7 +135,7 @@ void copy_word(const Node& node) {
     return false;
   }
 
-  bool at_end(Node* node) { return !node->next; }
+  bool at_end(Node* node) { return node == last; }
 
   bool same_word(Node* curr, string const& word) { return curr->word == word; }
 
@@ -131,15 +146,31 @@ void copy_word(const Node& node) {
     return new_word;
   }
 
+/**
+ * @brief Takes a node and returns true if it is the last item in the list 
+ * and it contains the same word as `word`, false otherwise
+ * 
+ * @param node a Node*
+ * @param word a const string referencr
+ * @return true if the node passed is the last one in the list and the node contains
+ * the word being searched for
+ * @return false if condition above not satisfied
+ */
   bool last_word_matches(Node* node, string const& word) {
     return at_end(node) && same_word(node, word);
   }
 
+  /**
+   * @brief Takes a word and adds it to the list
+   * 
+   * @param word a const string reference
+   */
   void add_word(const string& word) {
     if (is_empty()) {
       Node* node = make_node(word);
       head = node;
-      size++;
+      last = node;
+      size += 1;
       return;
     }
     Node* curr = head;
@@ -152,11 +183,13 @@ void copy_word(const Node& node) {
       Node* new_word = make_node(word);
       new_word->prev = curr;
       curr->next = new_word;
+      last = new_word;
+      size += 1;
     }
   }
 
-  void first() { cout << head << endl; }
-
+  string last_word() const { return last->word;}
+  string first_word() const {return head->word;}
   // bool last() {
   //   return !tail;
   // }
