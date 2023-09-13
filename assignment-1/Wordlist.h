@@ -103,7 +103,9 @@ if (this->last) {
   }
 
   ~Wordlist() {
-    Node* cursor = head;
+    Node* cursor;
+    cursor = head;
+    // Node* cursor = head;
     while (cursor) {
       Node* tmp = cursor->next;
       delete cursor;
