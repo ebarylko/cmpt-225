@@ -104,9 +104,8 @@ if (this->last) {
 
   ~Wordlist() {
     Node* cursor = head;
-    Node* tmp = nullptr;
     while (cursor) {
-      tmp = cursor->next;
+      Node* tmp = cursor->next;
       delete cursor;
       cursor = tmp;
     }
@@ -144,6 +143,8 @@ if (this->last) {
     Node* new_word = new Node;
     new_word->count = 1;
     new_word->word = word;
+    new_word->prev = nullptr;
+    new_word->next = nullptr;
     return new_word;
   }
 

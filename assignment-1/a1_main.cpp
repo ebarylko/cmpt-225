@@ -48,6 +48,11 @@ void test_Wordlist_default_constructor()
     assert(lst.length() == 2);
     assert(lst.first_word() == "hello" && lst.last_word() == "hi");
     assert(lst.contains("hi"));
+
+    Test("Add used words"); 
+    lst.add_word("hello");
+    assert(lst.length() == 2);
+
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
     //
