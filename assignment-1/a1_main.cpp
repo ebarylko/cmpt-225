@@ -53,6 +53,12 @@ void test_Wordlist_default_constructor()
     lst.add_word("hello");
     assert(lst.length() == 2);
     assert(lst.word_occurences("hello") == 2);
+    lst.add_word("hello");
+    assert(lst.length() == 2);
+    assert(lst.word_occurences("hello") == 3);
+    lst.add_word("hello");
+    assert(lst.length() == 2);
+    assert(lst.word_occurences("hello") == 4);
 
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.

@@ -203,17 +203,19 @@ if (this->last) {
    */
   string first_word() const {return head->word;}
 
+ /**
+  * @brief Takes a word and returns the number of times it occurs in the list
+  * 
+  * @param word a const string reference
+  * @return int the number of times the word occurs in the list
+  */
   int word_occurences(const string& word) const {
     Node* curr = head;
     while (curr && curr->word != word) {
       curr = curr->next;
     }
-    if (curr) {
-      return curr->count;
-    } else {
-      return 0;
+    return curr ? curr->count : 0;
     }
-  }
   // bool last() {
   //   return !tail;
   // }
