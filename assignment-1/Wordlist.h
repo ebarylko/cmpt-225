@@ -128,12 +128,11 @@ if (this->last) {
   bool is_frozen() const { return frozen; }
 
   bool contains(const string& word) const {
-    for (Node* curr = head; curr < head + size; curr++) {
-      if (curr->word == word) {
-        return true;
-      }
+    Node* curr = head;
+    while (curr && curr->word != word) {
+      curr = curr->next;
     }
-    return false;
+    return curr ? true : false;
   }
 
   bool at_end(Node* node) { return node == last; }
