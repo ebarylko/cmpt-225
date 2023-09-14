@@ -53,7 +53,7 @@ class Wordlist : public Wordlist_base {
   int size;
   Node* head;
   bool frozen;
-  Node* last;
+  Node* tail;
 
 Node* find_word (const string& target) {
   Node* curr = this->head;
@@ -63,8 +63,8 @@ Node* find_word (const string& target) {
   return curr;
 }
 
-// if this->last is null, then I want to attach the node to the head and the tail of the list, and make the last of the node point to null
-// if this->last != null, then I want to assign the next node as the new node. i want to assign the tail to the new node, and have thee new node point back to the last node
+// if this->tail is null, then I want to attach the node to the head and the tail of the list, and make the  of the node ptailoint to null
+// if this-> != null, then I want to astailsign the next node as the new node. i want to assign the tail to the new node, and have thee new node point back to the tail node
 /**
  * @brief Takes a node src and copies the information in src to another node 
  * 
@@ -73,23 +73,23 @@ Node* find_word (const string& target) {
 void copy_word(const Node& src) {
   Node* tmp = new Node(src);
 
-if (this->last) {
-  this->last->next = tmp;
-  tmp->prev = this->last;
+if (this->tail) {
+  this->tail->next = tmp;
+  tmp->prev = this->tail;
 } else {
   this->head = tmp;
   this->head->prev = nullptr;
 }
-  // this->last->next = tmp;
+  // this->tail->next = tmp;
 
-  this->last = tmp;
-  this->last->next = nullptr;
+  this->tail = tmp;
+  this->tail->next = nullptr;
 }
 
  public:
   Wordlist() {
     head = nullptr;
-    last = nullptr;
+    tail = nullptr;
     frozen = (size = 0);
   }
 
@@ -134,7 +134,7 @@ if (this->last) {
     return curr ? true : false;
   }
 
-  bool at_end(Node* node) { return node == last; }
+  bool at_end(Node* node) { return node == tail; }
 
   bool same_word(Node* curr, string const& word) { return curr->word == word; }
 
@@ -148,12 +148,12 @@ if (this->last) {
   }
 
 /**
- * @brief Takes a node and returns true if it is the last item in the list 
+ * @brief Takes a node and returns true if it is the tail item in the list 
  * and it contains the same word as `word`, false otherwise
  * 
  * @param node a Node*
  * @param word a const string referencr
- * @return true if the node passed is the last one in the list and the node contains
+ * @return true if the node passed is the  onetail in the list and the node contains
  * the word being searched for
  * @return false if condition above not satisfied
  */
@@ -170,7 +170,7 @@ if (this->last) {
     if (is_empty()) {
       Node* node = make_node(word);
       head = node;
-      last = node;
+      tail = node;
       size += 1;
       return;
     }
@@ -184,12 +184,12 @@ if (this->last) {
       Node* new_word = make_node(word);
       new_word->prev = curr;
       curr->next = new_word;
-      last = new_word;
+      tail = new_word;
       size += 1;
     }
   }
 
-// lista con solo un elemento: remover elemento, hacer que head y last apunta a null. remover data
+// lista con solo un elemento: remover elemento, hacer que head y tail apunta a null. remover data
 // lista con dos elementos y la el nodo que sacas es la cola:
 // hacer que el head apunta a null, y el tail es el head
 // lista con dos elementos y el nodo que sacas el la cabeza:
@@ -208,13 +208,13 @@ if (this->last) {
     Node* remove = this->find_word(word);
     if (this->length() == 1) {
       head = nullptr;
-      last = nullptr;
+      tail = nullptr;
     } else if (remove == this->head) {
       head = head->next;
       head->prev = nullptr;
-    } else if (remove == this->last) {
-      last = last->prev;
-      last->next = nullptr;
+    } else if (remove == this->tail) {
+      tail = tail->prev;
+      tail->next = nullptr;
     } else {
       remove->prev->next = remove->next;
       remove->next->prev = remove->prev;
@@ -226,11 +226,11 @@ if (this->last) {
   }
 
   /**
-   * @brief Returns the last word in the list
+   * @brief Returns the  wordtail in the list
    *
-   * @return a string which is the last word
+   * @return a string which is the tail word
    */
-  string last_word() const { return last->word; }
+  string last_word() const { return tail->word; }
 
   /**
    * @brief Returns the first word in the list
@@ -253,7 +253,34 @@ if (this->last) {
     return curr ? curr->count : 0;
     }
 
-  // bool last() {
+  /**
+   * @brief Takes a node of the list and returns the word on the next node
+   * 
+   * @param nd the current node
+   * @return the word on the next node
+   */
+  string next_word(const Node* nd) const {
+    return nd->next->word;
+  } 
+
+  /**
+   * @brief Takes a node of the list and returns the word on the previous node
+   * 
+   * @param nd the current node
+   * @return the word on the previous node
+   */
+  string prev_word(const Node* nd) const {
+    return nd->prev->word;
+  } 
+
+  Node* first() {
+    return head;
+  }
+
+  Node* last() {
+    return tail;
+  }
+  // bool tail() {
   //   return !tail;
   // }
 

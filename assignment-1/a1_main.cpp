@@ -75,6 +75,14 @@ void test_Wordlist_default_constructor()
     lst.remove_word("hi");
     assert(lst.is_empty());
 
+    Test("Deleting a word inbetween the middle will link the words before and after the deleted word");
+    lst.add_word("1");
+    lst.add_word("2");
+    lst.add_word("3");
+    lst.remove_word("2");
+
+    assert(lst.next_word(lst.first()) == "3");
+    assert(lst.prev_word(lst.last()) == "1");
     // Test("Deleting all the words in the list leaves an empty list");
     // lst.remove_word("hi");
     // assert(lst.is_empty());
