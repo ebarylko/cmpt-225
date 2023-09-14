@@ -66,11 +66,20 @@ void test_Wordlist_default_constructor()
     assert(lst.word_occurences("hello") == 4);
     assert(lst.word_occurences("hi") == 1);
 
+    Test("Deleting the first word in a list of two items changes the size and the first/last word");
+    lst.remove_word("hello");
+    // assert(lst.length() == 1);
+    // assert(lst.first_word() == lst.last_word() && lst.first_word() == "hi");
+
+    // Test("Deleting all the words in the list leaves an empty list");
+    // lst.remove_word("hi");
+    // assert(lst.is_empty());
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
     //
 
 } // test_Wordlist
+
 
 // void test_Wordlist_copy_constructor() {
 

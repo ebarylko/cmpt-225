@@ -213,16 +213,14 @@ if (this->last) {
     if (remove == this->head) {
       head = head->next;
       head->prev = nullptr;
-    } 
-    if (remove == this->last) {
+    } else if (remove == this->last) {
       last = last->prev;
       last->next = nullptr;
-    } 
-    if (remove != this->last && remove != this->head) {
+    } else {
       remove->prev->next = remove->next;
       remove->next->prev = remove->prev;
     }
-    
+
     size--;
     delete remove;
     return;
