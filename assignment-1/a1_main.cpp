@@ -68,8 +68,12 @@ void test_Wordlist_default_constructor()
 
     Test("Deleting the first word in a list of two items changes the size and the first/last word");
     lst.remove_word("hello");
-    // assert(lst.length() == 1);
-    // assert(lst.first_word() == lst.last_word() && lst.first_word() == "hi");
+    assert(lst.length() == 1);
+    assert(lst.first_word() == lst.last_word() && lst.first_word() == "hi");
+
+    Test("Deleting the last item in a list returns an empty list");
+    lst.remove_word("hi");
+    assert(lst.is_empty());
 
     // Test("Deleting all the words in the list leaves an empty list");
     // lst.remove_word("hi");

@@ -209,8 +209,7 @@ if (this->last) {
     if (this->length() == 1) {
       head = nullptr;
       last = nullptr;
-    }
-    if (remove == this->head) {
+    } else if (remove == this->head) {
       head = head->next;
       head->prev = nullptr;
     } else if (remove == this->last) {
@@ -253,6 +252,7 @@ if (this->last) {
     }
     return curr ? curr->count : 0;
     }
+
   // bool last() {
   //   return !tail;
   // }
