@@ -189,12 +189,51 @@ if (this->last) {
     }
   }
 
+// lista con solo un elemento: remover elemento, hacer que head y last apunta a null. remover data
+// lista con dos elementos y la el nodo que sacas es la cola:
+// hacer que el head apunta a null, y el tail es el head
+// lista con dos elementos y el nodo que sacas el la cabeza:
+// hacer que la lista apunta a la col 
+// 
+/**
+ * @brief Takes a word and removes it from the list if it is within. Otherwise,
+ * does nothing
+ * 
+ * @param word a string
+ */
+  void remove_word(const string& word) {
+    if (!this->contains(word)) {
+      return;
+    }
+    Node* remove = this->find_word(word);
+    if (this->length() == 1) {
+      head = nullptr;
+      last = nullptr;
+    }
+    if (remove == this->head) {
+      head = head->next;
+      head->prev = nullptr;
+    } 
+    if (remove == this->last) {
+      last = last->prev;
+      last->next = nullptr;
+    } 
+    if (remove != this->last && remove != this->head) {
+      remove->prev->next = remove->next;
+      remove->next->prev = remove->prev;
+    }
+    
+    size--;
+    delete remove;
+    return;
+  }
+
   /**
    * @brief Returns the last word in the list
-   * 
-   * @return a string which is the last word 
+   *
+   * @return a string which is the last word
    */
-  string last_word() const { return last->word;}
+  string last_word() const { return last->word; }
 
   /**
    * @brief Returns the first word in the list

@@ -49,7 +49,7 @@ void test_Wordlist_default_constructor()
     assert(lst.first_word() == "hello" && lst.last_word() == "hi");
     assert(lst.contains("hi"));
 
-    Test("Add used words"); 
+    Test("Adding used words only modifies the occurences of the word"); 
     lst.add_word("hello");
     assert(lst.length() == 2);
     assert(lst.word_occurences("hello") == 2);
@@ -59,6 +59,12 @@ void test_Wordlist_default_constructor()
     lst.add_word("hello");
     assert(lst.length() == 2);
     assert(lst.word_occurences("hello") == 4);
+
+    Test("Deleting unsused words does nothing"); 
+    lst.remove_word("General");
+    assert(lst.length() == 2);
+    assert(lst.word_occurences("hello") == 4);
+    assert(lst.word_occurences("hi") == 1);
 
     // Add more test cases here. Use assert or if-statements to automatically
     // check the correctness of your code.
