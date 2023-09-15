@@ -60,10 +60,26 @@ void test_Wordlist_default_constructor()
     assert(lst.length() == 2);
     assert(lst.word_occurences("hello") == 4);
 
+
+    // Test("Deleting all the words in the list leaves an empty list");
+    // lst.remove_word("hi");
+    // assert(lst.is_empty());
+    // Add more test cases here. Use assert or if-statements to automatically
+    // check the correctness of your code.
+    //
+
+} // test_Wordlist
+
+void remove_word() {
+    Wordlist lst;
+    lst.add_word("hello");
+    lst.add_word("hello");
+    lst.add_word("hi");
+
     Test("Deleting unsused words does nothing"); 
     lst.remove_word("General");
     assert(lst.length() == 2);
-    assert(lst.word_occurences("hello") == 4);
+    assert(lst.word_occurences("hello") == 2);
     assert(lst.word_occurences("hi") == 1);
 
     Test("Deleting the first word in a list of two items changes the size and the first/last word");
@@ -81,17 +97,30 @@ void test_Wordlist_default_constructor()
     lst.add_word("3");
     lst.remove_word("2");
 
+    assert(lst.length() == 2);
     assert(lst.next_word(lst.first()) == "3");
     assert(lst.prev_word(lst.last()) == "1");
-    // Test("Deleting all the words in the list leaves an empty list");
-    // lst.remove_word("hi");
-    // assert(lst.is_empty());
-    // Add more test cases here. Use assert or if-statements to automatically
-    // check the correctness of your code.
-    //
 
-} // test_Wordlist
+    Test("Deleting the last word in the list changes the last word");
+    lst.remove_word("3");
+    assert(lst.length() == 1);
+    assert(lst.first_word() == "1");
+    
+}
 
+void get_word_test() {
+    Wordlist lst;
+    lst.add_word("1");
+    lst.add_word("2");
+    lst.add_word("3");
+
+   Test("Searching for the first, middle, and last word");
+   assert(lst.first_word() == "1");
+   assert(lst.get_word(1) == "2");
+   assert(lst.last_word() == "3");
+
+
+}
 
 // void test_Wordlist_copy_constructor() {
 
@@ -102,9 +131,36 @@ void test_Wordlist_default_constructor()
 //     assert(copy.length() == 2);
 // }
 
+void copy_constructor() {
+    Wordlist src;
+    src.add_word("1");
+    src.add_word("2");
+    assert(src.length() == 2);
+    assert(src.first_word() == "1");
+    assert(src.last_word() == "2");
+    assert(src.word_occurences("1") == 1);
+    assert(src.word_occurences("2") == 1);
+
+    Test("The copy constructor copies a list of unique words with no repitition  without modifying it");
+    Wordlist copy(src);
+    
+    assert(src.length() == 2);
+    assert(src.first_word() == "1");
+    assert(src.last_word() == "2");
+    assert(src.word_occurences("1") == 1);
+    assert(src.word_occurences("2") == 1);
+
+    assert(copy.length() == 2);
+    assert(copy.first_word() == "1");
+    assert(copy.last_word() == "2");
+    assert(copy.word_occurences("1") == 1);
+    assert(copy.word_occurences("2") == 1);
+}
 int main()
 {
     test_Wordlist_default_constructor();
+    remove_word();
+    get_word_test();
     // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }

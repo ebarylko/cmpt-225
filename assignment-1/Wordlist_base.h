@@ -64,14 +64,13 @@ struct Wordlist_base
     //    It's worst-case running time should be constant (i.e. the same no
     //    matter how long the list is).
     //
-/*    string first_word() const     {
-        if (length() == 0)
-        {
-            throw runtime_error("first_word: empty list has no first word");
-        }
-        return get_word(0);
+    string first_word() const {
+      if (length() == 0) {
+        throw runtime_error("first_word: empty list has no first word");
+      }
+      return get_word(0);
     }
-*/
+
     //
     // Pre-condition:
     //    length() > 0
@@ -81,14 +80,12 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the length of
     //    the list (or better).
     //
-/*     string last_word() const
-    {
-        if (length() == 0)
-        {
-            throw runtime_error("last_word:empty list has no last word");
-        }
-        return get_word(length() - 1);
-    } */
+    string last_word() const {
+      if (length() == 0) {
+        throw runtime_error("last_word:empty list has no last word");
+      }
+      return get_word(length() - 1);
+    }
 
     //
     // Pre-condition:
@@ -99,7 +96,7 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the length of
     //    the list (or better).
     //
-/*     virtual string get_word(int index) const = 0; */
+    virtual string get_word(int index) const = 0;
 
     //
     // Pre-condition:
@@ -111,7 +108,7 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the length of
     //    the list (or better).
     //
-/*     virtual void add_word(const string &w) = 0; */
+    virtual void add_word(const string &w) = 0;
 
     //
     // Pre-condition:
@@ -123,7 +120,7 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the length of
     //    the list (or better).
     //
-/*     virtual void remove_word(const string &w) = 0; */
+    virtual void remove_word(const string &w) = 0;
 
     //
     // Pre-condition:

@@ -73,14 +73,13 @@ Node* find_word (const string& target) {
 void copy_word(const Node& src) {
   Node* tmp = new Node(src);
 
-if (this->tail) {
+if (!this->is_empty()) {
   this->tail->next = tmp;
   tmp->prev = this->tail;
 } else {
   this->head = tmp;
   this->head->prev = nullptr;
 }
-  // this->tail->next = tmp;
 
   this->tail = tmp;
   this->tail->next = nullptr;
@@ -230,14 +229,24 @@ if (this->tail) {
    *
    * @return a string which is the tail word
    */
-  string last_word() const { return tail->word; }
+  string last_word() const { return get_word(this->length() - 1); }
 
   /**
    * @brief Returns the first word in the list
    * 
    * @return a string which is the first word
    */
-  string first_word() const {return head->word;}
+  string first_word() const {return get_word(0);}
+
+  string get_word(int index) const {
+    int pos = index;
+    Node* curr = head;
+    while (pos) {
+      curr = curr->next;
+      pos--;
+    }
+    return curr->word;
+  }
 
  /**
   * @brief Takes a word and returns the number of times it occurs in the list
@@ -280,6 +289,9 @@ if (this->tail) {
   Node* last() {
     return tail;
   }
+
+
+
   // bool tail() {
   //   return !tail;
   // }
