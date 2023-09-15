@@ -95,12 +95,12 @@ void copy_word(const Node& src) {
   }
 
   Wordlist(const Wordlist& source) {
+    this->size = source.size;
     Node* copy_from = source.head;
     while (copy_from) {
       this->copy_word(*copy_from);
       copy_from = copy_from->next;
     }
-    this->size = source.size;
   }
 
   ~Wordlist() {
