@@ -144,11 +144,11 @@ void copy_constructor() {
     Test("The copy constructor copies a list of unique words with no repitition  without modifying it");
     Wordlist copy(src);
     
-    // assert(src.length() == 2);
-    // assert(src.first_word() == "1");
-    // assert(src.last_word() == "2");
-    // assert(src.word_occurences("1") == 1);
-    // assert(src.word_occurences("2") == 1);
+    assert(src.length() == 2);
+    assert(src.first_word() == "1");
+    assert(src.last_word() == "2");
+    assert(src.word_occurences("1") == 1);
+    assert(src.word_occurences("2") == 1);
 
     // assert(copy.length() == 2);
     // assert(copy.first_word() == "1");

@@ -96,6 +96,9 @@ void copy_word(const Node& src) {
 
   Wordlist(const Wordlist& source) {
     this->size = source.size;
+    this->frozen = source.frozen;
+    head = nullptr;
+    tail = nullptr;
     Node* copy_from = source.head;
     while (copy_from) {
       this->copy_word(*copy_from);
