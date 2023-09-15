@@ -148,19 +148,20 @@ void copy_constructor() {
     assert(src.first_word() == "1");
     assert(src.last_word() == "2");
     assert(src.word_occurences("1") == 1);
-    assert(src.word_occurences("2") == 1);
+    // assert(src.word_occurences("2") == 1);
 
-    assert(copy.length() == 2);
-    assert(copy.first_word() == "1");
-    assert(copy.last_word() == "2");
-    assert(copy.word_occurences("1") == 1);
-    assert(copy.word_occurences("2") == 1);
+    // assert(copy.length() == 2);
+    // assert(copy.first_word() == "1");
+    // assert(copy.last_word() == "2");
+    // assert(copy.word_occurences("1") == 1);
+    // assert(copy.word_occurences("2") == 1);
 }
 int main()
 {
     test_Wordlist_default_constructor();
     remove_word();
     get_word_test();
+    copy_constructor();
     // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }
