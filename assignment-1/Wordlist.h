@@ -71,15 +71,17 @@ Node* find_word (const string& target) {
  * @param src a const node reference
  */
 void copy_word(const Node& src) {
-  Node* tmp = new Node(src);
+  Node* tmp = new Node;
+  tmp->count = src.count;
+  tmp->word = src.word;
 
-if (!this->is_empty()) {
-  this->tail->next = tmp;
-  tmp->prev = this->tail;
-} else {
-  this->head = tmp;
-  this->head->prev = nullptr;
-}
+  if (!this->is_empty()) {
+    this->tail->next = tmp;
+    tmp->prev = this->tail;
+  } else {
+    this->head = tmp;
+    this->head->prev = nullptr;
+  }
 
   this->tail = tmp;
   this->tail->next = nullptr;
@@ -112,7 +114,7 @@ if (!this->is_empty()) {
 
   int length() const { return size; }
 
-  bool is_empty() const { return size == 0; }
+  bool is_empty() const { return this->length() == 0; }
   /* const string get_word(int pos) {
   Node* start = head;
   while (pos != 0) {
