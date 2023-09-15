@@ -71,9 +71,7 @@ Node* find_word (const string& target) {
  * @param src a const node reference
  */
 void copy_word(const Node& src) {
-  Node* tmp = new Node;
-  tmp->count = src.count;
-  tmp->word = src.word;
+  Node* tmp = new Node(src);
 
   if (!this->is_empty()) {
     this->tail->next = tmp;
