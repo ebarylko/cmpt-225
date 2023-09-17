@@ -56,11 +56,9 @@ class Wordlist : public Wordlist_base {
   Node* tail;
 
 Node* find_word (const string& target) {
-  Node* curr = this->head;
-  while (curr && curr->word != target) {
-    curr = curr->next;
-  }
-  return curr;
+  return find_if(this->head, (Node*) nullptr, [target](const Node& nd) {
+    return nd.word == target;
+  });
 }
 
 // if this->tail is null, then I want to attach the node to the head and the tail of the list, and make the  of the node ptailoint to null
@@ -74,6 +72,7 @@ void copy_word(const Node& src) {
   Node* tmp = new Node(src);
 
   if (!this->is_empty()) {
+    assert(this->tail);
     this->tail->next = tmp;
     tmp->prev = this->tail;
   } else {
@@ -82,6 +81,7 @@ void copy_word(const Node& src) {
   }
 
   this->tail = tmp;
+  assert(this->tail);
   this->tail->next = nullptr;
 }
 
@@ -180,12 +180,13 @@ void copy_word(const Node& src) {
     while (!at_end(curr) && !same_word(curr, word)) {
       curr = curr->next;
     }
-    if (!at_end(curr) || last_word_matches(curr, word)) {
+    if (same_word(curr, word)) {
       curr->count++;
     } else {
+      assert(at_end(curr));
       Node* new_word = make_node(word);
-      new_word->prev = curr;
-      curr->next = new_word;
+      new_word->prev = tail;
+      tail->next = new_word;
       tail = new_word;
       size += 1;
     }
