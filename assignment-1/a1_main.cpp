@@ -152,9 +152,9 @@ void copy_constructor() {
 int main()
 {
     test_Wordlist_default_constructor();
-    // remove_word();
-    // get_word_test();
-    // copy_constructor();
+    remove_word();
+    get_word_test();
+    copy_constructor();
     // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }

@@ -33,7 +33,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-
+#include <functional>
 #include "Wordlist_base.h"
 
 using namespace std;
@@ -69,16 +69,15 @@ class Wordlist : public Wordlist_base {
   void append_word(const string& word) {
     Node* tmp = new Node{word, nullptr, nullptr};
 
-    if (!this->is_empty()) {
+    tmp->prev = this->tail;
+    if (this->is_empty()) {
+      this->head = tmp;
+    } else {
       assert(this->tail);
       this->tail->next = tmp;
-      tmp->prev = this->tail;
-    } else {
-      this->head = tmp;
     }
 
     this->tail = tmp;
-    assert(this->tail);
 }
 
   struct Iterator {
@@ -91,7 +90,7 @@ class Wordlist : public Wordlist_base {
     using pointer = value_type*;
     using reference = value_type&;
 
-    pointer operator*() const { return _current;}
+    reference operator*() const { return *_current;}
     pointer operator->() { return _current; }
 
     // Prefix increment
@@ -240,7 +239,7 @@ class Wordlist : public Wordlist_base {
       }
 
       size--;
-      delete *remove;
+      delete remove._current;
       return;
     }
 
