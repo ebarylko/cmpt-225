@@ -141,20 +141,31 @@ void copy_constructor() {
     assert(src.first_word() == "1");
     assert(src.last_word() == "2");
 
-
-
-    // assert(copy.length() == 2);
-    // assert(copy.first_word() == "1");
-    // assert(copy.last_word() == "2");
-    // assert(copy.word_occurences("1") == 1);
-    // assert(copy.word_occurences("2") == 1);
+    assert(copy.length() == 2);
+    assert(copy.first_word() == "1");
+    assert(copy.last_word() == "2");
 }
+
+void freze_list() {
+    Wordlist src;
+    src.add_word("2");
+    src.add_word("1");
+    auto actual = src.get_sorted_index();
+    vector<string> actual_strings;
+    Test("The amount of words ordered alphabetically match the amount in the original list");
+
+    transform(actual.begin(), actual.end(), back_inserter(actual_strings),
+              [](string* word) { return *word; });
+    assert(actual_strings == vector<string>({"1", "2"}));
+}
+
 int main()
 {
     test_Wordlist_default_constructor();
     remove_word();
     get_word_test();
     copy_constructor();
+    freze_list();
     // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }

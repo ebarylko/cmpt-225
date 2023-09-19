@@ -68,7 +68,6 @@ class Wordlist : public Wordlist_base {
 
   void append_word(const string& word) {
     Node* tmp = new Node{word, nullptr, nullptr};
-
     tmp->prev = this->tail;
     if (this->is_empty()) {
       this->head = tmp;
@@ -77,6 +76,7 @@ class Wordlist : public Wordlist_base {
       this->tail->next = tmp;
     }
 
+    this->size++;
     this->tail = tmp;
 }
 
@@ -282,6 +282,19 @@ class Wordlist : public Wordlist_base {
      * @return the word on the previous node
      */
     string prev_word(const Node* nd) const { return nd->prev->word; }
+
+    static bool compare_words(string* a, string* b) {
+      return *a < *b;
+    }
+
+    vector<string*> get_sorted_index() {
+      vector<string*> words;
+      transform(this->begin(), this->end(), back_inserter(words), [](Node& nd) {
+        return &nd.word;
+      });
+      sort(words.begin(), words.end(), compare_words);
+      return words;
+    }
 
     Node* first() { return head; }
 
