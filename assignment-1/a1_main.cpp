@@ -160,6 +160,16 @@ void freze_list() {
     assert(actual_strings == vector<string>({"1", "2"}));
 }
 
+void file_constructor() {
+    Test(
+        "The words inside a list which use a file as input contain the unique "
+        "words inside the file");
+    Wordlist lst("small.txt");
+    assert(lst.length() == 7);
+    assert(lst.as_vector() == mk_vector({"This", "is", "a", "test", "or", "this", "test?"}));
+    
+}
+
 int main()
 {
     test_Wordlist_default_constructor();
@@ -167,6 +177,7 @@ int main()
     get_word_test();
     copy_constructor();
     freze_list();
+    file_constructor();
     // test_Wordlist_copy_constructor();
     // read_from_terminal();
 }

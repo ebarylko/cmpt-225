@@ -127,6 +127,17 @@ class Wordlist : public Wordlist_base {
       this->frozen = source.frozen;
     }
 
+    Wordlist(const string& file_name) : Wordlist() {
+      string temp;
+      ifstream text_file(file_name);
+      if (text_file.is_open()) {
+      while (text_file >> temp) {
+        this->add_word(temp);
+      }
+      }
+      text_file.close();
+    }
+
     ~Wordlist() {
       Node* cursor = head;
       while (cursor) {
