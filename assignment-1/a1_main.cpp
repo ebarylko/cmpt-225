@@ -41,7 +41,7 @@ void test_Wordlist_default_constructor()
     assert(!lst.is_frozen());
     assert(lst.length() == 0);
     assert(!lst.contains("hello"));
-    assert(lst.as_vector() == mk_vector({}));
+    assert(lst.as_vector().size() == 0);
 
     Test("Add unique words");
     lst.add_word("hello");
