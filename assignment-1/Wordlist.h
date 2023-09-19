@@ -267,6 +267,13 @@ class Wordlist : public Wordlist_base {
       return curr->word;
     }
 
+    vector<string> as_vector() const {
+      vector<string> words;
+      transform(this->begin(), this->end(), back_inserter(words),
+                [](Node& nd) { return nd.word; });
+      return words;     
+    }
+
     /**
      * @brief Takes a node of the list and returns the word on the next node
      *
@@ -283,22 +290,16 @@ class Wordlist : public Wordlist_base {
      */
     string prev_word(const Node* nd) const { return nd->prev->word; }
 
-    static bool compare_words(string* a, string* b) {
-      return *a < *b;
-    }
-
     vector<string*> get_sorted_index() {
       vector<string*> words;
-      transform(this->begin(), this->end(), back_inserter(words), [](Node& nd) {
-        return &nd.word;
-      });
-      sort(words.begin(), words.end(), compare_words);
+      transform(this->begin(), this->end(), back_inserter(words),
+                [](Node& nd) { return &nd.word; });
+      sort(words.begin(), words.end(),
+           [](string* a, string* b) { return *a < *b; });
+      frozen = 1;
       return words;
     }
 
-    Node* first() { return head; }
-
-    Node* last() { return tail; }
 
     // bool tail() {
     //   return !tail;

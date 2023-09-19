@@ -12,6 +12,10 @@
 #include "Wordlist.h"
 using namespace std;
 
+auto mk_vector(initializer_list<string> words) {
+    return vector<string>(words);
+}
+
 /* void read_from_terminal()
 {
     Wordlist lst;
@@ -37,17 +41,18 @@ void test_Wordlist_default_constructor()
     assert(!lst.is_frozen());
     assert(lst.length() == 0);
     assert(!lst.contains("hello"));
+    assert(lst.as_vector() == mk_vector({}));
 
     Test("Add unique words");
     lst.add_word("hello");
     assert(lst.contains("hello"));
     assert(lst.length() == 1);
-    assert(lst.first_word() == lst.last_word() && lst.last_word() == "hello");
+    assert(lst.as_vector() == mk_vector({"hello"}));
 
     lst.add_word("hi");
-    assert(lst.length() == 2);
-    assert(lst.first_word() == "hello" && lst.last_word() == "hi");
     assert(lst.contains("hi"));
+    assert(lst.length() == 2);
+    assert(lst.as_vector() == mk_vector({"hello", "hi"}));
 
     Test("Adding used words only modifies the occurences of the word"); 
     lst.add_word("hello");
@@ -80,7 +85,7 @@ void remove_word() {
     Test("Deleting the first word in a list of two items changes the size and the first/last word");
     lst.remove_word("hello");
     assert(lst.length() == 1);
-    assert(lst.first_word() == lst.last_word() && lst.first_word() == "hi");
+    assert(lst.as_vector() == mk_vector({"hi"}));
 
     Test("Deleting the last item in a list returns an empty list");
     lst.remove_word("hi");
@@ -93,13 +98,12 @@ void remove_word() {
     lst.remove_word("2");
 
     assert(lst.length() == 2);
-    assert(lst.next_word(lst.first()) == "3");
-    assert(lst.prev_word(lst.last()) == "1");
+    assert(lst.as_vector() == mk_vector({"1", "3"}));
 
     Test("Deleting the last word in the list changes the last word");
     lst.remove_word("3");
     assert(lst.length() == 1);
-    assert(lst.first_word() == "1");
+    assert(lst.as_vector() == mk_vector({"1"}));
     
 }
 
@@ -131,19 +135,16 @@ void copy_constructor() {
     src.add_word("1");
     src.add_word("2");
     assert(src.length() == 2);
-    assert(src.first_word() == "1");
-    assert(src.last_word() == "2");
+    assert(src.as_vector() == mk_vector({"1", "2"}));
 
     Test("The copy constructor copies a list of unique words with no repitition  without modifying it");
     Wordlist copy(src);
     
     assert(src.length() == 2);
-    assert(src.first_word() == "1");
-    assert(src.last_word() == "2");
+    assert(src.as_vector() == mk_vector({"1", "2"}));
 
     assert(copy.length() == 2);
-    assert(copy.first_word() == "1");
-    assert(copy.last_word() == "2");
+    assert(copy.as_vector() == mk_vector({"1", "2"}));
 }
 
 void freze_list() {
