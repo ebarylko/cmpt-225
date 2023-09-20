@@ -167,7 +167,13 @@ void file_constructor() {
     Wordlist lst("small.txt");
     assert(lst.length() == 7);
     assert(lst.as_vector() == mk_vector({"This", "is", "a", "test", "or", "this", "test?"}));
-    
+
+    auto actual = lst.get_sorted_index();
+    vector<string> actual_words;
+    transform(actual.begin(), actual.end(), back_inserter(actual_words),
+              [](string* word) { return *word; });
+    assert(actual_words == mk_vector({"This", "a", "is", "or", "test", "test?", "this"}));
+
 }
 
 int main()

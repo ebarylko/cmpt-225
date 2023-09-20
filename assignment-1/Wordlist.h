@@ -33,7 +33,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <functional>
 #include "Wordlist_base.h"
 
 using namespace std;
@@ -55,11 +54,6 @@ class Wordlist : public Wordlist_base {
   Node* tail;
 
 
-  // if this->tail is null, then I want to attach the node to the head and the
-  // tail of the list, and make the  of the node ptailoint to null if this-> !=
-  // null, then I want to astailsign the next node as the new node. i want to
-  // assign the tail to the new node, and have thee new node point back to the
-  // tail node
   /**
    * @brief Takes a node src and copies the information in src to another node
    *
@@ -195,6 +189,8 @@ class Wordlist : public Wordlist_base {
      * @param word a const string reference
      */
     void add_word(const string& word) {
+      assert(!is_frozen());
+
       if (is_empty()) {
         Node* node = make_node(word);
         head = node;
@@ -218,12 +214,6 @@ class Wordlist : public Wordlist_base {
       }
     }
 
-    // lista con solo un elemento: remover elemento, hacer que head y tail
-    // apunta a null. remover data lista con dos elementos y la el nodo que
-    // sacas es la cola: hacer que el head apunta a null, y el tail es el head
-    // lista con dos elementos y el nodo que sacas el la cabeza:
-    // hacer que la lista apunta a la col
-    //
     /**
      * @brief Takes a word and removes it from the list if it is within.
      * Otherwise, does nothing
@@ -231,6 +221,7 @@ class Wordlist : public Wordlist_base {
      * @param word a string
      */
     void remove_word(const string& word) {
+      assert(!is_frozen());
       if (!this->contains(word)) {
         return;
       }
