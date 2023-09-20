@@ -150,6 +150,7 @@ void copy_constructor() {
 
     assert(copy.length() == 2);
     assert(copy.as_vector() == mk_vector({"1", "2"}));
+    
 }
 
 void freze_list() {

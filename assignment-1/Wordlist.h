@@ -60,7 +60,6 @@ class Wordlist : public Wordlist_base {
    *
    * @param src a const node reference
    */
-
   void append_word(const string& word) {
     Node* tmp = new Node{word, nullptr, nullptr};
     tmp->prev = this->tail;
@@ -114,9 +113,6 @@ class Wordlist : public Wordlist_base {
   Iterator begin() const { return Iterator(this->head); }
   Iterator end() const { return Iterator((Node*)nullptr); }
 
-  // function<bool(const Node&)> matches_word(const string& target) const {
-  //   return [target](const Node &node) { return node.word == target; };
-  // }
 
   auto find_word(const string& target) {
     return find_if(this->begin(), this->end(), 
@@ -214,11 +210,24 @@ class Wordlist : public Wordlist_base {
         size += 1;
         return;
       }
-      Node* curr = head;
-      while (!at_end(curr) && !same_word(curr, word)) {
-        curr = curr->next;
+
+      // Iterator list = Iterator(this->head);
+      Node* found = this->find_word(word)._current;
+      // while (!at_end(curr) && !same_word(curr, word)) {
+      //   curr = curr->next;
+      // }
+      if (found) {
+        return;
+      } else {
+        assert(found == nullptr);
+        Node* new_word = make_node(word);
+        new_word->prev = tail;
+        tail->next = new_word;
+        tail = new_word;
+        size += 1;
       }
-      if (same_word(curr, word)) {
+    }
+/*       if (same_word(curr, word)) {
         return;
       } else {
         assert(at_end(curr));
@@ -227,21 +236,25 @@ class Wordlist : public Wordlist_base {
         tail->next = new_word;
         tail = new_word;
         size += 1;
-      }
-    }
+      } */
+    
 
     /**
      * @brief Takes a word and removes it from the list if it is within.
-     * Otherwise, does nothing
+     * Otherwise, does nothing.
      *
-     * @param word a string
+     * @param word a string representing the word to be removed
      */
     void remove_word(const string& word) {
       assert(!is_frozen());
+
       if (!this->contains(word)) {
         return;
       }
+
       auto remove = this->find_word(word);
+
+      // Checking if the list will be empty after removing word
       if (this->length() == 1) {
         head = nullptr;
         tail = nullptr;
@@ -251,7 +264,9 @@ class Wordlist : public Wordlist_base {
       } else if (remove == this->tail) {
         tail = tail->prev;
         tail->next = nullptr;
-      } else {
+      } else
+      // What happens when the word is inbetween the head and tail
+      {
         remove->prev->next = remove->next;
         remove->next->prev = remove->prev;
       }
@@ -269,16 +284,17 @@ class Wordlist : public Wordlist_base {
  * @return string the word at the node index refers to
  */
     string get_word(int index) const {
+      // Check that the index passed is valid
       assert(index > -1 && index < this->size);
 
-      int pos = index;
-      Node* curr = head;
-      while (pos) {
-        curr = curr->next;
-        pos--;
+      Iterator list = Iterator(head);
+      while (index) {
+        list++;
+        index--;
       }
-      return curr->word;
+      return list->word;
     }
+
 
     vector<string> as_vector() const {
       vector<string> words;
@@ -288,44 +304,22 @@ class Wordlist : public Wordlist_base {
     }
 
     /**
-     * @brief Takes a node of the list and returns the word on the next node
-     *
-     * @param nd the current node
-     * @return the word on the next node
+     * @brief Returns a vector of string pointers in the list ordered alphabetically
+     * 
+     * @return vector<string*> A vector of string pointers ordered alphabetically
      */
-    string next_word(const Node* nd) const { return nd->next->word; }
-
-    /**
-     * @brief Takes a node of the list and returns the word on the previous node
-     *
-     * @param nd the current node
-     * @return the word on the previous node
-     */
-    string prev_word(const Node* nd) const { return nd->prev->word; }
-
     vector<string*> get_sorted_index() {
       vector<string*> words;
+
+      // I use transform so I can create a vector of string*
       transform(this->begin(), this->end(), back_inserter(words),
                 [](Node& nd) { return &nd.word; });
+
       sort(words.begin(), words.end(),
            [](string* a, string* b) { return *a < *b; });
       frozen = 1;
       return words;
     }
-
-
-    // bool tail() {
-    //   return !tail;
-    // }
-
-    //
-    // ... your code goes here ...
-    //
-
-    //
-    // ... you can write helper methods if you need them ...
-    //
-
   };  // class Wordlist
 
 //
