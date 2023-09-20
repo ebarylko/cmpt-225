@@ -56,13 +56,14 @@ class Wordlist : public Wordlist_base {
 
 
   /**
-   * @brief Takes a node src and copies the information in src to another node
+   * @brief Takes a word and appends it to the end of the list
    *
-   * @param src a const node reference
+   * @param word a string which is appended to the end of the list
    */
   void append_word(const string& word) {
     Node* tmp = new Node{word, nullptr, nullptr};
     tmp->prev = this->tail;
+
     if (this->is_empty()) {
       this->head = tmp;
     } else {
@@ -74,6 +75,9 @@ class Wordlist : public Wordlist_base {
     this->tail = tmp;
 }
 
+  // I decided to make in iterator in order to use the 
+  // functions in the STL such as transform, find_if, and 
+  // for_each. 
   struct Iterator {
     Node *_current;
     Iterator(Node *node): _current(node) {}
@@ -100,6 +104,7 @@ class Wordlist : public Wordlist_base {
     // Prefix decrement 
     Iterator& operator--() {_current = _current->prev; return *this;}
 
+    // Postfix decrement
     Iterator operator--(int) {
       Iterator tmp = *this;
       --(*this);
@@ -113,7 +118,12 @@ class Wordlist : public Wordlist_base {
   Iterator begin() const { return Iterator(this->head); }
   Iterator end() const { return Iterator((Node*)nullptr); }
 
-
+  /**
+   * @brief Takes a word and returns the node that contains the word.
+   * 
+   * @param target the word to be searched for
+   * @return auto the node which has the word
+   */
   auto find_word(const string& target) const {
     return find_if(this->begin(), this->end(), 
     [target](const Node &node) { return node.word == target;});};
@@ -127,6 +137,7 @@ class Wordlist : public Wordlist_base {
     }
 
     Wordlist(const Wordlist& source) : Wordlist() {
+      // Copying each node from source over to the current Wordlist
       for_each(source.begin(), source.end(),
                [this](const Node& node) { this->append_word(node.word); });
       this->frozen = source.frozen;
@@ -135,6 +146,7 @@ class Wordlist : public Wordlist_base {
     Wordlist(const string& file_name) : Wordlist() {
       string temp;
       ifstream text_file(file_name);
+
       if (text_file.is_open()) {
       while (text_file >> temp) {
         this->add_word(temp);
@@ -152,21 +164,41 @@ class Wordlist : public Wordlist_base {
       }
     }
 
+
+    /**
+     * @brief Returns true is the list is empty. False otherwise
+     * 
+     * @return true if the list has no words
+     * @return false if the list has 1 or more words
+     */
     bool is_empty() const { return this->length() == 0; }
 
+    /**
+     * @brief Returns the size of the list
+     * 
+     * @return int The size of the list
+     */
     int length() const { return size; }
 
+    /**
+     * @brief Returns true if the list is frozen. False otherwise
+     * 
+     * @return true if the list is frozen
+     * @return false if the condition above is false
+     */
     bool is_frozen() const { return frozen; }
 
+    /**
+     * @brief Takes a word and returns true if the word is withn the list. 
+     * False otherwise
+     * 
+     * @param word a string representing the word being searched for
+     * @return true if the word is in the list
+     * @return false if the word is not in the list
+     */
     bool contains(const string& word) const {
       Node* target = this->find_word(word)._current;
       return target ? 1 : 0;
-    }
-
-    bool at_end(Node * node) { return node == tail; }
-
-    bool same_word(Node * curr, string const& word) {
-      return curr->word == word;
     }
 
     /**
