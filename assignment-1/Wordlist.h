@@ -30,6 +30,7 @@
 // Do not use any other #includes
 //
 #include <cassert>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -113,9 +114,9 @@ class Wordlist : public Wordlist_base {
   Iterator begin() const { return Iterator(this->head); }
   Iterator end() const { return Iterator((Node*)nullptr); }
 
-  function<bool(const Node&)> matches_word(const string& target) const {
-    return [target](const Node &node) { return node.word == target; };
-  }
+  // function<bool(const Node&)> matches_word(const string& target) const {
+  //   return [target](const Node &node) { return node.word == target; };
+  // }
 
   auto find_word(const string& target) {
     return find_if(this->begin(), this->end(), 
