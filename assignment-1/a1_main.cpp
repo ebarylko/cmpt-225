@@ -179,7 +179,23 @@ void file_constructor() {
               [](string* word) { return *word; });
     assert(actual_words == mk_vector({"This", "a", "is", "or", "test", "test?", "this"}));
 
+    Wordlist large_file("sonnet30.txt");
+    assert(large_file.length() == 90);
+    auto actual_larger_text = large_file.get_sorted_index();
+    assert(actual_larger_text.size() == 90);
+    ofstream file("sonnet30_words.txt");
+
+    vector<string> sonnet_actual_words;
+    transform(actual_larger_text.begin(), actual_larger_text.end(), back_inserter(sonnet_actual_words),
+              [](string* word) { return *word; });
+
+    for (auto i = 0; i < actual_larger_text.size(); i++) {
+        file << i + 1 << ". " << sonnet_actual_words[i] << "\n";
+    }
+
+    file.close();
 }
+
 
 int main()
 {
