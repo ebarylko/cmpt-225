@@ -91,7 +91,20 @@ class Wordlist : public Wordlist_base {
     Iterator& operator++() { _current = _current->next; return *this; }  
 
     // Postfix increment
-    Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+    Iterator operator++(int) {
+      Iterator tmp = *this;
+      ++(*this);
+      return tmp;
+    }
+
+    // Prefix decrement 
+    Iterator& operator--() {_current = _current->prev; return *this;}
+
+    Iterator operator--(int) {
+      Iterator tmp = *this;
+      --(*this);
+      return tmp;
+    }
 
     friend bool operator== (const Iterator& a, const Iterator& b) { return a._current == b._current; };
     friend bool operator!= (const Iterator& a, const Iterator& b) { return a._current != b._current; };     
@@ -152,7 +165,7 @@ class Wordlist : public Wordlist_base {
       while (curr && curr->word != word) {
         curr = curr->next;
       }
-      return curr ? true : false;
+      return curr ? 1 : 0;
     }
 
     bool at_end(Node * node) { return node == tail; }
@@ -184,7 +197,8 @@ class Wordlist : public Wordlist_base {
     }
 
     /**
-     * @brief Takes a word and adds it to the list
+     * @brief Takes a word and adds it to the list if the word is not within.
+     * Otherwise, does nothing
      *
      * @param word a const string reference
      */
@@ -245,21 +259,16 @@ class Wordlist : public Wordlist_base {
       return;
     }
 
-    /**
-     * @brief Returns the  wordtail in the list
-     *
-     * @return a string which is the tail word
-     */
-    string last_word() const { return get_word(this->length() - 1); }
 
-    /**
-     * @brief Returns the first word in the list
-     *
-     * @return a string which is the first word
-     */
-    string first_word() const { return get_word(0); }
-
+/**
+ * @brief Takes an index and returns the word at that index if the index is within bounds
+ * Otherwise, returns a error
+ * @param index an int representing the position of the word
+ * @return string the word at the node index refers to
+ */
     string get_word(int index) const {
+      assert(index > -1 && index < this->size);
+
       int pos = index;
       Node* curr = head;
       while (pos) {

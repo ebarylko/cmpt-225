@@ -104,6 +104,12 @@ void remove_word() {
     lst.remove_word("3");
     assert(lst.length() == 1);
     assert(lst.as_vector() == mk_vector({"1"}));
+
+    Test("Adding the same word with different capatilization adds two words to the list");
+    lst.add_word("hi");
+    lst.add_word("Hi");
+    assert(lst.length() == 3);
+    assert(lst.as_vector() == mk_vector({"1", "hi", "Hi"}));
     
 }
 
@@ -117,7 +123,6 @@ void get_word_test() {
    assert(lst.first_word() == "1");
    assert(lst.get_word(1) == "2");
    assert(lst.last_word() == "3");
-
 
 }
 
