@@ -114,7 +114,7 @@ class Wordlist : public Wordlist_base {
   Iterator end() const { return Iterator((Node*)nullptr); }
 
 
-  auto find_word(const string& target) {
+  auto find_word(const string& target) const {
     return find_if(this->begin(), this->end(), 
     [target](const Node &node) { return node.word == target;});};
 
@@ -159,11 +159,8 @@ class Wordlist : public Wordlist_base {
     bool is_frozen() const { return frozen; }
 
     bool contains(const string& word) const {
-      Node* curr = head;
-      while (curr && curr->word != word) {
-        curr = curr->next;
-      }
-      return curr ? 1 : 0;
+      Node* target = this->find_word(word)._current;
+      return target ? 1 : 0;
     }
 
     bool at_end(Node * node) { return node == tail; }
@@ -201,9 +198,9 @@ class Wordlist : public Wordlist_base {
      * @param word a const string reference
      */
     void add_word(const string& word) {
-      assert(!is_frozen());
+      assert(!this->is_frozen());
 
-      if (is_empty()) {
+      if (this->is_empty()) {
         Node* node = make_node(word);
         head = node;
         tail = node;
@@ -211,15 +208,9 @@ class Wordlist : public Wordlist_base {
         return;
       }
 
-      // Iterator list = Iterator(this->head);
-      Node* found = this->find_word(word)._current;
-      // while (!at_end(curr) && !same_word(curr, word)) {
-      //   curr = curr->next;
-      // }
-      if (found) {
+      if (this->contains(word)) {
         return;
       } else {
-        assert(found == nullptr);
         Node* new_word = make_node(word);
         new_word->prev = tail;
         tail->next = new_word;
@@ -227,17 +218,6 @@ class Wordlist : public Wordlist_base {
         size += 1;
       }
     }
-/*       if (same_word(curr, word)) {
-        return;
-      } else {
-        assert(at_end(curr));
-        Node* new_word = make_node(word);
-        new_word->prev = tail;
-        tail->next = new_word;
-        tail = new_word;
-        size += 1;
-      } */
-    
 
     /**
      * @brief Takes a word and removes it from the list if it is within.
