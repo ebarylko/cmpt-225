@@ -169,26 +169,15 @@ class Wordlist : public Wordlist_base {
       return curr->word == word;
     }
 
-    Node* make_node(string const& word) {
-      Node* new_word = new Node;
-      new_word->word = word;
-      new_word->prev = nullptr;
-      new_word->next = nullptr;
-      return new_word;
-    }
-
     /**
-     * @brief Takes a node and returns true if it is the tail item in the list
-     * and it contains the same word as `word`, false otherwise
-     *
-     * @param node a Node*
-     * @param word a const string referencr
-     * @return true if the node passed is the  onetail in the list and the node
-     * contains the word being searched for
-     * @return false if condition above not satisfied
+     * @brief Takes a word W and returns a node which has the word W
+     * 
+     * @param word a string
+     * @return Node* a node with the word W
      */
-    bool last_word_matches(Node * node, string const& word) {
-      return at_end(node) && same_word(node, word);
+    Node* make_node(string const& word) {
+      Node* new_word = new Node{word, nullptr, nullptr};
+      return new_word;
     }
 
     /**
