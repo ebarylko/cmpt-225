@@ -179,12 +179,15 @@ void file_constructor() {
               [](string* word) { return *word; });
     assert(actual_words == mk_vector({"This", "a", "is", "or", "test", "test?", "this"}));
 
+    Test(
+        "Using the file constructor on a file with 116 words creates a list "
+        "with 90 words");
     Wordlist large_file("sonnet30.txt");
     assert(large_file.length() == 90);
     auto actual_larger_text = large_file.get_sorted_index();
     assert(actual_larger_text.size() == 90);
-    ofstream file("sonnet30_words.txt");
 
+    ofstream file("sonnet30_words.txt");
     vector<string> sonnet_actual_words;
     transform(actual_larger_text.begin(), actual_larger_text.end(), back_inserter(sonnet_actual_words),
               [](string* word) { return *word; });
@@ -192,8 +195,20 @@ void file_constructor() {
     for (auto i = 0; i < actual_larger_text.size(); i++) {
         file << i + 1 << ". " << sonnet_actual_words[i] << "\n";
     }
-
     file.close();
+
+    Wordlist largest_file("tiny_shakespeare.txt");
+    assert(largest_file.length() == 25670);
+    auto actual_shakespeare_text = largest_file.get_sorted_index();
+    ofstream shakespeare("tiny_shakespeare_words.txt");
+    vector<string> shakespeare_actual_words;
+    transform(actual_shakespeare_text.begin(), actual_shakespeare_text.end(), back_inserter(shakespeare_actual_words),
+              [](string* word) { return *word; });
+
+    for (auto i = 0; i < actual_shakespeare_text.size(); i++) {
+        shakespeare << i + 1 << ". " << shakespeare_actual_words[i] << "\n";
+    }
+
 }
 
 
