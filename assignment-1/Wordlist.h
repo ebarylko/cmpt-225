@@ -118,7 +118,8 @@ class Wordlist : public Wordlist_base {
   }
 
   auto find_word(const string& target) {
-    return find_if(this->begin(), this->end(), matches_word(target));}
+    return find_if(this->begin(), this->end(), 
+    [target](const Node &node) { return node.word == target;});};
 
    public:
     
