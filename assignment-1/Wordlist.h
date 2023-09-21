@@ -120,8 +120,21 @@ class Wordlist : public Wordlist_base {
    * @return auto the node which has the word
    */
   auto find_word(const string& target) const {
+    auto matches_target = [target](const Node& node) {
+      return node.word == target;
+    };
     return find_if(this->begin(), this->end(), 
-    [target](const Node &node) { return node.word == target;});};
+    matches_target);};
+
+    /**
+     * @brief Takes a word W and returns a node which has the word W
+     * 
+     * @param word a string
+     * @return Node* a node with the word W
+     */
+    Node* make_node(string const& word) {
+      return new Node{word, nullptr, nullptr};
+    }
 
    public:
     
@@ -195,15 +208,6 @@ class Wordlist : public Wordlist_base {
       return this->find_word(word) != this->end();
     }
 
-    /**
-     * @brief Takes a word W and returns a node which has the word W
-     * 
-     * @param word a string
-     * @return Node* a node with the word W
-     */
-    Node* make_node(string const& word) {
-      return new Node{word, nullptr, nullptr};
-    }
 
     /**
      * @brief If the list is not frozen, it takes a word and adds it 
@@ -226,13 +230,13 @@ class Wordlist : public Wordlist_base {
 
       if (this->contains(word)) {
         return;
-      } else {
+      } 
+
         Node* new_word = make_node(word);
         new_word->prev = tail;
         tail->next = new_word;
         tail = new_word;
         size += 1;
-      }
     }
 
     /**
@@ -247,11 +251,11 @@ class Wordlist : public Wordlist_base {
         throw runtime_error("You are removing a word from a frozen list");
       }
 
-      if (!this->contains(word)) {
+      auto remove = this->find_word(word);
+      if (remove == this->end()) {
         return;
       }
 
-      auto remove = this->find_word(word);
       // Checking if the list will be empty after removing word
       if (this->length() == 1) {
         head = nullptr;
@@ -291,10 +295,7 @@ class Wordlist : public Wordlist_base {
 
       Iterator list = Iterator(head);
       // Iterate over the list until we are at the desired position
-      while (index) {
-        list++;
-        index--;
-      }
+      advance(list, index);
       return list->word;
     }
 
