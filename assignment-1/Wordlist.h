@@ -219,7 +219,10 @@ class Wordlist : public Wordlist_base {
      * @param word a const string reference
      */
     void add_word(const string& word) {
-      assert(!this->is_frozen());
+      if (this->is_frozen()) {
+        throw runtime_error("You are adding a word onto a frozen list");
+      }
+      // assert(!this->is_frozen());
 
       if (this->is_empty()) {
         Node* node = make_node(word);
@@ -247,7 +250,11 @@ class Wordlist : public Wordlist_base {
      * @param word a string representing the word to be removed
      */
     void remove_word(const string& word) {
-      assert(!is_frozen());
+      // assert(!is_frozen());
+
+      if (this->is_frozen()) {
+        throw runtime_error("You are removing a word from a frozen list");
+      }
 
       if (!this->contains(word)) {
         return;

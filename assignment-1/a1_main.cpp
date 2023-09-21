@@ -164,6 +164,20 @@ void freze_list() {
     transform(actual.begin(), actual.end(), back_inserter(actual_strings),
               [](string* word) { return *word; });
     assert(actual_strings == vector<string>({"1", "2"}));
+
+    Test("Removing words from a frozen list returns a runtime error");
+    try {
+        src.remove_word("hi");
+    } catch ( exception &e) {
+        assert(!strcmp(e.what(), "You are removing a word from a frozen list"));
+    }
+
+    Test("Adding words to a frozen list causes a runtime error");
+    try {
+        src.add_word("hi");
+    } catch ( exception &e) {
+        assert(!strcmp(e.what(), "You are adding a word onto a frozen list"));
+    }
 }
 
 void file_constructor() {
