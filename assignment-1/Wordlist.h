@@ -9,7 +9,7 @@
 //
 // Name : Eitan Barylko
 // St.# : 301559349
-// Email: <put your SFU email address here>
+// Email: eab16@sfu.ca
 //
 //
 // Statement of Originality
@@ -54,7 +54,6 @@ class Wordlist : public Wordlist_base {
   bool frozen;
   Node* tail;
 
-
   /**
    * @brief Takes a word and appends it to the end of the list
    *
@@ -75,9 +74,11 @@ class Wordlist : public Wordlist_base {
     this->tail = tmp;
 }
 
-  // I decided to make in iterator in order to use the 
+  // I decided to make an iterator in order to use the 
   // functions in the STL such as transform, find_if, and 
   // for_each. 
+  // I used https://www.internalpointers.com/post/writing-custom-iterators-modern-cpp
+  // to see how to make an iterator
   struct Iterator {
     Node *_current;
     Iterator(Node *node): _current(node) {}
@@ -101,18 +102,12 @@ class Wordlist : public Wordlist_base {
       return tmp;
     }
 
-    // Prefix decrement 
-    Iterator& operator--() {_current = _current->prev; return *this;}
-
-    // Postfix decrement
-    Iterator operator--(int) {
-      Iterator tmp = *this;
-      --(*this);
-      return tmp;
-    }
-
-    friend bool operator== (const Iterator& a, const Iterator& b) { return a._current == b._current; };
-    friend bool operator!= (const Iterator& a, const Iterator& b) { return a._current != b._current; };     
+    friend bool operator==(const Iterator& a, const Iterator& b) {
+      return a._current == b._current;
+    };
+    friend bool operator!=(const Iterator& a, const Iterator& b) {
+      return a._current != b._current;
+    };
   };
 
   Iterator begin() const { return Iterator(this->head); }
@@ -148,6 +143,7 @@ class Wordlist : public Wordlist_base {
       ifstream text_file(file_name);
 
       if (text_file.is_open()) {
+      // add words to the list while there are words in the file
       while (text_file >> temp) {
         this->add_word(temp);
       }
@@ -163,7 +159,6 @@ class Wordlist : public Wordlist_base {
         cursor = tmp;
       }
     }
-
 
     /**
      * @brief Returns true is the list is empty. False otherwise
@@ -213,8 +208,8 @@ class Wordlist : public Wordlist_base {
     }
 
     /**
-     * @brief Takes a word and adds it to the list if the word is not within.
-     * Otherwise, does nothing
+     * @brief If the list is not frozen, it takes a word and adds it 
+     * to the list if the word is not within. Otherwise, does nothing
      *
      * @param word a const string reference
      */
@@ -222,7 +217,6 @@ class Wordlist : public Wordlist_base {
       if (this->is_frozen()) {
         throw runtime_error("You are adding a word onto a frozen list");
       }
-      // assert(!this->is_frozen());
 
       if (this->is_empty()) {
         Node* node = make_node(word);
@@ -244,14 +238,13 @@ class Wordlist : public Wordlist_base {
     }
 
     /**
-     * @brief Takes a word and removes it from the list if it is within.
-     * Otherwise, does nothing.
+     * @brief Throws an error if the list is frozen.
+     * If the list is not frozen, the word passed is removed from the list 
+     * if it is within. Otherwise, nothing happens.
      *
      * @param word a string representing the word to be removed
      */
     void remove_word(const string& word) {
-      // assert(!is_frozen());
-
       if (this->is_frozen()) {
         throw runtime_error("You are removing a word from a frozen list");
       }
@@ -261,14 +254,17 @@ class Wordlist : public Wordlist_base {
       }
 
       auto remove = this->find_word(word);
-
       // Checking if the list will be empty after removing word
       if (this->length() == 1) {
         head = nullptr;
         tail = nullptr;
+
+      // Checking if the removed node is the first item
       } else if (remove == this->head) {
         head = head->next;
         head->prev = nullptr;
+      
+      // Checking if the removed node is the last item
       } else if (remove == this->tail) {
         tail = tail->prev;
         tail->next = nullptr;
@@ -293,9 +289,10 @@ class Wordlist : public Wordlist_base {
  */
     string get_word(int index) const {
       // Check that the index passed is valid
-      assert(index > -1 && index < this->size);
+      assert(index >= 0 && index < this->size);
 
       Iterator list = Iterator(head);
+      // Iterate over the list until we are at the desired position
       while (index) {
         list++;
         index--;
@@ -303,7 +300,12 @@ class Wordlist : public Wordlist_base {
       return list->word;
     }
 
-
+    // the following method was used for testing 
+    /**
+     * @brief Returns a vector of all the words in the list
+     *
+     * @return vector<string> a vector containing all the words in the list
+     */
     vector<string> as_vector() const {
       vector<string> words;
       transform(this->begin(), this->end(), back_inserter(words),
@@ -323,14 +325,12 @@ class Wordlist : public Wordlist_base {
       transform(this->begin(), this->end(), back_inserter(words),
                 [](Node& nd) { return &nd.word; });
 
+      // Sorting all the words alphabetically
       sort(words.begin(), words.end(),
            [](string* a, string* b) { return *a < *b; });
+
       frozen = 1;
       return words;
     }
   };  // class Wordlist
 
-//
-// ... you can write helper functions here (or before Wordlist) if you need them
-// ...
-//
