@@ -192,8 +192,7 @@ class Wordlist : public Wordlist_base {
      * @return false if the word is not in the list
      */
     bool contains(const string& word) const {
-      Node* target = this->find_word(word)._current;
-      return target ? 1 : 0;
+      return this->find_word(word) != this->end();
     }
 
     /**
@@ -203,8 +202,7 @@ class Wordlist : public Wordlist_base {
      * @return Node* a node with the word W
      */
     Node* make_node(string const& word) {
-      Node* new_word = new Node{word, nullptr, nullptr};
-      return new_word;
+      return new Node{word, nullptr, nullptr};
     }
 
     /**
