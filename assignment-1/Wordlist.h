@@ -293,7 +293,7 @@ class Wordlist : public Wordlist_base {
       // Check that the index passed is valid
       assert(index >= 0 && index < this->size);
 
-      Iterator list = Iterator(head);
+      Iterator list(this->begin());
       // Iterate over the list until we are at the desired position
       advance(list, index);
       return list->word;
