@@ -193,7 +193,7 @@ class Stringlist {
   struct UndoInsertBefore : UndoAction {
     int target;
 
-    UndoInsertBefore(int index) : UndoAction("insert_before"), target(index) {};
+    UndoInsertBefore(int index) : UndoAction("insert_before " + std::to_string(index)), target(index) {};
 
     void undo(Stringlist &instance) { instance.remove_at_impl(this->target); }
   };
@@ -204,7 +204,7 @@ class Stringlist {
     string word;
 
     UndoRemoveAt(const int index, const string word)
-        : UndoAction("remove_at"), target(index), word(word){};
+        : UndoAction("remove_at " + std::to_string(index)), target(index), word(word){};
 
     void undo(Stringlist &instance) {
       instance.insert_before_imp(target, word);
@@ -236,7 +236,7 @@ class Stringlist {
     int target;
     string word;
 
-    UndoSet(const int index, const string word) : UndoAction("set"), target(index), word(word){};
+    UndoSet(const int index, const string word) : UndoAction("set "  + std::to_string(index) +  " " + word), target(index), word(word){};
 
     void undo(Stringlist &instance) { instance.set_impl(target, word); }
   };

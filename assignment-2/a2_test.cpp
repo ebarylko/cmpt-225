@@ -81,7 +81,7 @@ void undo_insert_before() {
     lst.insert_before(0, "1");
     assert(as_vector(lst) == mk_vector({"1"}));
     assert(lst.size() == 1);
-    assert(lst.undo_list() == mk_vector({"insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 0"}));
 
     assert(lst.undo());
     assert(lst.empty());
@@ -94,19 +94,20 @@ void undo_insert_before() {
         "with the first item");
     Stringlist lst;
     lst.insert_before(0, "first");
-    assert(lst.undo_list() == mk_vector({"insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 0"}));
     lst.insert_before(0, "second");
-    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 0", "insert_before 0"}));
     assert(lst.size() == 2);
     assert(as_vector(lst) == mk_vector({"second", "first"}));
     
     assert(lst.undo());
     assert(as_vector(lst) == mk_vector({"first"}));
-    assert(lst.undo_list() == mk_vector({"insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 0"}));
  }
 }
 
     void undo_remove_at() {
+{ 
     Test(
         "Undoing the removal of a word should return it back to its original "
         "location");
@@ -114,71 +115,98 @@ void undo_insert_before() {
     lst.insert_before(0, "1");
     lst.remove_at(0);
     cout << lst.undo_list() << endl;
-    assert(lst.undo_list() == mk_vector({"remove_at", "insert_before"}));
+    assert(lst.undo_list() == mk_vector({"remove_at 0", "insert_before 0"}));
     assert(lst.empty());
 
     lst.undo();
-    assert(lst.undo_list() == mk_vector({"insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 0"}));
     assert(as_vector(lst) == mk_vector({"1"}));
+ }
 
+{ 
     Test("Undoing the removal of an entire list returns the list to its original state");
+    Stringlist lst;
+    lst.insert_before(0, "1");
     lst.insert_before(1, "2");
     lst.insert_before(2, "3");
-    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before", "insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
     assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
     lst.remove_at(0);
     lst.remove_at(0);
     lst.remove_at(0);
-    assert(lst.undo_list() == mk_vector({"remove_at", "remove_at", "remove_at", "insert_before", "insert_before", "insert_before"}));
+    assert(lst.undo_list() == mk_vector({"remove_at 0", "remove_at 0", "remove_at 0", "insert_before 2", "insert_before 1", "insert_before 0"}));
     assert(lst.empty());
 
     undo_many(3, lst);
-    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before", "insert_before"}));
+    assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
     assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
+ }
+ {
     Test(
         "Undoing the removal of all the words starting from the end to the "
         "beginning returns the list in its original state");
+    Stringlist lst;
+    lst.insert_before(0, "1");
+    lst.insert_before(1, "2");
+    lst.insert_before(2, "3");
     lst.remove_at(2);
     lst.remove_at(1);
     lst.remove_at(0);
 
+    assert(lst.undo_list() == mk_vector({"remove_at 0", "remove_at 1", "remove_at 2", "insert_before 2", "insert_before 1", "insert_before 0"}));
     undo_many(3, lst);
 
+    assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
     assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+ }
     }
 
     void undo_set() {
+{ 
         Test(
             "Setting a word in the list and undoing that returns the word to "
             "its previous value");
         Stringlist lst;
         lst.insert_before(0, "1");
         assert(as_vector(lst) == mk_vector({"1"}));
+        assert(lst.undo_list() == mk_vector({"insert_before 0"}));
 
         lst.set(0, "2");
+        cout << lst.undo_list() << endl;
+        assert(lst.undo_list() == mk_vector({"set 0 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"2"}));
 
         assert(lst.undo());
+        assert(lst.undo_list() == mk_vector({"insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"1"}));
+ }
 
+ {
         Test(
             "Changing a collection of words and undoing all those changes "
             "returns the list to its original state");
+        Stringlist lst;
+        lst.insert_back("1");
         lst.insert_back("2");
         lst.insert_back("3");
 
+        cout << lst.undo_list() << endl;
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
         lst.set(0, "-1");
         lst.set(1, "-2");
         lst.set(2, "-3");
+        assert(lst.undo_list() == mk_vector({"set 2 3", "set 1 2", "set 0 1", "insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"-1", "-2", "-3"}));
 
-       undo_many(3, lst);
+        undo_many(3, lst);
 
-       assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+ }
     }
 
     void undo_no_changes() {
@@ -324,8 +352,12 @@ void undo_insert_before() {
         src.insert_back("2");
 
         cpy = src;
+        assert(cpy.undo_list() == mk_vector({"change_all {}"}));
+        assert(src.undo_list() == mk_vector({"insert_before 1", "insert_before 0"}));
         assert(as_vector(cpy) == mk_vector({"1", "2"}));
         assert(cpy.undo());
+        assert(cpy.undo_list().empty());
+        assert(src.undo_list() == mk_vector({"insert_before 1", "insert_before 0"}));
         assert(as_vector(cpy).empty());
 
         {
@@ -335,6 +367,7 @@ void undo_insert_before() {
         Stringlist empty;
         empty = *&empty;
         assert(!empty.undo());
+        assert(empty.undo_list().empty());
         }
 
         {
@@ -346,8 +379,11 @@ void undo_insert_before() {
         assert(empty_list.empty());
 
         empty_list = empty_list2;
+        assert(empty_list.undo_list() == mk_vector({"change_all {}"}));
+        assert(empty_list2.undo_list().empty());
         assert(empty_list.empty());
         assert(empty_list.undo());
+        assert(empty_list.undo_list().empty());
         assert(empty_list.empty());
         }
 
@@ -363,9 +399,13 @@ void undo_insert_before() {
         assert(as_vector(src) == mk_vector({"1", "2"}));
 
         src = empty_list;
+        assert(src.undo_list() == mk_vector({"change_all {\"1\", \"2\"}", "insert_before 1", "insert_before 0"}));
+        assert(empty_list.undo_list().empty());
         assert(as_vector(src).empty());
 
         assert(src.undo());
+        assert(src.undo_list() == mk_vector({"insert_before 1", "insert_before 0"}));
+        assert(empty_list.undo_list().empty());
         assert(as_vector(src) == mk_vector({"1", "2"}));
         }
 
