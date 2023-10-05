@@ -268,56 +268,72 @@ void undo_insert_before() {
     }
 
     void undo_insert_front() {
+       {
         Stringlist lst;
         Test(
             "Undoing the insertion of a word to the front of the list returns "
             "the rest of the list");
         lst.insert_front("1");
         assert(as_vector(lst) == mk_vector({"1"}));
-        cout << lst.undo_list() << endl;
         assert(lst.undo_list() == mk_vector({"insert_before 0"}));
 
         assert(lst.undo());
         assert(lst.undo_list().empty());
         assert(lst.empty());
+       }
 
+       {
         Test(
             "Undoing multiple insertions to the front of the list returns the "
             "list before the insertions");
-
+        Stringlist lst;
         lst.insert_front("1");
         lst.insert_front("2");
+        assert(lst.undo_list() == mk_vector({"insert_before 0", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"2", "1"}));
 
         undo_many(2, lst);
-
+        assert(lst.undo_list().empty());
         assert(lst.empty());
+       }
     }
 
     void undo_remove_first() {
+       {
         Stringlist lst;
         Test(
             "Removing the first occurence of a word and undoing that returns "
-            "the list with the first appearance of the word in its original position");
+            "the list with the first appearance of the word in its original "
+            "position");
 
         lst.insert_back("1");
         lst.insert_back("2");
         lst.insert_back("1");
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"1", "2", "1"}));
 
         assert(lst.remove_first("1"));
+        assert(lst.undo_list() == mk_vector({"remove_at 0", "insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"2", "1"}));
 
         assert(lst.undo());
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"1", "2", "1"}));
+       }
 
+       {
         Test(
             "Undoing the removal of a word not in the list will undo the "
             "previous action before the removal");
+        Stringlist lst;
+        lst.insert_back("1");
+        lst.insert_back("2");
+        lst.insert_back("1");
         assert(!lst.remove_first("3"));
         assert(as_vector(lst) == mk_vector({"1", "2", "1"}));
         assert(lst.undo());
         assert(as_vector(lst) == mk_vector({"1", "2"}));
+       }
     }
 
     void undo_remove_all() {
