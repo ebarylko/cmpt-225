@@ -1,7 +1,20 @@
 #include "Stringlist.h"
 #include <vector>
+#include <algorithm>
 #include <cassert>
 using namespace std;
+
+ostream& operator<<(ostream& os, const vector<string>& v) {
+    os << "{";
+    for (int i = 0; i < v.size(); i++) {
+        os << "\"" << v[i] << "\"";
+        if (i < v.size() - 1) {
+            os << ", ";
+        }
+    }
+    os << "}";
+    return os;
+}
 
 /**
  * @brief  Takes a list, and returns a vector of all the words in the list.
@@ -15,6 +28,13 @@ vector<string> as_vector(Stringlist& lst) {
     words.push_back(lst.get(i));
   }
   return words;
+}
+
+void list_content(vector<string> list) {
+    for_each(list.begin(), list.end(), [](string word) {
+        cout << word << ", " ;
+    });
+    cout << endl;
 }
 
 /**
@@ -55,6 +75,7 @@ struct Test
 }; // struct Test
 
 void undo_insert_before() {
+{ 
     Stringlist lst;
     Test("Undoing the insertion of an item removes the item from the list");
     lst.insert_before(0, "1");
@@ -65,10 +86,13 @@ void undo_insert_before() {
     assert(lst.undo());
     assert(lst.empty());
     assert(lst.undo_list().empty());
+ }
 
+{ 
     Test(
         "Adding two items and undoing the last insertion should leave a list "
         "with the first item");
+    Stringlist lst;
     lst.insert_before(0, "first");
     assert(lst.undo_list() == mk_vector({"insert_before"}));
     lst.insert_before(0, "second");
@@ -79,6 +103,7 @@ void undo_insert_before() {
     assert(lst.undo());
     assert(as_vector(lst) == mk_vector({"first"}));
     assert(lst.undo_list() == mk_vector({"insert_before"}));
+ }
 }
 
     void undo_remove_at() {
@@ -88,22 +113,28 @@ void undo_insert_before() {
     Stringlist lst;
     lst.insert_before(0, "1");
     lst.remove_at(0);
+    cout << lst.undo_list() << endl;
+    assert(lst.undo_list() == mk_vector({"remove_at", "insert_before"}));
     assert(lst.empty());
 
     lst.undo();
+    assert(lst.undo_list() == mk_vector({"insert_before"}));
     assert(as_vector(lst) == mk_vector({"1"}));
 
     Test("Undoing the removal of an entire list returns the list to its original state");
     lst.insert_before(1, "2");
     lst.insert_before(2, "3");
+    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before", "insert_before"}));
     assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
     lst.remove_at(0);
     lst.remove_at(0);
     lst.remove_at(0);
+    assert(lst.undo_list() == mk_vector({"remove_at", "remove_at", "remove_at", "insert_before", "insert_before", "insert_before"}));
     assert(lst.empty());
 
     undo_many(3, lst);
+    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before", "insert_before"}));
     assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
     Test(
