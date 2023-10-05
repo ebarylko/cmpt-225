@@ -329,45 +329,61 @@ void undo_insert_before() {
         lst.insert_back("1");
         lst.insert_back("2");
         lst.insert_back("1");
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
         assert(!lst.remove_first("3"));
         assert(as_vector(lst) == mk_vector({"1", "2", "1"}));
         assert(lst.undo());
+        assert(lst.undo_list() == mk_vector({"insert_before 1", "insert_before 0"}));
         assert(as_vector(lst) == mk_vector({"1", "2"}));
        }
     }
 
     void undo_remove_all() {
-        Stringlist lst;
-
+       {
         Test(
             "Undoing the removal of all the words in a list with one word will "
             "return the "
             "original list");
-            lst.insert_back("1");
-            lst.remove_all();
-            assert(lst.undo());
-            assert(as_vector(lst) == mk_vector({"1"}));
+        Stringlist lst;
+        lst.insert_back("1");
+        lst.remove_all();
+        assert(lst.undo_list() ==
+               mk_vector({"change_all {\"1\"}", "insert_before 0"}));
+        assert(lst.undo());
+        assert(lst.undo_list() == mk_vector({"insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1"}));
+       }
 
-            Test(
-                "Undoing the removal of all the words in a larger list will "
-                "return the original list");
-            
-           lst.insert_back("2");
-           lst.insert_back("3");
-           assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+       {
+        Test(
+            "Undoing the removal of all the words in a larger list will "
+            "return the original list");
+        Stringlist lst;
+        lst.insert_back("1");
+        lst.insert_back("2");
+        lst.insert_back("3");
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
 
-           lst.remove_all();
-           assert(lst.undo());
-           assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+        lst.remove_all();
+        assert(lst.undo_list() == mk_vector({"change_all {\"1\", \"2\", \"3\"}", "insert_before 2", "insert_before 1", "insert_before 0"}));
+        assert(lst.undo());
+        assert(lst.undo_list() == mk_vector({"insert_before 2", "insert_before 1", "insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1", "2", "3"}));
+       }
 
-           Test(
-               "Undoing the removal of all the words in an empty list will "
-               "return an empty list");
-           Stringlist empty_list;
-           empty_list.remove_all();
-           assert(empty_list.empty());
-           assert(empty_list.undo());
-           assert(empty_list.empty());
+       {
+        Test(
+            "Undoing the removal of all the words in an empty list will "
+            "return an empty list");
+        Stringlist empty_list;
+        empty_list.remove_all();
+        assert(empty_list.undo_list() == mk_vector({"change_all {}"}));
+        assert(empty_list.empty());
+        assert(empty_list.undo());
+        assert(empty_list.undo_list().empty());
+        assert(empty_list.empty());
+       }
     }
 
     void undo_assignment_operator() {
