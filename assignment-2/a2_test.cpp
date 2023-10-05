@@ -60,20 +60,25 @@ void undo_insert_before() {
     lst.insert_before(0, "1");
     assert(as_vector(lst) == mk_vector({"1"}));
     assert(lst.size() == 1);
+    assert(lst.undo_list() == mk_vector({"insert_before"}));
 
     assert(lst.undo());
     assert(lst.empty());
+    assert(lst.undo_list().empty());
 
     Test(
         "Adding two items and undoing the last insertion should leave a list "
         "with the first item");
     lst.insert_before(0, "first");
+    assert(lst.undo_list() == mk_vector({"insert_before"}));
     lst.insert_before(0, "second");
+    assert(lst.undo_list() == mk_vector({"insert_before", "insert_before"}));
     assert(lst.size() == 2);
     assert(as_vector(lst) == mk_vector({"second", "first"}));
     
     assert(lst.undo());
     assert(as_vector(lst) == mk_vector({"first"}));
+    assert(lst.undo_list() == mk_vector({"insert_before"}));
 }
 
     void undo_remove_at() {
