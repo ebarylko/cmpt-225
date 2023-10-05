@@ -34,6 +34,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -103,6 +104,8 @@ class Stringlist {
   // Base class for all undoable actions
   class UndoAction {
    public:
+    string operation;
+    UndoAction(const string& operation) : operation(operation){};
     virtual ~UndoAction(){};
     virtual void undo(Stringlist &) = 0;
   };
@@ -115,6 +118,8 @@ class Stringlist {
       ~Node() { delete this->action; }
     };
 
+
+    
     Node *head;
     int size;
     using Element = UndoAction *;
@@ -131,6 +136,8 @@ class Stringlist {
         curr = nxt;
       }
     }
+
+
 
     // /**
     //  * @brief Returns the first undoable action in the
@@ -186,7 +193,7 @@ class Stringlist {
   struct UndoInsertBefore : UndoAction {
     int target;
 
-    UndoInsertBefore(int index) : target(index){};
+    UndoInsertBefore(int index) : UndoAction("insert_before"), target(index) {};
 
     void undo(Stringlist &instance) { instance.remove_at_impl(this->target); }
   };
@@ -197,7 +204,7 @@ class Stringlist {
     string word;
 
     UndoRemoveAt(const int index, const string word)
-        : target(index), word(word){};
+        : UndoAction("remove_at"), target(index), word(word){};
 
     void undo(Stringlist &instance) {
       instance.insert_before_imp(target, word);
@@ -210,7 +217,7 @@ class Stringlist {
     int cap, size;
 
     UndoChangeToWholeList(Stringlist &instance)
-        : words(instance.arr), cap(instance.cap), size(instance.sz){};
+        :UndoAction("change_all " + instance.to_string()), words(instance.arr), cap(instance.cap), size(instance.sz){};
 
     ~UndoChangeToWholeList() { delete[] words; }
 
@@ -229,7 +236,7 @@ class Stringlist {
     int target;
     string word;
 
-    UndoSet(const int index, const string word) : target(index), word(word){};
+    UndoSet(const int index, const string word) : UndoAction("set"), target(index), word(word){};
 
     void undo(Stringlist &instance) { instance.set_impl(target, word); }
   };
@@ -328,6 +335,16 @@ class Stringlist {
     }
     return *this;
   }
+
+    vector<string> undo_list() {
+        vector<string> words;
+        UndoStack::Node *curr = this->st.head;
+        while (curr) {
+            words.push_back(curr->action->operation);
+            curr = curr->next;
+        }
+        return words;
+    }
 
   //
   // Returns the number of strings in the list.
