@@ -445,8 +445,6 @@ class Stringlist {
   //
   void insert_front(const string &s) {
     insert_before(0, s);
-    auto undo = new UndoInsertBefore(0);
-    st.push(undo);
   }
 
   //

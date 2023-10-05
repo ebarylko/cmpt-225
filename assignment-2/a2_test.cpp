@@ -232,30 +232,39 @@ void undo_insert_before() {
     }
 
     void undo_insert_back() {
-            Stringlist lst;
-            Test(
-                "Undoing the insertion of an element at the end of the list "
-                "returns "
-                "the list before the element was added");
+       {
+        Stringlist lst;
+        Test(
+            "Undoing the insertion of an element at the end of the list "
+            "returns "
+            "the list before the element was added");
 
-            lst.insert_back("1");
-            assert(lst.size() == 1);
-            assert(as_vector(lst) == mk_vector({"1"}));
+        lst.insert_back("1");
+        assert(lst.size() == 1);
+        assert(lst.undo_list() == mk_vector({"insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1"}));
 
-            assert(lst.undo());
-            assert(lst.empty());
+        assert(lst.undo());
+        assert(lst.undo_list().empty());
+        assert(lst.empty());
+       }
 
-            Test(
-                "Undoing all insertions to the end of the list returns an "
-                "empty list");
-            lst.insert_back("1");
-            lst.insert_back("2");
+       {
+        Test(
+            "Undoing all insertions to the end of the list returns an "
+            "empty list");
+        Stringlist lst;
+        lst.insert_back("1");
+        lst.insert_back("2");
 
-            assert(lst.size() == 2);
-            assert(as_vector(lst) == mk_vector({"1", "2"}));
+        assert(lst.size() == 2);
+        assert(lst.undo_list() == mk_vector({"insert_before 1", "insert_before 0"}));
+        assert(as_vector(lst) == mk_vector({"1", "2"}));
 
-            undo_many(2, lst);
-            assert(lst.empty());
+        undo_many(2, lst);
+        assert(lst.undo_list().empty());
+        assert(lst.empty());
+       }
     }
 
     void undo_insert_front() {
@@ -265,8 +274,11 @@ void undo_insert_before() {
             "the rest of the list");
         lst.insert_front("1");
         assert(as_vector(lst) == mk_vector({"1"}));
+        cout << lst.undo_list() << endl;
+        assert(lst.undo_list() == mk_vector({"insert_before 0"}));
 
         assert(lst.undo());
+        assert(lst.undo_list().empty());
         assert(lst.empty());
 
         Test(
