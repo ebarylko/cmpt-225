@@ -32,7 +32,6 @@
 
 #include <cassert>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -107,6 +106,17 @@ class Stringlist {
     virtual void undo(Stringlist &) = 0;
   };
 
+  // the UndoStack contains a collection of undoable actions, with the most
+  // recent actions appearing earlier in the list. The undo method of the list
+  // pops the most recent action off the stack and applies it to the list,
+  // returning the list to how to was before the method which spawned the undo 
+  // action was called.
+  // An example is if the user inserts a word at the beginning of a new list,
+  // resulting in a list like ["1"]. The undo stack would then contain the 
+  // corresponding action which undoes this change, and calling undo would
+  // apply the action onto the list and return an empty list.
+  // The undo stack would be empty after this
+
   struct UndoStack {
     struct Node {
       UndoAction *action;
@@ -117,7 +127,6 @@ class Stringlist {
 
     Node *head;
     int size;
-    using Element = UndoAction *;
 
     UndoStack() : head(nullptr), size(0){};
 
@@ -132,21 +141,12 @@ class Stringlist {
       }
     }
 
-    // /**
-    //  * @brief Returns the first undoable action in the
-    //  *
-    //  * @return Element
-    //  */
-    // Element peek() {
-    //     return this->head->action;
-    // }
-
     /**
      * @brief Takes an undoable action and pushes it onto the stack
      *
      * @param e The newest undoable action
      */
-    void push(Element e) {
+    void push(UndoAction* e) {
       Node *nd = new Node;
       nd->action = e;
       nd->next = this->head;
@@ -182,7 +182,10 @@ class Stringlist {
     }
   } st;
 
-  // The undoable action for insert_before
+  // The undoable action for insert_before that
+  // when applied to the list removes the word at
+  // the position used by the insert_before method
+  // which created it.
   struct UndoInsertBefore : UndoAction {
     int target;
 
@@ -191,7 +194,9 @@ class Stringlist {
     void undo(Stringlist &instance) { instance.remove_at_impl(this->target); }
   };
 
-  // The undoable action for remove_at
+  // The undoable action for remove_at that
+  // when applied to the list inserts the word
+  // that remove_at erased in its original position
   struct UndoRemoveAt : UndoAction {
     int target;
     string word;
@@ -205,6 +210,8 @@ class Stringlist {
   };
 
   // The undoable action for remove_all and the assignment operator
+  // which when applied to the list returns it to how it was before
+  // either operation was called
   struct UndoChangeToWholeList : UndoAction {
     string *words;
     int cap, size;
@@ -224,7 +231,9 @@ class Stringlist {
     }
   };
 
-  // The undoable action for set
+  // The undoable action for set that
+  // when called on the list reverts the word 
+  // at the specific position back to its value before set was called
   struct UndoSet : UndoAction {
     int target;
     string word;
