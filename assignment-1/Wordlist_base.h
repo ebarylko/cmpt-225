@@ -42,7 +42,7 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the length of
     //    the list (or better).
     //
-    // virtual bool contains(const string &w) const = 0;
+    virtual bool contains(const string &w) const = 0;
 
     //
     // Pre-condition:
@@ -137,5 +137,5 @@ struct Wordlist_base
     //    It's worst-case running time should be proportional to the square of
     //    the length of the list (or better).
     //
-/*     virtual vector<string *> get_sorted_index() = 0; */
+    virtual vector<string *> get_sorted_index() = 0;
 }; // struct Wordlist_base

@@ -9,7 +9,7 @@
 //
 // Name : Eitan Barylko
 // St.# : 301559349
-// Email: <put your SFU email address here>
+// Email: eab16@sfu.ca
 //
 //
 // Statement of Originality
@@ -30,10 +30,10 @@
 // Do not use any other #includes
 //
 #include <cassert>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
-
 #include "Wordlist_base.h"
 
 using namespace std;
@@ -45,7 +45,6 @@ class Wordlist : public Wordlist_base {
   //
   struct Node {
     string word;
-    int count;
     Node* next;
     Node* prev;
   };
@@ -55,263 +54,282 @@ class Wordlist : public Wordlist_base {
   bool frozen;
   Node* tail;
 
-Node* find_word (const string& target) {
-  Node* curr = this->head;
-  while (curr && curr->word != target) {
-    curr = curr->next;
-  }
-  return curr;
-}
-
-// if this->tail is null, then I want to attach the node to the head and the tail of the list, and make the  of the node ptailoint to null
-// if this-> != null, then I want to astailsign the next node as the new node. i want to assign the tail to the new node, and have thee new node point back to the tail node
-/**
- * @brief Takes a node src and copies the information in src to another node 
- * 
- * @param src a const node reference
- */
-void copy_word(const Node& src) {
-  Node* tmp = new Node;
-  tmp->count = src.count;
-  tmp->word = src.word;
-
-  if (!this->is_empty()) {
-    this->tail->next = tmp;
+  /**
+   * @brief Takes a word and appends it to the end of the list
+   *
+   * @param word a string which is appended to the end of the list
+   */
+  void append_word(const string& word) {
+    Node* tmp = new Node{word, nullptr, nullptr};
     tmp->prev = this->tail;
-  } else {
-    this->head = tmp;
-    this->head->prev = nullptr;
-  }
 
-  this->tail = tmp;
-  this->tail->next = nullptr;
+    if (this->is_empty()) {
+      this->head = tmp;
+    } else {
+      assert(this->tail);
+      this->tail->next = tmp;
+    }
+
+    this->size++;
+    this->tail = tmp;
 }
 
- public:
-  Wordlist() {
-    head = nullptr;
-    tail = nullptr;
-    frozen = (size = 0);
-  }
+  // I decided to make an iterator in order to use the 
+  // functions in the STL such as transform, find_if, and 
+  // for_each. 
+  // I used https://www.internalpointers.com/post/writing-custom-iterators-modern-cpp
+  // to see how to make an iterator
+  struct Iterator {
+    Node *_current;
+    Iterator(Node *node): _current(node) {}
 
-  Wordlist(const Wordlist& source) {
-    this->size = source.size;
-    this->frozen = source.frozen;
-    head = nullptr;
-    tail = nullptr;
-    Node* copy_from = source.head;
-    while (copy_from) {
-      this->copy_word(*copy_from);
-      copy_from = copy_from->next;
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = Node;
+    using pointer = value_type*;
+    using reference = value_type&;
+
+    reference operator*() const { return *_current;}
+    pointer operator->() { return _current; }
+
+    // Prefix increment
+    Iterator& operator++() { _current = _current->next; return *this; }  
+
+    // Postfix increment
+    Iterator operator++(int) {
+      Iterator tmp = *this;
+      ++(*this);
+      return tmp;
     }
-  }
 
-  ~Wordlist() {
-    Node* cursor = head;
-    while (cursor) {
-      Node* tmp = cursor->next;
-      delete cursor;
-      cursor = tmp;
-    }
-  }
+    friend bool operator==(const Iterator& a, const Iterator& b) {
+      return a._current == b._current;
+    };
+    friend bool operator!=(const Iterator& a, const Iterator& b) {
+      return a._current != b._current;
+    };
+  };
 
-  int length() const { return size; }
-
-  bool is_empty() const { return this->length() == 0; }
-  /* const string get_word(int pos) {
-  Node* start = head;
-  while (pos != 0) {
-  head++;
-  pos--;
-  }
-  return start->word;
-  }
-  */
-
-  bool is_frozen() const { return frozen; }
-
-  bool contains(const string& word) const {
-    Node* curr = head;
-    while (curr && curr->word != word) {
-      curr = curr->next;
-    }
-    return curr ? true : false;
-  }
-
-  bool at_end(Node* node) { return node == tail; }
-
-  bool same_word(Node* curr, string const& word) { return curr->word == word; }
-
-  Node* make_node(string const& word) {
-    Node* new_word = new Node;
-    new_word->count = 1;
-    new_word->word = word;
-    new_word->prev = nullptr;
-    new_word->next = nullptr;
-    return new_word;
-  }
-
-/**
- * @brief Takes a node and returns true if it is the tail item in the list 
- * and it contains the same word as `word`, false otherwise
- * 
- * @param node a Node*
- * @param word a const string referencr
- * @return true if the node passed is the  onetail in the list and the node contains
- * the word being searched for
- * @return false if condition above not satisfied
- */
-  bool last_word_matches(Node* node, string const& word) {
-    return at_end(node) && same_word(node, word);
-  }
+  Iterator begin() const { return Iterator(this->head); }
+  Iterator end() const { return Iterator((Node*)nullptr); }
 
   /**
-   * @brief Takes a word and adds it to the list
+   * @brief Takes a word and returns the node that contains the word.
    * 
-   * @param word a const string reference
+   * @param target the word to be searched for
+   * @return auto the node which has the word
    */
-  void add_word(const string& word) {
-    if (is_empty()) {
-      Node* node = make_node(word);
-      head = node;
-      tail = node;
-      size += 1;
-      return;
-    }
-    Node* curr = head;
-    while (!at_end(curr) && !same_word(curr, word)) {
-      curr = curr->next;
-    }
-    if (!at_end(curr) || last_word_matches(curr, word)) {
-      curr->count++;
-    } else {
-      Node* new_word = make_node(word);
-      new_word->prev = curr;
-      curr->next = new_word;
-      tail = new_word;
-      size += 1;
-    }
-  }
+  auto find_word(const string& target) const {
+    auto matches_target = [target](const Node& node) {
+      return node.word == target;
+    };
+    return find_if(this->begin(), this->end(), 
+    matches_target);};
 
-// lista con solo un elemento: remover elemento, hacer que head y tail apunta a null. remover data
-// lista con dos elementos y la el nodo que sacas es la cola:
-// hacer que el head apunta a null, y el tail es el head
-// lista con dos elementos y el nodo que sacas el la cabeza:
-// hacer que la lista apunta a la col 
-// 
-/**
- * @brief Takes a word and removes it from the list if it is within. Otherwise,
- * does nothing
- * 
- * @param word a string
- */
-  void remove_word(const string& word) {
-    if (!this->contains(word)) {
-      return;
+    /**
+     * @brief Takes a word W and returns a node which has the word W
+     * 
+     * @param word a string
+     * @return Node* a node with the word W
+     */
+    Node* make_node(string const& word) {
+      return new Node{word, nullptr, nullptr};
     }
-    Node* remove = this->find_word(word);
-    if (this->length() == 1) {
+
+   public:
+    
+    Wordlist() {
       head = nullptr;
       tail = nullptr;
-    } else if (remove == this->head) {
-      head = head->next;
-      head->prev = nullptr;
-    } else if (remove == this->tail) {
-      tail = tail->prev;
-      tail->next = nullptr;
-    } else {
-      remove->prev->next = remove->next;
-      remove->next->prev = remove->prev;
+      frozen = (size = 0);
     }
 
-    size--;
-    delete remove;
-    return;
-  }
-
-  /**
-   * @brief Returns the  wordtail in the list
-   *
-   * @return a string which is the tail word
-   */
-  string last_word() const { return get_word(this->length() - 1); }
-
-  /**
-   * @brief Returns the first word in the list
-   * 
-   * @return a string which is the first word
-   */
-  string first_word() const {return get_word(0);}
-
-  string get_word(int index) const {
-    int pos = index;
-    Node* curr = head;
-    while (pos) {
-      curr = curr->next;
-      pos--;
-    }
-    return curr->word;
-  }
-
- /**
-  * @brief Takes a word and returns the number of times it occurs in the list
-  * 
-  * @param word a const string reference
-  * @return int the number of times the word occurs in the list
-  */
-  int word_occurences(const string& word) const {
-    Node* curr = head;
-    while (curr && curr->word != word) {
-      curr = curr->next;
-    }
-    return curr ? curr->count : 0;
+    Wordlist(const Wordlist& source) : Wordlist() {
+      // Copying each node from source over to the current Wordlist
+      for_each(source.begin(), source.end(),
+               [this](const Node& node) { this->append_word(node.word); });
+      this->frozen = source.frozen;
     }
 
-  /**
-   * @brief Takes a node of the list and returns the word on the next node
-   * 
-   * @param nd the current node
-   * @return the word on the next node
-   */
-  string next_word(const Node* nd) const {
-    return nd->next->word;
-  } 
+    Wordlist(const string& file_name) : Wordlist() {
+      string temp;
+      ifstream text_file(file_name);
 
-  /**
-   * @brief Takes a node of the list and returns the word on the previous node
-   * 
-   * @param nd the current node
-   * @return the word on the previous node
-   */
-  string prev_word(const Node* nd) const {
-    return nd->prev->word;
-  } 
+      if (text_file.is_open()) {
+      // add words to the list while there are words in the file
+      while (text_file >> temp) {
+        this->add_word(temp);
+      }
+      }
+      text_file.close();
+    }
 
-  Node* first() {
-    return head;
-  }
+    ~Wordlist() {
+      Node* cursor = head;
+      while (cursor) {
+        Node* tmp = cursor->next;
+        delete cursor;
+        cursor = tmp;
+      }
+    }
 
-  Node* last() {
-    return tail;
-  }
+    /**
+     * @brief Returns true is the list is empty. False otherwise
+     * 
+     * @return true if the list has no words
+     * @return false if the list has 1 or more words
+     */
+    bool is_empty() const { return this->length() == 0; }
+
+    /**
+     * @brief Returns the size of the list
+     * 
+     * @return int The size of the list
+     */
+    int length() const { return size; }
+
+    /**
+     * @brief Returns true if the list is frozen. False otherwise
+     * 
+     * @return true if the list is frozen
+     * @return false if the condition above is false
+     */
+    bool is_frozen() const { return frozen; }
+
+    /**
+     * @brief Takes a word and returns true if the word is withn the list. 
+     * False otherwise
+     * 
+     * @param word a string representing the word being searched for
+     * @return true if the word is in the list
+     * @return false if the word is not in the list
+     */
+    bool contains(const string& word) const {
+      return this->find_word(word) != this->end();
+    }
 
 
+    /**
+     * @brief If the list is not frozen, it takes a word and adds it 
+     * to the list if the word is not within. Otherwise, does nothing
+     *
+     * @param word a const string reference
+     */
+    void add_word(const string& word) {
+      if (this->is_frozen()) {
+        throw runtime_error("You are adding a word onto a frozen list");
+      }
 
-  // bool tail() {
-  //   return !tail;
-  // }
+      if (this->is_empty()) {
+        Node* node = make_node(word);
+        head = node;
+        tail = node;
+        size += 1;
+        return;
+      }
 
-  //
-  // ... your code goes here ...
-  //
+      if (this->contains(word)) {
+        return;
+      } 
 
-  //
-  // ... you can write helper methods if you need them ...
-  //
+        Node* new_word = make_node(word);
+        new_word->prev = tail;
+        tail->next = new_word;
+        tail = new_word;
+        size += 1;
+    }
 
-};  // class Wordlist
+    /**
+     * @brief Throws an error if the list is frozen.
+     * If the list is not frozen, the word passed is removed from the list 
+     * if it is within. Otherwise, nothing happens.
+     *
+     * @param word a string representing the word to be removed
+     */
+    void remove_word(const string& word) {
+      if (this->is_frozen()) {
+        throw runtime_error("You are removing a word from a frozen list");
+      }
 
-//
-// ... you can write helper functions here (or before Wordlist) if you need them
-// ...
-//
+      auto remove = this->find_word(word);
+      if (remove == this->end()) {
+        return;
+      }
+
+      // Checking if the list will be empty after removing word
+      if (this->length() == 1) {
+        head = nullptr;
+        tail = nullptr;
+
+      // Checking if the removed node is the first item
+      } else if (remove == this->head) {
+        head = head->next;
+        head->prev = nullptr;
+      
+      // Checking if the removed node is the last item
+      } else if (remove == this->tail) {
+        tail = tail->prev;
+        tail->next = nullptr;
+      } else
+      // What happens when the word is inbetween the head and tail
+      {
+        remove->prev->next = remove->next;
+        remove->next->prev = remove->prev;
+      }
+
+      size--;
+      delete remove._current;
+      return;
+    }
+
+
+/**
+ * @brief Takes an index and returns the word at that index if the index is within bounds
+ * Otherwise, returns a error
+ * @param index an int representing the position of the word
+ * @return string the word at the node index refers to
+ */
+    string get_word(int index) const {
+      // Check that the index passed is valid
+      assert(index >= 0 && index < this->size);
+
+      Iterator list(this->begin());
+      // Iterate over the list until we are at the desired position
+      advance(list, index);
+      return list->word;
+    }
+
+    // the following method was used for testing 
+    /**
+     * @brief Returns a vector of all the words in the list
+     *
+     * @return vector<string> a vector containing all the words in the list
+     */
+    vector<string> as_vector() const {
+      vector<string> words;
+      transform(this->begin(), this->end(), back_inserter(words),
+                [](Node& nd) { return nd.word; });
+      return words;     
+    }
+
+    /**
+     * @brief Returns a vector of string pointers in the list ordered alphabetically
+     * 
+     * @return vector<string*> A vector of string pointers ordered alphabetically
+     */
+    vector<string*> get_sorted_index() {
+      vector<string*> words;
+
+      // I use transform so I can create a vector of string*
+      transform(this->begin(), this->end(), back_inserter(words),
+                [](Node& nd) { return &nd.word; });
+
+      // Sorting all the words alphabetically
+      sort(words.begin(), words.end(),
+           [](string* a, string* b) { return *a < *b; });
+
+      frozen = 1;
+      return words;
+    }
+  };  // class Wordlist
+
