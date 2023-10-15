@@ -1,5 +1,6 @@
 a1_main
 .vscode/
 *dSYM/
-week*/
+*week*/
+*week*
 .DS*
