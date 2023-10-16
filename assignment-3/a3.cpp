@@ -66,9 +66,12 @@ template <typename T> class Queue : public Queue_base<T> {
 
     Node* first;
     Node* last;
-    int elems = 0;
+    int elems;
 
     public :
+
+    Queue<T>(): first(nullptr), last(nullptr), elems(0) {};
+    ~Queue<T>();
 
     int size() {
         return this->elems;
@@ -91,6 +94,23 @@ template <typename T> class Queue : public Queue_base<T> {
        }
     }
 
+    void dequeue() {
+        if (this->is_empty()) {
+            throw runtime_error("dequeue: queue is empty");
+        }
+        Node* remove = this->first;
+        this->first = this->first->next;
+        this->elems--;
+        this->last = this->is_empty() ? nullptr : this->last;
+        delete remove;
+    }
+
+    const T& front() {
+        if (this->is_empty()) {
+            throw runtime_error("front: queue is empty");
+        }
+        return this->first->curr;
+    }
 
 };      
 
