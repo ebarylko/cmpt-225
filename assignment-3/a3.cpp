@@ -37,6 +37,74 @@
 
 using namespace std;
 
+
+// Dos tipos de insrucciones. 
+// una que modifica la lista entera
+// y la otra que solo modifica un queue
+
+template <typename T> class Queue : public Queue_base<T> {
+    
+    // typedef Body string;
+    // typedef Sender string;
+    // typedef Reciever string;
+    // struct Message {
+    //    Sender sender;
+    //    Receiver recipient;
+    //    Body content; 
+    //    Message* next_message;
+    //    Messsage* prev_message;
+    // }
+
+
+// message has a current, last, and next message for the queue
+
+    struct Node {
+       Node* prev;
+       T curr;
+       Node* next;
+    };
+
+    Node* first;
+    Node* last;
+    int elems = 0;
+
+    public :
+
+    int size() {
+        return this->elems;
+    }
+
+    bool is_empty() {
+        return !this->size();
+    }
+
+    void enqueue(const T& item) {
+       Node* new_item = new Node(nullptr, item, nullptr);
+       if (this->empty()) {
+         first = new_item;
+         last = new_item;
+         elems++;
+       } else {
+         this->last->next = new_item;
+         new_item->prev = this->last;
+         this->last = new_item;
+       }
+    }
+
+
+};      
+
+// JingleNet has 
+// a queue for each of the following:
+// santa, reindeer, elf2, elf1, snowman
+// the following methods: send, announce,
+// promote, and remove_all
+// Idea: maybe put all the queues in a collection so
+// you can always acceess a specific queue quickly
+class JingleNet {
+
+};
+
 int main()
 {
     cout << "Welcome to Assignment 3!" << endl;

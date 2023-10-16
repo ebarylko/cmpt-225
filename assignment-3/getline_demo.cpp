@@ -34,10 +34,17 @@ int main(int argc, char *argv[])
     ifstream infile(filename);
     string line;
     int num_lines = 0;
+    char* word;
     while (getline(infile, line))
     {
         num_lines++;
-        cout << "line " << num_lines << ": " << line << endl;
+        char* sentence = const_cast<char*>(line.c_str());
+        word = strtok(sentence, " ");
+        while (word) {
+          cout << word << endl;
+          word = strtok(NULL, " ,.-");
+        }
+        // cout << "line " << num_lines << ": " << line << endl;
     }
 
 } // main
