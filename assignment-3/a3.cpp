@@ -43,20 +43,6 @@ using namespace std;
 // y la otra que solo modifica un queue
 
 template <typename T> class Queue : public Queue_base<T> {
-    
-    // typedef Body string;
-    // typedef Sender string;
-    // typedef Reciever string;
-    // struct Message {
-    //    Sender sender;
-    //    Receiver recipient;
-    //    Body content; 
-    //    Message* next_message;
-    //    Messsage* prev_message;
-    // }
-
-
-// message has a current, last, and next message for the queue
 
     struct Node {
        Node* prev;
@@ -71,9 +57,13 @@ template <typename T> class Queue : public Queue_base<T> {
     public :
 
     Queue<T>(): first(nullptr), last(nullptr), elems(0) {};
-    ~Queue<T>();
+    ~Queue<T>() {
+        while (!this->is_empty()) {
+            this->dequeue();
+        }
+    };
 
-    int size() {
+    int size() const {
         return this->elems;
     }
 
@@ -105,14 +95,15 @@ template <typename T> class Queue : public Queue_base<T> {
         delete remove;
     }
 
-    const T& front() {
+    const T& front() const {
         if (this->is_empty()) {
             throw runtime_error("front: queue is empty");
         }
         return this->first->curr;
     }
-
 };      
+
+
 
 // JingleNet has 
 // a queue for each of the following:
@@ -122,6 +113,14 @@ template <typename T> class Queue : public Queue_base<T> {
 // Idea: maybe put all the queues in a collection so
 // you can always acceess a specific queue quickly
 class JingleNet {
+struct Message {
+    typedef string Body, Sender, Receiver;
+    Sender sender;
+    Receiver recipient;
+    Body content;
+};
+
+Queue<Message> santa_msgs, reindeer_msgs, elf1_msgs, elf2_msgs, snowman_msgs;
 
 };
 
