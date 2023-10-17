@@ -34,6 +34,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -108,21 +109,124 @@ template <typename T> class Queue : public Queue_base<T> {
 // JingleNet has 
 // a queue for each of the following:
 // santa, reindeer, elf2, elf1, snowman
-// the following methods: send, announce,
-// promote, and remove_all
-// Idea: maybe put all the queues in a collection so
-// you can always acceess a specific queue quickly
 class JingleNet {
-struct Message {
-    typedef string Body, Sender, Receiver;
-    Sender sender;
-    Receiver recipient;
-    Body content;
+    enum receiver { Santa, Reindeer, Elf2, Elf1, Snowman };
+
+    struct Message {
+        typedef string Body, Sender, Receiver;
+        Sender sender;
+        Receiver recipient;
+        Body content;
+    };
+
+    // Base class for an instruction which contains a method for executing a
+    // specific instruction
+    class Instruction {
+        public:
+        virtual void execute(JingleNet system) = 0;
+        virtual ~Instruction();
+    };
+
+    // Enqueues the message from the sender to the queue where the receiver is
+    class Send : public Instruction {
+        Message msg;
+
+
+        public:
+
+        Send(Message new_msg): msg(new_msg){};
+
+        void set_message(Message msg) {
+            this->msg = msg;
+        }
+
+        virtual void execute(JingleNet system) {
+            // Checks where the message must be sent
+            if (msg.recipient == "santa") {
+              system.messages[Santa].enqueue(msg);
+            } else if (msg.recipient == "reindeer") {
+              system.messages[Reindeer].enqueue(msg);
+            }
+
+            else if (msg.recipient == "elf2") {
+              system.messages[Elf2].enqueue(msg);
+            }
+
+            else if (msg.recipient == "elf1") {
+              system.messages[Elf1].enqueue(msg);
+            }
+
+            else if (msg.recipient == "snowman") {
+              system.messages[Snowman].enqueue(msg);
+            }
+        }
+    };
+
+/**
+ * @brief Takes the details of a message and returns a message
+ * 
+ * @param message_info a string with information about the sender, receiver, and message content
+ * @return Message a message containing all the information in message_info
+ */
+Message fill_message(char* message_info) {
+    Message new_msg;
+    string body;
+
+    // Setting the information of the message
+    message_info = strtok(NULL, " ,.-");
+    new_msg.sender = message_info;
+
+    message_info = strtok(NULL, " ,.-");
+    new_msg.recipient = message_info;
+
+    message_info = strtok(NULL, " ,.-");
+    while (message_info) {
+            body += message_info;
+            message_info = strtok(NULL, " ,.-");
+    }
+
+    new_msg.content = body;
+    return new_msg;
+}
+
+    Queue<Message> santa_msgs, reindeer_msgs, elf1_msgs, elf2_msgs, snowman_msgs;
+    Queue<Message> messages[5] = {santa_msgs, reindeer_msgs, elf1_msgs, elf2_msgs, snowman_msgs};
+
+    public:
+/**
+ * @brief Takes an instruction and applies the instruction onto the JingleNet system
+ * 
+ * @param instruction One of four possible commands to be executed by JingleNet
+ */
+void apply_instruction(string instruction) {
+        string message;
+        char* sentence = const_cast<char*>(instruction.c_str());
+        char* word = strtok(sentence, " ");
+
+        // Send message if the instruction was send
+        if (word == "SEND") {
+            Message msg = fill_message(word);
+            Send send = Send(msg);
+            send.execute(*this);
+        }
+}
+
+vector<Message> messages_for(string receiver) {
+
+}
 };
 
-Queue<Message> santa_msgs, reindeer_msgs, elf1_msgs, elf2_msgs, snowman_msgs;
+// parsiar una instruccion:
+// ir linea por linea, y crear commandos
+// applicar commandos sobre las lineas
 
-};
+
+bool parse_and_apply_instruction_test() {
+    JingleNet system;
+    string instruction = "SEND a santa hi";
+    system.apply_instruction(instruction);
+}
+
 
 int main()
 {
