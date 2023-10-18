@@ -35,6 +35,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <map>
+#include <sstream>
 
 using namespace std;
 
@@ -96,6 +98,17 @@ template <typename T> class Queue : public Queue_base<T> {
         delete remove;
     }
 
+    stringstream& print_items() {
+        stringstream items;
+        Node* curr_itm = this->first;
+        while (curr_itm) {
+            items << curr_itm->curr;
+            curr_itm = curr_itm->next;
+        }
+        return items
+
+    };
+
     const T& front() const {
         if (this->is_empty()) {
             throw runtime_error("front: queue is empty");
@@ -103,6 +116,22 @@ template <typename T> class Queue : public Queue_base<T> {
         return this->first->curr;
     }
 };      
+
+// quiero esconder el struct, before el operador de << tiene que esta afuera
+struct Message {
+    typedef string Body, Sender, Receiver;
+    Sender sender;
+    Receiver recipient;
+    Body content;
+    friend ostream& operator<<(ostream& os, Message& msg);
+};
+
+ostream& operator <<(ostream& os, Message& msg) {
+    os << "[" << msg.sender << ' ';
+    os << msg.recipient << ' ';
+    os << msg.content << "] ";
+    return os;
+}
 
 
 
@@ -112,12 +141,6 @@ template <typename T> class Queue : public Queue_base<T> {
 class JingleNet {
     enum receiver { Santa, Reindeer, Elf2, Elf1, Snowman };
 
-    struct Message {
-        typedef string Body, Sender, Receiver;
-        Sender sender;
-        Receiver recipient;
-        Body content;
-    };
 
     // Base class for an instruction which contains a method for executing a
     // specific instruction
@@ -211,8 +234,24 @@ void apply_instruction(string instruction) {
         }
 }
 
-vector<Message> messages_for(string receiver) {
-
+/**
+ * @brief Takes a receiver and returns all the messages for that person
+ * 
+ * @param receiver one of the following targets: santa, reindeer, elf2, elf1, snowman
+ * @return string all the messages the target has received
+ */
+string const messages_for(string receiver) {
+    map<string, int> name_to_pos = {
+      {"santa", Santa},
+      {"reindeer", Reindeer},
+      {"elf2", Elf2},
+      {"elf1", Elf1},
+      {"snowman", Snowman}
+    };
+    int pos = name_to_pos[receiver];
+    Queue<Message> look_in = this->messages[pos];
+    stringstream& messages = look_in.print_items();
+    return messages.str();
 }
 };
 
@@ -225,6 +264,8 @@ bool parse_and_apply_instruction_test() {
     JingleNet system;
     string instruction = "SEND a santa hi";
     system.apply_instruction(instruction);
+    string expected = "a santa hi";
+    string actual = system.messages_for("santa");
 }
 
 
