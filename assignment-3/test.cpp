@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_MAIN
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -12,7 +12,7 @@
 #include "JingleNet_announcer.h"
 #include "Queue_base.h"
 #include "test.h"
-#include "catch_test_macros.hpp"
+#include "doctest.h"
 
 InProgress read_word(string search_in) {
     int space_pos = search_in.find_first_of(" ");
@@ -170,32 +170,32 @@ void print_messages(vector<Message> messages) {
 
 //     }
 // }
-TEST_CASE( "vectors can be sized and resized", "[vector]" ) {
+TEST_CASE( "vectors can be sized and resized") {
 
     std::vector<int> v( 5 );
 
     REQUIRE( v.size() == 5 );
     REQUIRE( v.capacity() >= 5 );
 
-    SECTION( "resizing bigger changes size and capacity" ) {
+    SUBCASE( "resizing bigger changes size and capacity" ) {
         v.resize( 10 );
 
         REQUIRE( v.size() == 10 );
         REQUIRE( v.capacity() >= 10 );
     }
-    SECTION( "resizing smaller changes size but not capacity" ) {
+    SUBCASE( "resizing smaller changes size but not capacity" ) {
         v.resize( 0 );
 
         REQUIRE( v.size() == 0 );
         REQUIRE( v.capacity() >= 5 );
     }
-    SECTION( "reserving bigger changes capacity but not size" ) {
+    SUBCASE( "reserving bigger changes capacity but not size" ) {
         v.reserve( 10 );
 
         REQUIRE( v.size() == 5 );
         REQUIRE( v.capacity() >= 10 );
     }
-    SECTION( "reserving smaller does not change size or capacity" ) {
+    SUBCASE( "reserving smaller does not change size or capacity" ) {
         v.reserve( 0 );
 
         REQUIRE( v.size() == 5 );
