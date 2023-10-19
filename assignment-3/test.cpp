@@ -14,6 +14,11 @@
 #include "test.h"
 #include "doctest.h"
 
+struct InProgress {
+    string found;
+    string rest;
+};    
+
 InProgress read_word(string search_in) {
     int space_pos = search_in.find_first_of(" ");
     InProgress res;
@@ -128,8 +133,8 @@ Message::Message(const Sender& from, const Body& content)
     : sender(from), content(content){};
 
 ostream& operator<<(ostream& os, const Message& msg) {
-  os << "[" << msg.sender << ' ';
-  os << msg.content << "] ";
+  os << msg.sender << ' ';
+  os << msg.content;
   return os;
 }
 
@@ -151,57 +156,87 @@ void print_messages(vector<Message> messages) {
     for_each(messages.begin(), messages.end(), print_message );
 }
 
-// TEST_CASE("Testing all the methods of JingleNet"){
-//     SECTION("Testing send", "[send]"){
-//         GIVEN("An empty queue") {
-//         JingleNet system;
-//         WHEN("Adding a message for santa") {
-//         string instruction = "SEND a santa hi";
-//         system.apply_instruction(instruction);
-//         THEN("The santa queue should have one message matching the message added before") {
-//         system.apply_instruction(instruction);
-//         vector<Message> expected{Message("a", "hi")};
-//         Rank target = Rank::SANTA;
-//         vector<Message> actual = system.messages_for(target);
-//         REQUIRE(expected == actual);
-//         }
-//         }
-//         }
-
+namespace doctest {
+// template<> struct StringMaker<Message> {
+//     static string convert(const Message& msg) {
+//     stringstream os;
+//     os << "[";
+//     os << msg;
+//     os << "]";
+//     return os.str().c_str();
 //     }
-// }
-TEST_CASE( "vectors can be sized and resized") {
+// };
 
-    std::vector<int> v( 5 );
+template <typename T>
+struct StringMaker<std:: vector<T>>
+{
+    static String convert(const std::vector<T>& in) {
+        std::ostringstream oss;
 
-    REQUIRE( v.size() == 5 );
-    REQUIRE( v.capacity() >= 5 );
-
-    SUBCASE( "resizing bigger changes size and capacity" ) {
-        v.resize( 10 );
-
-        REQUIRE( v.size() == 10 );
-        REQUIRE( v.capacity() >= 10 );
+        oss << "[";
+        // NOLINTNEXTLINE(*-use-auto)
+        for (typename std::vector<T>::const_iterator it = in.begin(); it != in.end();) {
+            oss << *it;
+            if (++it != in.end()) { oss << ", "; }
+        }
+        oss << "]";
+        return oss.str().c_str();
     }
-    SUBCASE( "resizing smaller changes size but not capacity" ) {
-        v.resize( 0 );
+};
+}  // namespace doctest
 
-        REQUIRE( v.size() == 0 );
-        REQUIRE( v.capacity() >= 5 );
-    }
-    SUBCASE( "reserving bigger changes capacity but not size" ) {
-        v.reserve( 10 );
 
-        REQUIRE( v.size() == 5 );
-        REQUIRE( v.capacity() >= 10 );
-    }
-    SUBCASE( "reserving smaller does not change size or capacity" ) {
-        v.reserve( 0 );
 
-        REQUIRE( v.size() == 5 );
-        REQUIRE( v.capacity() >= 5 );
+TEST_CASE("Testing all the methods of JingleNet"){
+    SUBCASE("Testing send"){
+        GIVEN("An empty queue") {
+        JingleNet system;
+        WHEN("Adding a message for santa") {
+        string instruction = "SEND a santa hi";
+        system.apply_instruction(instruction);
+        THEN("The santa queue should have one message matching the message added before") {
+        vector<Message> expected{Message("a", "hi")};
+        Rank target = Rank::SANTA;
+        vector<Message> actual = system.messages_for(target);
+        REQUIRE(expected == actual);
+        }
+        }
+        }
+
     }
 }
+// TEST_CASE( "vectors can be sized and resized") {
+
+//     std::vector<int> v( 5 );
+
+//     REQUIRE( v.size() == 5 );
+//     REQUIRE( v.capacity() >= 5 );
+
+//     SUBCASE( "resizing bigger changes size and capacity" ) {
+//         v.resize( 10 );
+
+//         REQUIRE( v.size() == 10 );
+//         REQUIRE( v.capacity() >= 10 );
+//     }
+//     SUBCASE( "resizing smaller changes size but not capacity" ) {
+//         v.resize( 0 );
+
+//         REQUIRE( v.size() == 0 );
+//         REQUIRE( v.capacity() >= 5 );
+//     }
+//     SUBCASE( "reserving bigger changes capacity but not size" ) {
+//         v.reserve( 10 );
+
+//         REQUIRE( v.size() == 5 );
+//         REQUIRE( v.capacity() >= 10 );
+//     }
+//     SUBCASE( "reserving smaller does not change size or capacity" ) {
+//         v.reserve( 0 );
+
+//         REQUIRE( v.size() == 5 );
+//         REQUIRE( v.capacity() >= 5 );
+//     }
+// }
 
 //   TEST_CASE("Adding two messages for santa creates a queue with two messages that has the oldest message first") {
 //   JingleNet sys;

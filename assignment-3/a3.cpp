@@ -1,3 +1,5 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
 // a3.cpp
 
 /////////////////////////////////////////////////////////////////////////
@@ -85,26 +87,20 @@ class Queue : public Queue_base<T> {
   int size() const { return this->elems; }
 
   bool is_empty() const {
-    cout << !this->size() << " empty? " << this->size() << endl;
     return !this->size();
   }
 
   void enqueue(const T& item) {
     Node* new_item = new Node(item);
     if (this->is_empty()) {
-      cout << "empty branch" << endl;
       this->first = new_item;
       this->last = new_item;
-      cout << "address of first " << new_item << endl;
-      cout << "curr size " << elems << endl;
     } else {
-      cout << "non-empty branch" << endl;
       this->last->next = new_item;
       new_item->prev = this->last;
       this->last = new_item;
     }
     this->elems++;
-    cout << "curr size at end " << elems << endl;
   }
 
   void dequeue() {
@@ -122,11 +118,9 @@ class Queue : public Queue_base<T> {
     stringstream items;
     vector<T> itms;
     Node* curr_itm = this->first;
-    // cout << "Size" << curr_itm << endl;
     while (curr_itm) {
       cout << curr_itm->curr << endl;
       itms.push_back(curr_itm->curr);
-    //   items << curr_itm->curr;
       curr_itm = curr_itm->next;
     }
     return itms;
@@ -149,8 +143,8 @@ struct Message {
 };
 
 ostream& operator<<(ostream& os, const Message& msg) {
-  os << "[" << msg.sender << ' ';
-  os << msg.content << "] ";
+  os << msg.sender << ' ';
+  os << msg.content;
   return os;
 }
 
@@ -236,7 +230,6 @@ void print_message(Message msg) {
 }
 
 void print_messages(vector<Message> messages) {
-    cout << "here are the messages" << endl;
     for_each(messages.begin(), messages.end(), print_message );
 }
 
@@ -272,13 +265,66 @@ void send_test() {
  }
 }
 
-void announce_test() {
-    {
-        test_case("Adding a message and announcing it prints it to the announcements.txt file");
-    }
-}
 
-int main() {
-  send_test();
-  cout << "Welcome to Assignment 3!" << endl;
+// int main() {
+//   cout << "Welcome to Assignment 3!" << endl;
+// }
+
+namespace doctest {
+template <typename T>
+struct StringMaker<std:: vector<T>>
+{
+    static String convert(const std::vector<T>& in) {
+        std::ostringstream oss;
+
+        oss << "[";
+        // NOLINTNEXTLINE(*-use-auto)
+        for (typename std::vector<T>::const_iterator it = in.begin(); it != in.end();) {
+            oss << *it;
+            if (++it != in.end()) { oss << ", "; }
+        }
+        oss << "]";
+        return oss.str().c_str();
+    }
+};
+}  
+
+TEST_CASE("Testing all the methods of JingleNet"){
+    SUBCASE("Testing send"){
+        SUBCASE("Adding a single message onto a queue should result in a queue with one message matching the one added") {
+        GIVEN("An empty queue") {
+        JingleNet system;
+        WHEN("Adding a message for santa") {
+        string instruction = "SEND a santa hi";
+        system.apply_instruction(instruction);
+        THEN("The santa queue should have one message matching the message added before") {
+        vector<Message> expected{Message("a", "hi")};
+        Rank target = Rank::SANTA;
+        vector<Message> actual = system.messages_for(target);
+        REQUIRE(expected == actual);
+        }
+        }
+        }
+        }
+    SUBCASE(
+        "Adding two messages for santa creates a queue with two messages that "
+        "has the oldest message first") {
+        GIVEN("An empty queue") {
+        JingleNet sys;
+        WHEN("Adding two messages for santa") {
+        string instr_1 = "SEND a santa 1";
+        string instr_2 = "SEND a santa 2";
+        sys.apply_instruction(instr_1);
+        sys.apply_instruction(instr_2);
+        THEN("There should be two messages in the santa queue, with the oldest being first in the queue") {
+        vector<Message> expected{Message("a", "1"), Message("a", "2")};
+        Rank target = Rank::SANTA;
+        vector<Message> actual = sys.messages_for(target);
+        REQUIRE(expected == actual);
+        }
+        }
+        }
+    };
+    }
+
 }

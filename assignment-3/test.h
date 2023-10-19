@@ -1,4 +1,4 @@
-
+#pragma once
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -12,10 +12,6 @@
 #include "JingleNet_announcer.h"
 #include "Queue_base.h"
 
-struct InProgress {
-    string found;
-    string rest;
-};    
 
 template <typename T>
 class Queue : public Queue_base<T> {
