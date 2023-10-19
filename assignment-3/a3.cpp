@@ -69,7 +69,7 @@ class Queue : public Queue_base<T> {
     T curr;
     Node* next;
 
-    Node(T curr) : curr(curr){};
+    Node(T curr) :  prev(nullptr), curr(curr), next(nullptr){};
   };
 
   Node* first;
@@ -115,16 +115,13 @@ class Queue : public Queue_base<T> {
   }
 
   vector<T> print_items() {
-    stringstream items;
     vector<T> itms;
     Node* curr_itm = this->first;
     while (curr_itm) {
-      cout << curr_itm->curr << endl;
       itms.push_back(curr_itm->curr);
       curr_itm = curr_itm->next;
     }
     return itms;
-    // return items.str();
   };
 
   const T& front() const {
@@ -326,5 +323,8 @@ TEST_CASE("Testing all the methods of JingleNet"){
         }
     };
     }
+    // SUBCASE("testing announce") {
+
+    // }
 
 }
