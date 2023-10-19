@@ -1,5 +1,3 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
 // a3.cpp
 
 /////////////////////////////////////////////////////////////////////////
@@ -29,14 +27,10 @@
 //
 // Do not #include any other files!
 //
-#include <cassert>
 #include <fstream>
 #include <iostream>
-#include <map>
-#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "Announcement.h"
 #include "JingleNet_announcer.h"
@@ -114,7 +108,7 @@ class Queue : public Queue_base<T> {
     delete remove;
   }
 
-  vector<T> print_items() {
+  vector<T> items() const {
     vector<T> itms;
     Node* curr_itm = this->first;
     while (curr_itm) {
@@ -165,19 +159,20 @@ class JingleNet {
     virtual ~Instruction(){};
   };
 
-    Queue<Message>& get_queue(const Rank& to) {
-        return messages[(int)to - 1];
-    }
   // Enqueues the message from the sender to the queue where the receiver is
 
      void send_message(const Message& msg, Rank to) {
-        get_queue(to).enqueue(msg);
+        get_messages(to).enqueue(msg);
     }
 
   Queue<Message> messages[5];
 
 
  public:
+  Queue<Message>& get_messages(const Rank& to) {
+        return messages[(int)to - 1];
+  }
+
   /**
    * @brief Takes an instruction and applies the instruction onto the JingleNet
    * system
@@ -199,29 +194,10 @@ class JingleNet {
     }
   }
 
-  /**
-   * @brief Takes a receiver and returns all the messages for that person
-   *
-   * @param receiver one of the following targets: santa, reindeer, elf2, elf1,
-   * snowman
-   * @return string all the messages the target has received
-   */
-  vector<Message> const messages_for(const Rank& receiver) {
-    return get_queue(receiver).print_items();
-  }
-};
 
-// parsiar una instruccion:
-// ir linea por linea, y crear commandos
-// applicar commandos sobre las lineas
 
-// hacer una clase que te dice que estas testiando
 
-void test_case(string scenario) { cout << scenario << endl; }
 
-// vector<Message> mk_msgs(initializer_list<Message>) {
-
-// }
 void print_message(Message msg) {
     cout << msg << endl;
 }
@@ -230,42 +206,15 @@ void print_messages(vector<Message> messages) {
     for_each(messages.begin(), messages.end(), print_message );
 }
 
-void send_test() {
-
-{ 
-  JingleNet system;
-  test_case(
-      "Adding a message for santa creates a new message in the santa queue");
-  string instruction = "SEND a santa hi";
-  system.apply_instruction(instruction);
-  vector<Message> expected{Message("a", "hi")};
-  Rank target = Rank::SANTA;
-  vector<Message> actual = system.messages_for(target);
-  assert(expected == actual);
- }
-
- {
-  JingleNet sys;
-  test_case(
-      "Adding two messages for santa creates a queue with two messages that "
-      "has "
-      "the oldest message first");
-  string instr_1 = "SEND a santa 1";
-  string instr_2 = "SEND a santa 2";
-
-  sys.apply_instruction(instr_1);
-  sys.apply_instruction(instr_2);
-  vector<Message> expected{Message("a", "1"), Message("a", "2")};
-  Rank target = Rank::SANTA;
-  vector<Message> actual = sys.messages_for(target);
-  assert(expected == actual);
- }
-}
-
 
 // int main() {
 //   cout << "Welcome to Assignment 3!" << endl;
 // }
+#include <map>
+#include <vector>
+#include <sstream>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
 
 namespace doctest {
 template <typename T>
@@ -285,6 +234,25 @@ struct StringMaker<std:: vector<T>>
     }
 };
 }  
+
+
+// typedef map<Rank, vector<Message>> AllMessages;
+// map<Rank, vector<Message>> all_messages(const JingleNet& j) {
+//     AllMessages all;
+//     for_each(this->messages, this->messages + this->messages->size(), [all](const Queue<Message>& q) {all.push_back(q.items())});
+// }
+};
+
+  /**
+   * @brief Takes a receiver and returns all the messages for that person
+   *
+   * @param receiver one of the following targets: santa, reindeer, elf2, elf1,
+   * snowman
+   * @return string all the messages the target has received
+   */
+  vector<Message> const messages_for(const Rank& receiver, const JingleNet& j) {
+    return j.get_messages(receiver).items();
+  }
 
 TEST_CASE("Testing all the methods of JingleNet"){
     SUBCASE("Testing send"){
@@ -324,7 +292,19 @@ TEST_CASE("Testing all the methods of JingleNet"){
     };
     }
     // SUBCASE("testing announce") {
+    //     SUBCASE("Announcing a message when there are none does nothing to the queues") {
+    //         GIVEN("An empty queue") {
+    //             JingleNet sys;
+    //             WHEN("A message is announced") {
+    //                 string announce_msg = "ANNOUNCE 1";
+    //                 sys.apply_instruction(announce_msg);
+    //                 THEN("The queues remained unchanges") {
+    //                    messages msgs = sys.get_all_messages();
+    //                    REQUIRE(all_of(msgs.begin(), msgs.end(), [](vector<Message> m) {return m.empty()}));
 
+    //                 }
+    //             }
+    //         }
+    //     }
     // }
-
 }

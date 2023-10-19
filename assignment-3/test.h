@@ -61,7 +61,7 @@ class JingleNet {
     virtual ~Instruction(){};
   };
 
-    Queue<Message>& get_queue(const Rank& to);
+    Queue<Message>& get_messages(const Rank& to);
   // Enqueues the message from the sender to the queue where the receiver is
 
      void send_message(const Message& msg, Rank to); 

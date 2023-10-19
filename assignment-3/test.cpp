@@ -90,10 +90,10 @@ template <typename T> const T& Queue<T>::front() const {
 }
 
 void JingleNet::send_message(const Message& msg, Rank to) {
-    get_queue(to).enqueue(msg);
+    get_messages(to).enqueue(msg);
 }
 
-Queue<Message>& JingleNet::get_queue(const Rank& to) {
+Queue<Message>& JingleNet::get_messages(const Rank& to) {
     return messages[(int)to - 1];
 }
 
@@ -105,7 +105,7 @@ Queue<Message>& JingleNet::get_queue(const Rank& to) {
  * @return string all the messages the target has received
  */
 vector<Message> const JingleNet::messages_for(const Rank& receiver) {
-    return this->get_queue(receiver).print_items();
+    return this->get_messages(receiver).print_items();
   }
 
   /**
