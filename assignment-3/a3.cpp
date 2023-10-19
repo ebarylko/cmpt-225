@@ -60,10 +60,6 @@ InProgress read_word(string search_in) {
     return res;
 }
 
-// Dos tipos de insrucciones.
-// una que modifica la lista entera
-// y la otra que solo modifica un queue
-
 template <typename T>
 class Queue : public Queue_base<T> {
   struct Node {
@@ -266,6 +262,7 @@ void send_test() {
       "the oldest message first");
   string instr_1 = "SEND a santa 1";
   string instr_2 = "SEND a santa 2";
+
   sys.apply_instruction(instr_1);
   sys.apply_instruction(instr_2);
   vector<Message> expected{Message("a", "1"), Message("a", "2")};
@@ -273,6 +270,12 @@ void send_test() {
   vector<Message> actual = sys.messages_for(target);
   assert(expected == actual);
  }
+}
+
+void announce_test() {
+    {
+        test_case("Adding a message and announcing it prints it to the announcements.txt file");
+    }
 }
 
 int main() {
