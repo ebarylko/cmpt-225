@@ -1,3 +1,4 @@
+#define CATCH_CONFIG_MAIN
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -11,6 +12,7 @@
 #include "JingleNet_announcer.h"
 #include "Queue_base.h"
 #include "test.h"
+#include "catch_test_macros.hpp"
 
 InProgress read_word(string search_in) {
     int space_pos = search_in.find_first_of(" ");
@@ -149,45 +151,72 @@ void print_messages(vector<Message> messages) {
     for_each(messages.begin(), messages.end(), print_message );
 }
 
-void send_test() {
+// TEST_CASE("Testing all the methods of JingleNet"){
+//     SECTION("Testing send", "[send]"){
+//         GIVEN("An empty queue") {
+//         JingleNet system;
+//         WHEN("Adding a message for santa") {
+//         string instruction = "SEND a santa hi";
+//         system.apply_instruction(instruction);
+//         THEN("The santa queue should have one message matching the message added before") {
+//         system.apply_instruction(instruction);
+//         vector<Message> expected{Message("a", "hi")};
+//         Rank target = Rank::SANTA;
+//         vector<Message> actual = system.messages_for(target);
+//         REQUIRE(expected == actual);
+//         }
+//         }
+//         }
 
-{ 
-  JingleNet system;
-  test_case(
-      "Adding a message for santa creates a new message in the santa queue");
-  string instruction = "SEND a santa hi";
-  system.apply_instruction(instruction);
-  vector<Message> expected{Message("a", "hi")};
-  Rank target = Rank::SANTA;
-  vector<Message> actual = system.messages_for(target);
-  assert(expected == actual);
- }
+//     }
+// }
+TEST_CASE( "vectors can be sized and resized", "[vector]" ) {
 
- {
-  JingleNet sys;
-  test_case(
-      "Adding two messages for santa creates a queue with two messages that "
-      "has "
-      "the oldest message first");
-  string instr_1 = "SEND a santa 1";
-  string instr_2 = "SEND a santa 2";
+    std::vector<int> v( 5 );
 
-  sys.apply_instruction(instr_1);
-  sys.apply_instruction(instr_2);
-  vector<Message> expected{Message("a", "1"), Message("a", "2")};
-  Rank target = Rank::SANTA;
-  vector<Message> actual = sys.messages_for(target);
-  assert(expected == actual);
- }
-}
+    REQUIRE( v.size() == 5 );
+    REQUIRE( v.capacity() >= 5 );
 
-void announce_test() {
-    {
-        test_case("Adding a message and announcing it prints it to the announcements.txt file");
+    SECTION( "resizing bigger changes size and capacity" ) {
+        v.resize( 10 );
+
+        REQUIRE( v.size() == 10 );
+        REQUIRE( v.capacity() >= 10 );
+    }
+    SECTION( "resizing smaller changes size but not capacity" ) {
+        v.resize( 0 );
+
+        REQUIRE( v.size() == 0 );
+        REQUIRE( v.capacity() >= 5 );
+    }
+    SECTION( "reserving bigger changes capacity but not size" ) {
+        v.reserve( 10 );
+
+        REQUIRE( v.size() == 5 );
+        REQUIRE( v.capacity() >= 10 );
+    }
+    SECTION( "reserving smaller does not change size or capacity" ) {
+        v.reserve( 0 );
+
+        REQUIRE( v.size() == 5 );
+        REQUIRE( v.capacity() >= 5 );
     }
 }
 
-int main() {
-  send_test();
-  cout << "Welcome to Assignment 3!" << endl;
-}
+//   TEST_CASE("Adding two messages for santa creates a queue with two messages that has the oldest message first") {
+//   JingleNet sys;
+//   string instr_1 = "SEND a santa 1";
+//   string instr_2 = "SEND a santa 2";
+
+//   sys.apply_instruction(instr_1);
+//   sys.apply_instruction(instr_2);
+//   vector<Message> expected{Message("a", "1"), Message("a", "2")};
+//   Rank target = Rank::SANTA;
+//   vector<Message> actual = sys.messages_for(target);
+//   REQUIRE(expected == actual);
+//   };
+
+// int main() {
+//     return 0;
+// }
+
