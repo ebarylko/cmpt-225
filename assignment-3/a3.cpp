@@ -232,23 +232,47 @@ class JingleNet {
 
 void test_case(string scenario) { cout << scenario << endl; }
 
-// vector<Message> mk_msgs(...) {
+// vector<Message> mk_msgs(initializer_list<Message>) {
 
 // }
+void print_message(Message msg) {
+    cout << msg << endl;
+}
+
+void print_messages(vector<Message> messages) {
+    cout << "here are the messages" << endl;
+    for_each(messages.begin(), messages.end(), print_message );
+}
 
 void send_test() {
-  JingleNet system;
 
+{ 
+  JingleNet system;
   test_case(
       "Adding a message for santa creates a new message in the santa queue");
   string instruction = "SEND a santa hi";
   system.apply_instruction(instruction);
-  vector<Message> expected;
-  Message expected_msg("a", "hi");
-  expected.push_back(expected_msg);
+  vector<Message> expected{Message("a", "hi")};
   Rank target = Rank::SANTA;
   vector<Message> actual = system.messages_for(target);
   assert(expected == actual);
+ }
+
+ {
+  JingleNet sys;
+  test_case(
+      "Adding two messages for santa creates a queue with two messages that "
+      "has "
+      "the oldest message first");
+  string instr_1 = "SEND a santa 1";
+  string instr_2 = "SEND a santa 2";
+  sys.apply_instruction(instr_1);
+  sys.apply_instruction(instr_2);
+  vector<Message> expected{Message("a", "1"), Message("a", "2")};
+  Rank target = Rank::SANTA;
+  vector<Message> actual = sys.messages_for(target);
+  assert(expected == actual);
+ }
 }
 
 int main() {
