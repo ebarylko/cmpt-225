@@ -56,6 +56,7 @@ InProgress read_word(string search_in) {
     return res;
 }
 
+#include <vector>
 template <typename T>
 class Queue : public Queue_base<T> {
   struct Node {
@@ -210,9 +211,10 @@ void announce_msgs(int num) {
     // remover itemas del primer queue, despues continuar con los otros queues si es necessario.
     // int msgs_left = this->remove_msgs(num, Rank::SANTA);
     Rank target;
-    for(int pos = 0; pos < 5 && num != 0; pos++)
-        target = receiver[pos];
-        num = this->remove_msgs(num, target);
+    for (int pos = 0; pos < 5 && num != 0; pos++) {
+            target = receiver[pos];
+            num = this->remove_msgs(num, target);
+    }
 }
 
  public:
@@ -269,11 +271,12 @@ void announce_msgs(int num) {
 
 
 #include <map>
-#include <vector>
 #include <sstream>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+
+// definir iterador para un queue para que puedas crear una funcion en lugar de un metodo
 template <typename T> vector<T> Queue<T>::items() {
   vector<T> itms;
   Node* curr_itm = this->first;
