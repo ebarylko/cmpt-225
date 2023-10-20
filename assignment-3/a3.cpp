@@ -109,12 +109,13 @@ class Queue : public Queue_base<T> {
     Node* remove = this->first;
     cout << "Error occured when reassigning the head" << endl;
     this->first = remove->next;
+    cout << remove->next << " Empty? " << endl;
     cout << "Error occured after reassigning the head" << endl;
     this->elems--;
     this->last = this->is_empty() ? nullptr : this->last;
     cout << this->first << " The first elem" << endl;
     cout << "Error occured before removing the node" << endl;
-    // delete remove;
+    delete remove;
     cout << "Error occured after removing the node" << endl;
   }
 
@@ -134,7 +135,7 @@ struct Message {
   typedef string Body, Sender, Receiver;
   Sender sender;
   Body content;
-  Message() {};
+  Message(): sender(""), content("") {};
   Message(const Sender& from,const Body& content): sender(from), content(content){};
 };
 
