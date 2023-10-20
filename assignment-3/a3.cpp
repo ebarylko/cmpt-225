@@ -112,15 +112,6 @@ class Queue : public Queue_base<T> {
     delete remove;
   }
 
-  vector<T> items() const {
-    vector<T> itms;
-    Node* curr_itm = this->first;
-    while (curr_itm) {
-      itms.push_back(curr_itm->curr);
-      curr_itm = curr_itm->next;
-    }
-    return itms;
-  };
 
   const T& front() const {
     if (this->is_empty()) {
@@ -128,6 +119,9 @@ class Queue : public Queue_base<T> {
     }
     return this->first->curr;
   }
+
+// remove the following
+  vector<T> items();
 };
 
 struct Message {
@@ -279,6 +273,16 @@ void announce_msgs(int num) {
 #include <sstream>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
+
+template <typename T> vector<T> Queue<T>::items() {
+  vector<T> itms;
+  Node* curr_itm = this->first;
+  while (curr_itm) {
+    itms.push_back(curr_itm->curr);
+    curr_itm = curr_itm->next;
+  }
+  return itms;
+};
 
 namespace doctest {
 template <typename T>
