@@ -84,6 +84,10 @@ class Queue : public Queue_base<T> {
     return !this->size();
   }
 
+  bool has_items() const {
+     return this->size(); 
+     }
+
   void enqueue(const T& item) {
     Node* new_item = new Node(item);
     if (this->is_empty()) {
@@ -130,6 +134,7 @@ struct Message {
   typedef string Body, Sender, Receiver;
   Sender sender;
   Body content;
+  Message() {};
   Message(const Sender& from,const Body& content): sender(from), content(content){};
 };
 
@@ -166,12 +171,61 @@ class JingleNet {
     }
 
   Queue<Message> messages[5];
+  /**
+   * @brief Takes a number of messages to remove N and a receiver (santa|reindeer|elf2|elf1|snowman)
+   *  and removes N messages from the receiver's queue (less if the queue has less than N messages).
+   *  Returns the amount of messages left to remove in the other queues
+   *
+   * @param msgs_to_announce the number of messages to announce
+   * @param target the receiver to remove messages from
+   * @return int the amount of messages to remove in the other queues
+   */
+  // tal vez puedo hacer esto mas efficiente si
+  // no hago nada cuandoo no tengo un mensaje para
+  // annunciar
+  int remove_msgs(int msgs_to_announce, const Rank& target) {
+        Message announcing;
+        Queue<Message> to_remove = this->get_messages(target);
+        // Announcing all the messages and removing them from
+        // the queue
+        while (to_remove.has_items() && msgs_to_announce != 0) {
+            announcing = to_remove.front();
+            Announcement a(announcing.sender, target, announcing.content);
+            jnet.announce(a);
+            to_remove.dequeue();
+        }
 
+        return msgs_to_announce;
+  }
+
+
+Rank receiver[5] = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
+/**
+ * @brief takes a number of messages to announce N and announces N messages in total from the queue,
+ * starting from the santa queue and then removing more messages from the rest of the queues
+ * Ex: if given five messages to announce and there are only three messages for santa and the reindeers,
+ * [[santa: [msg1, msg2, msg3]
+ * [reindeer: [msg4, msg5, msg6]]
+ * applying the method would return the following queue;
+ * [[santa: []
+ * [reindeer: [msg6]]]
+ * 
+ * @param num the number of messaages to announce
+ */
+void announce_msgs(int num) {
+    // remover itemas del primer queue, despues continuar con los otros queues si es necessario.
+    // int msgs_left = this->remove_msgs(num, Rank::SANTA);
+    Rank target;
+    for(int pos = 0; pos < 5 && num != 0; pos++)
+        target = receiver[pos];
+        num = this->remove_msgs(num, target);
+}
 
  public:
   Queue<Message>& get_messages(const Rank& to) {
         return messages[(int)to - 1];
   }
+
 
   /**
    * @brief Takes an instruction and applies the instruction onto the JingleNet
@@ -184,6 +238,7 @@ class JingleNet {
     string message;
     InProgress instr = read_word(instruction);
     string send_instr = "SEND";
+    string announce_instr = "ANNOUNCE";
     // Send message if the instruction was send
     if (send_instr == instr.found) {
       InProgress sender = read_word(instr.rest);
@@ -191,6 +246,10 @@ class JingleNet {
       Message msg(sender.found, receiver.rest);
       Rank to = to_rank(receiver.found);
       this->send_message(msg, to);
+    // announce message if instruction was to announce
+    } else if (announce_instr == instr.found) {
+        int announce_num = stoi(instr.rest);
+        this->announce_msgs(announce_num);
     }
   }
 
