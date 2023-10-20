@@ -392,5 +392,21 @@ bool has_no_messages(AllMessages& messages) {
               }
           }
       }
+      SUBCASE("Announcing a single message will print it to announcements.txt") {
+        GIVEN("A empty JingleNet") {
+              JingleNet sys;
+              WHEN("A message is added and announced") {
+                string instr_send = "SEND a santa 1";
+                string instr_announce = "ANNOUNCE 1";
+                sys.apply_instruction(instr_send);
+                sys.apply_instruction(instr_announce);
+                THEN("There will be a messsage in announcements.txt and the santa queue will be empty") {
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(has_no_messages(msgs));
+
+                }
+              }
+        }
+      }
   }
   }
