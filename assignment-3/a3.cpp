@@ -198,18 +198,23 @@ class JingleNet {
 
 
 
-void print_message(Message msg) {
-    cout << msg << endl;
-}
+// void print_message(Message msg) {
+//     cout << msg << endl;
+// }
 
-void print_messages(vector<Message> messages) {
-    for_each(messages.begin(), messages.end(), print_message );
-}
+// void print_messages(vector<Message> messages) {
+//     for_each(messages.begin(), messages.end(), print_message );
+// }
 
 
 // int main() {
 //   cout << "Welcome to Assignment 3!" << endl;
 // }
+
+
+};
+
+
 #include <map>
 #include <vector>
 #include <sstream>
@@ -236,13 +241,6 @@ struct StringMaker<std:: vector<T>>
 }  
 
 
-// typedef map<Rank, vector<Message>> AllMessages;
-// map<Rank, vector<Message>> all_messages(const JingleNet& j) {
-//     AllMessages all;
-//     for_each(this->messages, this->messages + this->messages->size(), [all](const Queue<Message>& q) {all.push_back(q.items())});
-// }
-};
-
   /**
    * @brief Takes a receiver and returns all the messages for that person
    *
@@ -250,61 +248,68 @@ struct StringMaker<std:: vector<T>>
    * snowman
    * @return string all the messages the target has received
    */
-  vector<Message> const messages_for(const Rank& receiver, const JingleNet& j) {
+  const vector<Message> messages_for(JingleNet& j, const Rank& receiver) {
     return j.get_messages(receiver).items();
   }
 
-TEST_CASE("Testing all the methods of JingleNet"){
-    SUBCASE("Testing send"){
-        SUBCASE("Adding a single message onto a queue should result in a queue with one message matching the one added") {
-        GIVEN("An empty queue") {
-        JingleNet system;
-        WHEN("Adding a message for santa") {
-        string instruction = "SEND a santa hi";
-        system.apply_instruction(instruction);
-        THEN("The santa queue should have one message matching the message added before") {
-        vector<Message> expected{Message("a", "hi")};
-        Rank target = Rank::SANTA;
-        vector<Message> actual = system.messages_for(target);
-        REQUIRE(expected == actual);
-        }
-        }
-        }
-        }
-    SUBCASE(
-        "Adding two messages for santa creates a queue with two messages that "
-        "has the oldest message first") {
-        GIVEN("An empty queue") {
-        JingleNet sys;
-        WHEN("Adding two messages for santa") {
-        string instr_1 = "SEND a santa 1";
-        string instr_2 = "SEND a santa 2";
-        sys.apply_instruction(instr_1);
-        sys.apply_instruction(instr_2);
-        THEN("There should be two messages in the santa queue, with the oldest being first in the queue") {
-        vector<Message> expected{Message("a", "1"), Message("a", "2")};
-        Rank target = Rank::SANTA;
-        vector<Message> actual = sys.messages_for(target);
-        REQUIRE(expected == actual);
-        }
-        }
-        }
-    };
-    }
-    // SUBCASE("testing announce") {
-    //     SUBCASE("Announcing a message when there are none does nothing to the queues") {
-    //         GIVEN("An empty queue") {
-    //             JingleNet sys;
-    //             WHEN("A message is announced") {
-    //                 string announce_msg = "ANNOUNCE 1";
-    //                 sys.apply_instruction(announce_msg);
-    //                 THEN("The queues remained unchanges") {
-    //                    messages msgs = sys.get_all_messages();
-    //                    REQUIRE(all_of(msgs.begin(), msgs.end(), [](vector<Message> m) {return m.empty()}));
-
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+typedef map<Rank, vector<Message>> AllMessages;
+vector<Rank> receivers = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
+AllMessages all_messages(JingleNet& j) {
+    AllMessages all;
+    for_each(receivers.begin(), receivers.end(), [&all, &j](const Rank target) {all[target] = messages_for(j, target);});
+    return all;
 }
+
+
+  TEST_CASE("JingleNet") {
+    SUBCASE("send") {
+        SUBCASE("Sending a message adds it to the queue ") {
+            GIVEN("An empty JingleNet") {
+              JingleNet system;
+              WHEN("Sending a message to santa") {
+                string instruction = "SEND a santa hi";
+                system.apply_instruction(instruction);
+                THEN("The santa queue has the message") {
+                  vector<Message> expected{Message("a", "hi")};
+                  Rank target = Rank::SANTA;
+                  vector<Message> actual = messages_for(system, target);
+                  REQUIRE(expected == actual);
+                }
+              }
+            }
+        }
+        SUBCASE("Sending two messages to santa"){
+            GIVEN("An empty JingleNet"){JingleNet sys;
+        WHEN("Sending two messages to santa") {
+            string instr_1 = "SEND a santa 1";
+            string instr_2 = "SEND a santa 2";
+            sys.apply_instruction(instr_1);
+            sys.apply_instruction(instr_2);
+            THEN("The santa queue has the two messages") {
+              vector<Message> expected{Message("a", "1"), Message("a", "2")};
+              Rank target = Rank::SANTA;
+              vector<Message> actual = messages_for(sys, target);
+              REQUIRE(expected == actual);
+            }
+        }
+    }
+  };
+  }
+  SUBCASE("announce") {
+      SUBCASE("Announcing messages when there are none has no effect") {
+          GIVEN("An empty JingleNet") {
+              JingleNet sys;
+              WHEN("A message is announced") {
+                  string announce_msg = "ANNOUNCE 1";
+                  sys.apply_instruction(announce_msg);
+                  THEN("The queues remained unchanged") {
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(all_of(msgs.begin(), msgs.end(),
+                     [](const auto &rnk_and_msg) {return rnk_and_msg.second.empty();}));
+
+                  }
+              }
+          }
+      }
+  }
+  }
