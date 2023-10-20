@@ -326,9 +326,26 @@ AllMessages all_messages(JingleNet& j) {
     return all;
 }
 
+bool empty_msg(pair<Rank, vector<Message>> rnk_and_msg) {
+    return rnk_and_msg.second.empty();
+}
+
+bool has_no_messages(AllMessages& messages) {
+    return all_of(messages.begin(), messages.end(), empty_msg);
+}
+
 
   TEST_CASE("JingleNet") {
     SUBCASE("send") {
+        SUBCASE("An empty JingleNet has not messages") {
+            GIVEN("An empty JingleNet") {
+              JingleNet system;
+              THEN("All queues are empty") {
+                AllMessages msgs = all_messages(system);
+                REQUIRE(has_no_messages(msgs));
+              }
+            }
+        }
         SUBCASE("Sending a message adds it to the queue ") {
             GIVEN("An empty JingleNet") {
               JingleNet system;
@@ -370,9 +387,7 @@ AllMessages all_messages(JingleNet& j) {
                   sys.apply_instruction(announce_msg);
                   THEN("The queues remained unchanged") {
                      AllMessages msgs = all_messages(sys);
-                     REQUIRE(all_of(msgs.begin(), msgs.end(),
-                     [](const auto &rnk_and_msg) {return rnk_and_msg.second.empty();}));
-
+                     REQUIRE(has_no_messages(msgs));
                   }
               }
           }
