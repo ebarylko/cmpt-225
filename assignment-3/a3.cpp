@@ -65,6 +65,7 @@ class Queue : public Queue_base<T> {
     Node* next;
 
     Node(T curr) :  prev(nullptr), curr(curr), next(nullptr){};
+    ~Node() {};
   };
 
   Node* first;
@@ -107,16 +108,15 @@ class Queue : public Queue_base<T> {
       throw runtime_error("dequeue: queue is empty");
     }
     Node* remove = this->first;
-    cout << "Error occured when reassigning the head" << endl;
     this->first = remove->next;
-    cout << remove->next << " Empty? " << endl;
-    cout << "Error occured after reassigning the head" << endl;
     this->elems--;
+
+    if (this->has_items()) {
+        this->first->prev = nullptr;
+    }
+
     this->last = this->is_empty() ? nullptr : this->last;
-    cout << this->first << " The first elem" << endl;
-    cout << "Error occured before removing the node" << endl;
     delete remove;
-    cout << "Error occured after removing the node" << endl;
   }
 
 
@@ -184,7 +184,7 @@ class JingleNet {
   // tal vez puedo hacer esto mas efficiente si
   // no hago nada cuandoo no tengo un mensaje para
   // annunciar
-  int remove_msgs(int& msgs_to_announce, const Rank& target) {
+  int remove_msgs(int msgs_to_announce, const Rank target) {
         cout << "The amount of messages to remve and the target " << msgs_to_announce << " " << target << endl;
         Message announcing;
         Queue<Message> to_remove = this->get_messages(target);
@@ -232,6 +232,8 @@ void announce_msgs(int num) {
 }
 
  public:
+  ~JingleNet(){};
+
   Queue<Message>& get_messages(const Rank& to) {
         return messages[(int)to - 1];
   }
