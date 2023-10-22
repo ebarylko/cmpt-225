@@ -356,7 +356,7 @@ string mk_instr(Rank target,const string& sender,const string& body) {
  */
 void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body) {
     for_each(receivers.begin(), receivers.end(), 
-    [sys, sender, body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
+    [&sys, &sender, &body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
 }
 
   TEST_CASE("JingleNet") {
@@ -436,8 +436,8 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
         GIVEN("An empty JingleNet") {
             JingleNet sys;
             WHEN("A message is sent to every target and five messages are announced") {
-                string sender("a");
-                string msg("a");
+                string sender("b");
+                string msg("1");
                 send_msg_to_everyone(sys, sender, msg);
                 sys.apply_instruction("ANNOUNCE 5");
                 THEN("There will be no messages in any queue and five messages in announcements.txt") {
