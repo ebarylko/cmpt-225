@@ -110,7 +110,6 @@ class Queue : public Queue_base<T> {
     Node* remove = this->first;
     this->first = remove->next;
     this->elems--;
-
     if (this->has_items()) {
         this->first->prev = nullptr;
     }
@@ -185,24 +184,18 @@ class JingleNet {
   // no hago nada cuandoo no tengo un mensaje para
   // annunciar
   int remove_msgs(int msgs_to_announce, const Rank target) {
-        cout << "The amount of messages to remve and the target " << msgs_to_announce << " " << target << endl;
         Message announcing;
-        Queue<Message> to_remove = this->get_messages(target);
+        Queue<Message>& to_remove = this->get_messages(target);
         // Announcing all the messages and removing them from
         // the queue
         while (to_remove.has_items() && msgs_to_announce != 0) {
             announcing = to_remove.front();
-            cout << "THE error occured after getting the first elem " << endl;
             Announcement a(announcing.sender, target, announcing.content);
             jnet.announce(a);
-            cout << "The error passed when dequeing the element" << endl;
             to_remove.dequeue();
-            cout << "Dequeue has been called" << endl;
             msgs_to_announce--;
         }
 
-        cout << "Empty coll? " << to_remove.items().empty() << endl;
-        cout << " messages left " << msgs_to_announce << endl;
         return msgs_to_announce;
   }
 
@@ -225,7 +218,6 @@ void announce_msgs(int num) {
     // int msgs_left = this->remove_msgs(num, Rank::SANTA);
     Rank target;
     for (int pos = 0; pos < 5 && num != 0; pos++) {
-            cout << "Number of messages left " << num << endl;
             target = receiver[pos];
             num = this->remove_msgs(num, target);
     }
@@ -418,9 +410,6 @@ bool has_no_messages(AllMessages& messages) {
                 sys.apply_instruction(instr_announce);
                 THEN("There will be a messsage in announcements.txt and the santa queue will be empty") {
                      AllMessages msgs = all_messages(sys);
-                     vector<Message> santa_msgs = messages_for(sys, Rank::SANTA);
-                     vector<Message> expected{Message("a", "1"), Message("a", "2")};
-                     REQUIRE(expected == santa_msgs);
                      REQUIRE(has_no_messages(msgs));
 
                 }
