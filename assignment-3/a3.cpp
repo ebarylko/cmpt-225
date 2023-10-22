@@ -283,7 +283,6 @@ void announce_msgs(int num) {
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-
 // definir iterador para un queue para que puedas crear una funcion en lugar de un metodo
 template <typename T> vector<T> Queue<T>::items() {
   vector<T> itms;
@@ -342,6 +341,23 @@ bool has_no_messages(AllMessages& messages) {
     return all_of(messages.begin(), messages.end(), empty_msg);
 }
 
+
+// Porque cuando agrego & me tira un error?
+string mk_instr(Rank target,const string& sender,const string& body) {
+    return "SEND " + sender + " " + to_string(target) + " " + body;
+}
+
+/**
+ * @brief Takes a JingleNet and a message and sends the message to every target
+ * 
+ * @param sys the messaging system
+ * @param sender the sender of the message
+ * @param body the content of the message
+ */
+void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body) {
+    for_each(receivers.begin(), receivers.end(), 
+    [sys, sender, body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
+}
 
   TEST_CASE("JingleNet") {
     SUBCASE("send") {
@@ -414,6 +430,21 @@ bool has_no_messages(AllMessages& messages) {
 
                 }
               }
+        }
+      }
+      SUBCASE("Announcing a message from every queue will print five messages to announcements.txt") {
+        GIVEN("An empty JingleNet") {
+            JingleNet sys;
+            WHEN("A message is sent to every target and five messages are announced") {
+                string sender("a");
+                string msg("a");
+                send_msg_to_everyone(sys, sender, msg);
+                sys.apply_instruction("ANNOUNCE 5");
+                THEN("There will be no messages in any queue and five messages in announcements.txt") {
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(has_no_messages(msgs));
+                }
+            }
         }
       }
   }
