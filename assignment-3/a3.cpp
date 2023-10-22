@@ -447,5 +447,18 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
             }
         }
       }
+      SUBCASE("Announcing a sole message for the reindeers will print only that message to announcements.txt") {
+        GIVEN("An empty JingleNet") {
+            JingleNet sys;
+            WHEN("A message is sent to the reindeers and three messages are announced") {
+                sys.apply_instruction("SEND a reindeer hello");
+                sys.apply_instruction("ANNOUNCE 3");
+                THEN("There will be no messages in any queue and there will be a single message in announcements.txt") {
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(has_no_messages(msgs));
+                }
+            }
+        }
+      }
   }
   }
