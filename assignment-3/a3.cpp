@@ -169,6 +169,7 @@ bool is_last_node(Node* nd) {
       vector<T> items();
 };
 
+
 struct Message {
   typedef string Body, Sender, Receiver;
   Sender sender;
@@ -278,18 +279,25 @@ bool same_sender(const Message& msg, const string& sender) {
     return msg.sender == sender;
 }
 
+Queue<Message>& move_msgs(Queue<Message>& src, Queue<Message>& dest) {
+    while (src.has_items()) {
+        dest.enqueue(src.front());
+        src.dequeue();
+    }
+    return dest;
+}
 
 Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
     Queue<Message> cpy;
     Message msg_to_check;
     while (src.has_items()) {
         msg_to_check = src.front();
-        if (same_sender(msg_to_check, sender)) {
+        if (!same_sender(msg_to_check, sender)) {
             cpy.enqueue(msg_to_check);
         }
         src.dequeue();
     }
-   return cpy; 
+   return move_msgs(cpy, src);
 }
 
 /**
@@ -299,9 +307,9 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
  */
 void remove_all(const string& sender) {
     // para cada queue, mirar si los mensajes estan y despues removerlas si tienen el mismo sender
-    Queue<Message> src;  
+    // ver si puedes cambiar el assignment
     for (int pos = 0; pos < 5; pos++) {
-            get_messages(receiver[pos]) = this->remove_msgs(get_messages(receiver[pos]), sender);
+            this->messages[(int)receiver[pos]] = this->remove_msgs(get_messages(receiver[pos]), sender);
     }
 }
 
@@ -330,6 +338,7 @@ void remove_all(const string& sender) {
     } else if (announce_instr == instr.found) {
         int announce_num = stoi(instr.rest);
         this->announce_msgs(announce_num);
+        // Remove all messages containing the sender
     } else if (remove_all_instr == instr.found) {
         this->remove_all(instr.rest);
     }
