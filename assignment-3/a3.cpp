@@ -126,8 +126,47 @@ class Queue : public Queue_base<T> {
     return this->first->curr;
   }
 
-// remove the following
-  vector<T> items();
+bool has_one_node() {
+    return this->elems == 1;
+}
+
+bool is_first_node(Node* nd) {
+    return nd == this->first;
+}
+
+bool is_last_node(Node* nd) {
+    return nd == this->last;
+}
+
+  /**
+   * @brief Takes a node and removes it from the queue
+   *
+   * @param remove the node to remove
+   * @return Node* the next node in the list following the deleted node
+   */
+  Node* remove_node(Node* remove) {
+    if (has_one_node()) {
+        this->first = nullptr;
+        this->last = nullptr;
+
+    } else if (is_first_node(remove)) {
+        this->first = remove->next;
+        this->first->prev = nullptr;
+
+    } else if (is_last_node(remove)) {
+        this->last = remove->prev;
+        this->last->next = nullptr;
+
+    } else {
+        remove->prev->next = remove->next;
+        remove->next->prev = remove->prev;
+    }
+    this->elems--;
+    delete remove;
+  }
+
+      // remove the following
+      vector<T> items();
 };
 
 struct Message {
@@ -171,6 +210,7 @@ class JingleNet {
     }
 
   Queue<Message> messages[5];
+
   /**
    * @brief Takes a number of messages to remove N and a receiver (santa|reindeer|elf2|elf1|snowman)
    *  and removes N messages from the receiver's queue (less if the queue has less than N messages).
@@ -183,7 +223,7 @@ class JingleNet {
   // tal vez puedo hacer esto mas efficiente si
   // no hago nada cuandoo no tengo un mensaje para
   // annunciar
-  int remove_msgs(int msgs_to_announce, const Rank target) {
+  int announce_n(int msgs_to_announce, const Rank target) {
         Message announcing;
         Queue<Message>& to_remove = this->get_messages(target);
         // Announcing all the messages and removing them from
@@ -214,12 +254,10 @@ Rank receiver[5] = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::S
  * @param num the number of messaages to announce
  */
 void announce_msgs(int num) {
-    // remover itemas del primer queue, despues continuar con los otros queues si es necessario.
-    // int msgs_left = this->remove_msgs(num, Rank::SANTA);
     Rank target;
     for (int pos = 0; pos < 5 && num != 0; pos++) {
             target = receiver[pos];
-            num = this->remove_msgs(num, target);
+            num = this->announce_n(num, target);
     }
 }
 
@@ -229,6 +267,43 @@ void announce_msgs(int num) {
   Queue<Message>& get_messages(const Rank& to) {
         return messages[(int)to - 1];
   }
+
+typedef Queue<Message>& QueueEdit;
+
+// Queue<Message>& remove(Queue<Message>, pred func) {
+//     return func(queue)
+// }
+
+bool same_sender(const Message& msg, const string& sender) {
+    return msg.sender == sender;
+}
+
+
+Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
+    Queue<Message> cpy;
+    Message msg_to_check;
+    while (src.has_items()) {
+        msg_to_check = src.front();
+        if (same_sender(msg_to_check, sender)) {
+            cpy.enqueue(msg_to_check);
+        }
+        src.dequeue();
+    }
+   return cpy; 
+}
+
+/**
+ * @brief Takes a sender name S and removes all messages with S as the sender
+ * 
+ * @param sender the sender whose messages will be removed
+ */
+void remove_all(const string& sender) {
+    // para cada queue, mirar si los mensajes estan y despues removerlas si tienen el mismo sender
+    Queue<Message> src;  
+    for (int pos = 0; pos < 5; pos++) {
+            get_messages(receiver[pos]) = this->remove_msgs(get_messages(receiver[pos]), sender);
+    }
+}
 
 
   /**
@@ -243,6 +318,7 @@ void announce_msgs(int num) {
     InProgress instr = read_word(instruction);
     string send_instr = "SEND";
     string announce_instr = "ANNOUNCE";
+    string remove_all_instr = "REMOVE_ALL";
     // Send message if the instruction was send
     if (send_instr == instr.found) {
       InProgress sender = read_word(instr.rest);
@@ -254,6 +330,8 @@ void announce_msgs(int num) {
     } else if (announce_instr == instr.found) {
         int announce_num = stoi(instr.rest);
         this->announce_msgs(announce_num);
+    } else if (remove_all_instr == instr.found) {
+        this->remove_all(instr.rest);
     }
   }
 
@@ -460,5 +538,20 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
             }
         }
       }
+  }
+  SUBCASE("remove_all") {
+    SUBCASE("Removing messages from an empty JingleNet does nothing") {
+        GIVEN("An empty JingleNet") {
+            JingleNet sys;
+            WHEN("Removing messages from a specific sender") {
+                sys.apply_instruction("REMOVE_ALL jay");
+                THEN("The JingleNet should remain unchanged") {
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(has_no_messages(msgs));
+                }
+
+            }
+        }
+    }
   }
   }
