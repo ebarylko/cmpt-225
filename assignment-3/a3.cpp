@@ -306,10 +306,45 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
  * @param sender the sender whose messages will be removed
  */
 void remove_all(const string& sender) {
-    // para cada queue, mirar si los mensajes estan y despues removerlas si tienen el mismo sender
-    // ver si puedes cambiar el assignment
     for (int pos = 0; pos < 5; pos++) {
             this->messages[(int)receiver[pos] - 1] = this->remove_msgs(get_messages(receiver[pos]), sender);
+    }
+}
+
+/**
+ * @brief Takes a collection of messages and a sender and moves
+ * all the messages with that specific sender to the next highest queue
+ * 
+ * @param coll the collection to look over
+ * @param sender the sender whose messages we will be moving
+ */
+Queue<Message>& promote_msgs(Queue<Message>& coll, const string& sender, Rank nxt_target) {
+    Queue<Message> tmp;
+    Message msg;
+    while (coll.has_items()) {
+        msg = coll.front();
+
+        if (same_sender(msg, sender)) {
+            this->get_messages(nxt_target).enqueue(msg);
+        } else {
+            tmp.enqueue(msg);
+        }
+        coll.dequeue();
+    }
+
+   return move_msgs(tmp, coll);
+    
+}
+
+/**
+ * @brief Takes a sender and moves all the messsages from that sender one 
+ * queue higher than they originally were
+ * 
+ * @param sender the sender of the messages to move
+ */
+void promote_messages(const string& sender) {
+    for(int pos = 1; pos < 5; pos++) {
+        this->messages[pos] = promote_msgs(this->get_messages(receiver[pos]), sender, receiver[pos]);
     }
 }
 
@@ -634,5 +669,19 @@ TEST_CASE("JingleNet") {
         }
     }
   }
+  }
+  SUBCASE("promote_announcements") {
+    SUBCASE("Promoting messages on an empty JingleNet does nothing") {
+        GIVEN("An empty JingleNet") {
+            JingleNet sys;
+            WHEN("Promoting the messsages of a specific user") {
+                sys.promote_messages("a");
+                THEN("All queues will be remain unchanged and be empty") {
+                    AllMessages actual = all_messages(sys);
+                    REQUIRE(has_no_messages(actual));
+                }
+            }
+        }
+    }
   }
   }
