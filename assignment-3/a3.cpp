@@ -280,7 +280,6 @@ bool same_sender(const Message& msg, const string& sender) {
 }
 
 Queue<Message>& move_msgs(Queue<Message>& src, Queue<Message>& dest) {
-    cout << "Moving messages " << endl;
     while (src.has_items()) {
         dest.enqueue(src.front());
         src.dequeue();
@@ -291,10 +290,7 @@ Queue<Message>& move_msgs(Queue<Message>& src, Queue<Message>& dest) {
 Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
     Queue<Message> cpy;
     Message msg_to_check;
-    cout << "There are items " << src.has_items() << endl;
-    cout << "The error happened before has_items" << endl;
     while (src.has_items()) {
-        cout << "the amount of items " << src.size() << endl;
         msg_to_check = src.front();
         if (!same_sender(msg_to_check, sender)) {
             cpy.enqueue(msg_to_check);
@@ -559,8 +555,8 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
             WHEN("Removing messages from a specific sender") {
                 sys.apply_instruction("REMOVE_ALL jay");
                 THEN("The JingleNet should remain unchanged") {
-                    //  AllMessages msgs = all_messages(sys);
-                    //  REQUIRE(has_no_messages(msgs));
+                     AllMessages msgs = all_messages(sys);
+                     REQUIRE(has_no_messages(msgs));
                 }
 
             }
