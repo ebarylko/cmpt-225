@@ -369,8 +369,8 @@ void remove_all(const string& sender) {
 #include <sstream>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
+#include <stdarg.h>
 
-// definir iterador para un queue para que puedas crear una funcion en lugar de un metodo
 template <typename T> vector<T> Queue<T>::items() {
   vector<T> itms;
   Node* curr_itm = this->first;
@@ -420,6 +420,7 @@ AllMessages all_messages(JingleNet& j) {
     return all;
 }
 
+
 bool empty_msg(pair<Rank, vector<Message>> rnk_and_msg) {
     return rnk_and_msg.second.empty();
 }
@@ -446,7 +447,8 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
     [&sys, &sender, &body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
 }
 
-  TEST_CASE("JingleNet") {
+
+TEST_CASE("JingleNet") {
     SUBCASE("send") {
         SUBCASE("An empty JingleNet has not messages") {
             GIVEN("An empty JingleNet") {
@@ -562,5 +564,27 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
             }
         }
     }
+  SUBCASE("Removing messages from a specific sender returns the JingleNet without messages sent by that sender") {
+    GIVEN("A JingleNet containing two messages for santa") {
+        JingleNet sys;
+        sys.apply_instruction("SEND A santa 1");
+        sys.apply_instruction("SEND B santa 2");
+        WHEN("All the messages with A as a sender are removed") {
+            sys.apply_instruction("REMOVE_ALL A");
+            THEN("Only the messages from B should be left in the queue") {
+                AllMessages actual = all_messages(sys);
+                AllMessages expected;
+                vector<Message> expected_santa_msgs{Message("B", "2")};
+                vector<Message> empty;
+                expected[Rank::SANTA] = expected_santa_msgs;
+                expected[Rank::REINDEER] = empty;
+                expected[Rank::ELF2] = empty;
+                expected[Rank::ELF1] = empty;
+                expected[Rank::SNOWMAN] = empty;
+                REQUIRE(expected == actual);
+            }
+        }
+    }
+  }
   }
   }
