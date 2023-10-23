@@ -291,6 +291,7 @@ Queue<Message>& move_msgs(Queue<Message>& src, Queue<Message>& dest) {
 Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
     Queue<Message> cpy;
     Message msg_to_check;
+    cout << "There are items " << src.has_items() << endl;
     cout << "The error happened before has_items" << endl;
     while (src.has_items()) {
         cout << "the amount of items " << src.size() << endl;
@@ -312,7 +313,7 @@ void remove_all(const string& sender) {
     // para cada queue, mirar si los mensajes estan y despues removerlas si tienen el mismo sender
     // ver si puedes cambiar el assignment
     for (int pos = 0; pos < 5; pos++) {
-            this->messages[(int)receiver[pos]] = this->remove_msgs(get_messages(receiver[pos]), sender);
+            this->messages[(int)receiver[pos] - 1] = this->remove_msgs(get_messages(receiver[pos]), sender);
     }
 }
 
