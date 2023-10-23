@@ -398,6 +398,23 @@ struct StringMaker<std:: vector<T>>
         return oss.str().c_str();
     }
 };
+template <typename T>
+struct StringMaker<map<Rank, vector<T>>> 
+{
+    static String convert(const map<Rank, vector<T>>& in) {
+        std::ostringstream oss;
+
+        oss << "[";
+        // NOLINTNEXTLINE(*-use-auto)
+        // what type does this have?
+        for (auto it = in.begin(); it != in.end();) {
+            oss << *it;
+            if (++it != in.end()) { oss << ", "; }
+        }
+        oss << "]";
+        return oss.str().c_str();
+    }
+};
 }  
 
 
@@ -412,7 +429,25 @@ struct StringMaker<std:: vector<T>>
     return j.get_messages(receiver).items();
   }
 
+ostream& operator<<(ostream& os, const vector<Message>& msgs) {
+  for_each(msgs.begin(), msgs.end(), [&os](const Message& msg) {
+    os << msg;
+  });
+  return os;
+}
+
+ostream& operator<<(ostream& os, const pair<Rank, vector<Message>> trget_and_msgs) {
+  os << trget_and_msgs.second;
+  return os;
+}
+
 typedef map<Rank, vector<Message>> AllMessages;
+ostream& operator<<(ostream& os, const AllMessages& msgs) {
+  for_each(msgs.begin(), msgs.end(), [&os](auto& trget_and_msgs) {
+    os << trget_and_msgs.second;
+  });
+  return os;
+}
 vector<Rank> receivers = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
 AllMessages all_messages(JingleNet& j) {
     AllMessages all;
@@ -446,6 +481,11 @@ void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body
     for_each(receivers.begin(), receivers.end(), 
     [&sys, &sender, &body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
 }
+
+typedef vector<Message> msgs;
+AllMessages mk_msg_coll(msgs snowman, msgs elf2, msgs elf1, msgs reindeer, msgs santa) {
+    return {{Rank::SANTA, santa}, {Rank::ELF1, elf1}, {Rank::ELF2, elf2}, {Rank::REINDEER, reindeer}, {Rank::SNOWMAN, snowman}};
+    }
 
 
 TEST_CASE("JingleNet") {
@@ -573,15 +613,23 @@ TEST_CASE("JingleNet") {
             sys.apply_instruction("REMOVE_ALL A");
             THEN("Only the messages from B should be left in the queue") {
                 AllMessages actual = all_messages(sys);
-                AllMessages expected;
-                vector<Message> expected_santa_msgs{Message("B", "2")};
                 vector<Message> empty;
-                expected[Rank::SANTA] = expected_santa_msgs;
-                expected[Rank::REINDEER] = empty;
-                expected[Rank::ELF2] = empty;
-                expected[Rank::ELF1] = empty;
-                expected[Rank::SNOWMAN] = empty;
+                vector<Message> santa_msgs{Message("B", "2")};
+                AllMessages expected = mk_msg_coll(empty, empty, empty, empty, santa_msgs);
                 REQUIRE(expected == actual);
+            }
+        }
+    }
+  }
+  SUBCASE("Sending the same message to everyone and then removing that message returns an empty JingleNet") {
+    GIVEN("A JingleNet which has the same message for every receipient") {
+        JingleNet sys;
+        send_msg_to_everyone(sys, "a", "1");
+        WHEN("Removing the messages with a as a sender") {
+            sys.remove_all("a");
+            THEN("The queue for every recipient should be empty") {
+                AllMessages actual = all_messages(sys);
+                REQUIRE(has_no_messages(actual));
             }
         }
     }
