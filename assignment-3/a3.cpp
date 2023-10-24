@@ -383,7 +383,7 @@ void promote_messages(const string& sender) {
     string send_instr = "SEND";
     string announce_instr = "ANNOUNCE";
     string remove_all_instr = "REMOVE_ALL";
-    string promote_instr = "PROMOTE";
+    string promote_instr = "PROMOTE_ANNOUNCEMENTS";
     // Send message if the instruction was send
     if (send_instr == instr.found) {
       InProgress sender = read_word(instr.rest);
@@ -488,11 +488,20 @@ struct StringMaker<map<Rank, vector<T>>>
     return j.get_messages(receiver).items();
   }
 
+bool operator!=(const Message& fst,const Message& snd) {
+    return !(fst == snd);
+}
+
 ostream& operator<<(ostream& os, const vector<Message>& msgs) {
-  for_each(msgs.begin(), msgs.end(), [&os](const Message& msg) {
-    os << msg;
-  });
-  return os;
+    os << "[";
+    for_each(msgs.begin(), msgs.end(), [&os, &msgs](const Message& msg) {
+      os << msg;
+      if (msg != msgs.back()) {
+        os << ", ";
+      }
+    });
+    os << "]";
+    return os;
 }
 
 ostream& operator<<(ostream& os, const pair<Rank, vector<Message>> trget_and_msgs) {
@@ -712,8 +721,7 @@ TEST_CASE("JingleNet") {
             JingleNet sys;
             sys.apply_instruction("SEND a reindeer 1");
             WHEN("Promoting the messages sent by a") {
-                // sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
-                sys.promote_messages("a");
+                sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
                 THEN("The message is moved to the santa queue") {
                     AllMessages actual = all_messages(sys);
                     vector<Message> empty;
@@ -723,6 +731,26 @@ TEST_CASE("JingleNet") {
                 }
             }
         }
+    }
+    SUBCASE("Promoting more than one message to a queue with existing messages will add them to the end of the queue in the order they were originally") {
+        GIVEN("A JingleNet with messages for santa and the reindeers") {
+            JingleNet sys;
+            sys.apply_instruction("SEND b santa 1");
+            sys.apply_instruction("SEND a reindeer 2");
+            sys.apply_instruction("SEND a reindeer 3");
+            WHEN("The messages for the reindeer are promoted") {
+                sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
+                THEN("The santa queue will have three messages with the reindeer messages added to the end") {
+                    vector<Message> santa_msgs{Message("b", "1"), Message("a", "2"), Message("a", "3")};
+                    vector<Message> empty;
+                    AllMessages actual = all_messages(sys);
+                    AllMessages expected = mk_msg_coll(empty, empty, empty, empty, santa_msgs);
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+        
+
     }
   }
   }
