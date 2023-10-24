@@ -574,9 +574,9 @@ TEST_CASE("JingleNet") {
                 string instruction = "SEND a santa hi";
                 system.apply_instruction(instruction);
                 THEN("The santa queue has the message") {
-                  vector<Message> expected{Message("a", "hi")};
+                  msgs expected{Message("a", "hi")};
                   Rank target = Rank::SANTA;
-                  vector<Message> actual = messages_for(system, target);
+                  msgs actual = messages_for(system, target);
                   REQUIRE(expected == actual);
                 }
               }
@@ -590,9 +590,9 @@ TEST_CASE("JingleNet") {
             sys.apply_instruction(instr_1);
             sys.apply_instruction(instr_2);
             THEN("The santa queue has the two messages") {
-              vector<Message> expected{Message("a", "1"), Message("a", "2")};
+              msgs expected{Message("a", "1"), Message("a", "2")};
               Rank target = Rank::SANTA;
-              vector<Message> actual = messages_for(sys, target);
+              msgs actual = messages_for(sys, target);
               REQUIRE(expected == actual);
             }
         }
@@ -681,8 +681,8 @@ TEST_CASE("JingleNet") {
             sys.apply_instruction("REMOVE_ALL A");
             THEN("Only the messages from B should be left in the queue") {
                 AllMessages actual = all_messages(sys);
-                vector<Message> empty;
-                vector<Message> santa_msgs{Message("B", "2")};
+                msgs empty;
+                msgs santa_msgs{Message("B", "2")};
                 AllMessages expected = mk_msg_coll(empty, empty, empty, empty, santa_msgs);
                 REQUIRE(expected == actual);
             }
@@ -724,8 +724,8 @@ TEST_CASE("JingleNet") {
                 sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
                 THEN("The message is moved to the santa queue") {
                     AllMessages actual = all_messages(sys);
-                    vector<Message> empty;
-                    vector<Message> santa_msgs{Message("a", "1")};
+                    msgs empty;
+                    msgs santa_msgs{Message("a", "1")};
                     AllMessages expected = mk_msg_coll(empty, empty, empty, empty, santa_msgs);
                     REQUIRE(expected == actual);
                 }
@@ -741,8 +741,8 @@ TEST_CASE("JingleNet") {
             WHEN("The messages for the reindeer are promoted") {
                 sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
                 THEN("The santa queue will have three messages with the reindeer messages added to the end") {
-                    vector<Message> santa_msgs{Message("b", "1"), Message("a", "2"), Message("a", "3")};
-                    vector<Message> empty;
+                    msgs santa_msgs{Message("b", "1"), Message("a", "2"), Message("a", "3")};
+                    msgs empty;
                     AllMessages actual = all_messages(sys);
                     AllMessages expected = mk_msg_coll(empty, empty, empty, empty, santa_msgs);
                     REQUIRE(expected == actual);
@@ -751,6 +751,46 @@ TEST_CASE("JingleNet") {
         }
         
 
+    }
+    SUBCASE("Promoting a message that santa received does nothing") {
+        GIVEN("A JingleNet with a message for santa") {
+            JingleNet sys;
+            sys.apply_instruction("SEND a santa 1");
+            WHEN("Promoting the messages that santa has") {
+                sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
+                THEN("Santa should have the same message and the other queues will be empty") {
+                    AllMessages actual = all_messages(sys);
+                    msgs santa_msgs{Message("a", "1")};
+                    msgs no_msgs;
+                    AllMessages expected = mk_msg_coll(no_msgs, no_msgs, no_msgs, no_msgs, santa_msgs);
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    // que es next en este caso
+    SUBCASE("Promoting a message that every receiver has moves the message to the next receiver") {
+        GIVEN("A JingleNet with the same message for every receiver") {
+            JingleNet sys;
+            send_msg_to_everyone(sys, "a", "1");
+            WHEN("Promoting the message") {
+                sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
+                // tienes que saber que quiere decir following. 
+                // tal vez el codigo puede explicar que va a pasar?
+                THEN("The message will be moved to the next highest queue") {
+                    Message msg("a", "1");
+                    msgs santa_msgs{msg, msg};
+                    msgs reindeer_msgs{msg};
+                    msgs elf2_msgs{msg};
+                    msgs elf1_msgs{msg};
+                    msgs snowman_msgs;
+
+                    AllMessages actual = all_messages(sys);
+                    AllMessages expected = mk_msg_coll(snowman_msgs, elf1_msgs, elf2_msgs, reindeer_msgs, santa_msgs);
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
     }
   }
   }
