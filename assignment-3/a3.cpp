@@ -80,7 +80,8 @@ class Queue : public Queue_base<T> {
     }
   };
 
-  int size() const { return this->elems; }
+  int size() const {
+     return this->elems; }
 
   bool is_empty() const {
     return !this->size();
@@ -188,10 +189,8 @@ bool operator==(const Message& one, const Message two) {
     return one.content == two.content && one.sender == two.sender;
 }
 
-enum Receiver { Santa, Reindeer, Elf2, Elf1, Snowman };
-// preguntar professor sobre testing
+// enum Receiver { Santa, Reindeer, Elf2, Elf1, Snowman };
 
-// JingleNet has
 // a queue for each of the following:
 // santa, reindeer, elf2, elf1, snowman
 class JingleNet {
@@ -241,7 +240,10 @@ class JingleNet {
   }
 
 
-Rank receiver[5] = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
+Rank receiver[5] = {Rank::SNOWMAN, Rank::ELF1, Rank::ELF2, Rank::REINDEER, Rank::SANTA};
+Rank* snowman = receiver;
+Rank* santa = receiver + 4;
+
 /**
  * @brief takes a number of messages to announce N and announces N messages in total from the queue,
  * starting from the santa queue and then removing more messages from the rest of the queues
@@ -255,10 +257,8 @@ Rank receiver[5] = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::S
  * @param num the number of messaages to announce
  */
 void announce_msgs(int num) {
-    Rank target;
-    for (int pos = 0; pos < 5 && num != 0; pos++) {
-            target = receiver[pos];
-            num = this->announce_n(num, target);
+    for (Rank* curr = snowman; curr != santa - 1; curr--) {
+            num = this->announce_n(num, *curr);
     }
 }
 
@@ -275,11 +275,11 @@ typedef Queue<Message>& QueueEdit;
 //     return func(queue)
 // }
 
-bool same_sender(const Message& msg, const string& sender) {
+bool was_sent_from(const Message& msg, const string& sender) {
     return msg.sender == sender;
 }
 
-Queue<Message>& move_msgs(Queue<Message>& src, Queue<Message>& dest) {
+Queue<Message>& mv_msgs(Queue<Message>& src, Queue<Message>& dest) {
     while (src.has_items()) {
         dest.enqueue(src.front());
         src.dequeue();
@@ -292,12 +292,12 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
     Message msg_to_check;
     while (src.has_items()) {
         msg_to_check = src.front();
-        if (!same_sender(msg_to_check, sender)) {
+        if (!was_sent_from(msg_to_check, sender)) {
             cpy.enqueue(msg_to_check);
         }
         src.dequeue();
     }
-   return move_msgs(cpy, src);
+   return mv_msgs(cpy, src);
 }
 
 /**
@@ -306,10 +306,12 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
  * @param sender the sender whose messages will be removed
  */
 void remove_all(const string& sender) {
-    for (int pos = 0; pos < 5; pos++) {
-            this->messages[(int)receiver[pos] - 1] = this->remove_msgs(get_messages(receiver[pos]), sender);
+    for (Rank* curr = snowman; curr != santa + 1; curr++) {
+            this->messages[to_index(*curr)] = this->remove_msgs(get_messages(*curr), sender);
     }
 }
+
+typedef Queue<Message> MsgQueue;
 
 /**
  * @brief Takes a collection of messages and a sender and moves
@@ -318,25 +320,39 @@ void remove_all(const string& sender) {
  * @param coll the collection to look over
  * @param sender the sender whose messages we will be moving
  */
-Queue<Message>& promote_msgs(Queue<Message>& coll, const string& sender, Rank nxt_target) {
-    Queue<Message> tmp;
-    Message msg;
-    while (coll.has_items()) {
-        msg = coll.front();
-        if (same_sender(msg, sender)) {
-            this->get_messages(nxt_target).enqueue(msg);
+void mv_msgs_from(const string& sender, Rank src, Rank target) {
+    MsgQueue& from = this->get_messages(src);
+    MsgQueue& to = this->get_messages(target);
+    MsgQueue tmp;
+    while (from.has_items()) {
+        Message msg = from.front();
+        if (was_sent_from(msg, sender)) {
+            to.enqueue(msg);
         } else {
-            tmp.enqueue(msg);
+            from.enqueue(msg);
         }
-        coll.dequeue();
+        from.dequeue();
     }
-
-   return move_msgs(tmp, coll);
-    
 }
 
-Rank num_to_receiver(const int pos) {
-    return receiver[pos];
+int to_int(Rank num) {
+    return static_cast<int>(num);
+}
+
+int to_index(Rank num) {
+    return to_int(num) - 1;
+}
+
+Rank from_int(int num) {
+    return receiver[num - 1];
+}
+
+Rank previous(Rank src) {
+    return from_int(to_int(src) - 1);
+}
+
+Rank next(Rank src) {
+    return from_int(to_int(src) + 1);
 }
 
 /**
@@ -346,10 +362,9 @@ Rank num_to_receiver(const int pos) {
  * @param sender the sender of the messages to move
  */
 void promote_messages(const string& sender) {
-    Rank target;
-    for(int pos = 1; pos < 5; pos++) {
-        target = num_to_receiver(pos);
-        this->messages[pos] = promote_msgs(this->get_messages(target), sender, target);
+    for(Rank* curr = receiver + 3; curr != receiver - 1; curr--) {
+        Rank src = *curr;
+        mv_msgs_from(sender, src, next(src));
     }
 }
 
@@ -367,6 +382,7 @@ void promote_messages(const string& sender) {
     string send_instr = "SEND";
     string announce_instr = "ANNOUNCE";
     string remove_all_instr = "REMOVE_ALL";
+    string promote_instr = "PROMOTE";
     // Send message if the instruction was send
     if (send_instr == instr.found) {
       InProgress sender = read_word(instr.rest);
@@ -381,6 +397,8 @@ void promote_messages(const string& sender) {
         // Remove all messages containing the sender
     } else if (remove_all_instr == instr.found) {
         this->remove_all(instr.rest);
+    } else if (promote_instr == instr.found) {
+        this->promote_messages(instr.rest);
     }
   }
 
