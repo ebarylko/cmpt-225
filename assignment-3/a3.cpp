@@ -184,7 +184,7 @@ class JingleNet {
   // tal vez puedo hacer esto mas efficiente si
   // no hago nada cuandoo no tengo un mensaje para
   // annunciar
-  int announce_n(int msgs_to_announce, const Rank target) {
+  int announce_n(int msgs_to_announce, Rank target) {
         Message announcing;
         Queue<Message>& to_remove = this->get_messages(target);
         // Announcing all the messages and removing them from
@@ -226,7 +226,7 @@ void announce_msgs(int num) {
  public:
   ~JingleNet(){};
 
-  Queue<Message>& get_messages(const Rank& to) {
+  Queue<Message>& get_messages(Rank to) {
         return messages[to_int(to) - 1];
   }
 
@@ -440,7 +440,7 @@ struct StringMaker<map<Rank, vector<T>>>
    * snowman
    * @return string all the messages the target has received
    */
-  const vector<Message> messages_for(JingleNet& j, const Rank& receiver) {
+  const vector<Message> messages_for(JingleNet& j, Rank receiver) {
     return j.get_messages(receiver).items();
   }
 
@@ -476,7 +476,7 @@ ostream& operator<<(ostream& os, const AllMessages& msgs) {
 vector<Rank> receivers = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
 AllMessages all_messages(JingleNet& j) {
     AllMessages all;
-    for_each(receivers.begin(), receivers.end(), [&all, &j](const Rank target) {all[target] = messages_for(j, target);});
+    for_each(receivers.begin(), receivers.end(), [&all, &j](Rank target) {all[target] = messages_for(j, target);});
     return all;
 }
 
