@@ -229,7 +229,6 @@ class JingleNet {
         // Announcing all the messages and removing them from
         // the queue
         while (to_remove.has_items() && msgs_to_announce != 0) {
-            cout << "The messages left " << msgs_to_announce << endl;
             announcing = to_remove.front();
             Announcement a(announcing.sender, target, announcing.content);
             jnet.announce(a);
@@ -365,7 +364,6 @@ Rank next(Rank src) {
  */
 void promote_messages(const string& sender) {
     for(Rank* curr = receiver + 3; curr != receiver - 1; curr--) {
-        cout << "Promoting messagses " << endl;
         Rank src = *curr;
         mv_msgs_from(sender, src, next(src));
     }
@@ -531,7 +529,6 @@ bool has_no_messages(AllMessages& messages) {
 }
 
 
-// Porque cuando agrego & me tira un error?
 string mk_instr(Rank target,const string& sender,const string& body) {
     return "SEND " + sender + " " + to_string(target) + " " + body;
 }
@@ -552,11 +549,15 @@ typedef vector<Message> msgs;
 AllMessages mk_msg_coll(msgs snowman, msgs elf2, msgs elf1, msgs reindeer, msgs santa) {
     return {{Rank::SANTA, santa}, {Rank::ELF1, elf1}, {Rank::ELF2, elf2}, {Rank::REINDEER, reindeer}, {Rank::SNOWMAN, snowman}};
     }
+AllMessages mk_msg_coll(msgs snowman) {
+    msgs empty;
+    return mk_msg_coll(snowman, empty, empty, empty, empty);
+}
 
 
 TEST_CASE("JingleNet") {
     SUBCASE("send") {
-        SUBCASE("An empty JingleNet has not messages") {
+        SUBCASE("An empty JingleNet has no messages") {
             GIVEN("An empty JingleNet") {
               JingleNet system;
               THEN("All queues are empty") {
@@ -565,7 +566,7 @@ TEST_CASE("JingleNet") {
               }
             }
         }
-        SUBCASE("Sending a message adds it to the queue ") {
+        SUBCASE("Sending a message adds it to a receiver's list") {
             GIVEN("An empty JingleNet") {
               JingleNet system;
               WHEN("Sending a message to santa") {
@@ -596,21 +597,7 @@ TEST_CASE("JingleNet") {
         }
     }
   };
-  }
-  SUBCASE("announce") {
-      SUBCASE("Announcing messages when there are none has no effect") {
-          GIVEN("An empty JingleNet") {
-              JingleNet sys;
-              WHEN("A message is announced") {
-                  string announce_msg = "ANNOUNCE 1";
-                  sys.apply_instruction(announce_msg);
-                  THEN("The queues remained unchanged") {
-                     AllMessages msgs = all_messages(sys);
-                     REQUIRE(has_no_messages(msgs));
-                  }
-              }
-          }
-      }
+  
       SUBCASE("Announcing a single message will print it to announcements.txt") {
         GIVEN("A empty JingleNet") {
               JingleNet sys;
@@ -622,7 +609,6 @@ TEST_CASE("JingleNet") {
                 THEN("There will be a messsage in announcements.txt and the santa queue will be empty") {
                      AllMessages msgs = all_messages(sys);
                      REQUIRE(has_no_messages(msgs));
-
                 }
               }
         }
@@ -651,6 +637,22 @@ TEST_CASE("JingleNet") {
                 THEN("There will be no messages in any queue and there will be a single message in announcements.txt") {
                      AllMessages msgs = all_messages(sys);
                      REQUIRE(has_no_messages(msgs));
+                }
+            }
+        }
+      }
+      SUBCASE("Not announcing all the messages leaves a JingleNet with the remaining messages") {
+        GIVEN("An JingleNet with a message sent to everyone") {
+            JingleNet sys;
+            send_msg_to_everyone(sys, "a", "1");
+            WHEN("Announcing four messages") {
+                sys.apply_instruction("ANNOUNCE 4");
+                THEN("Only the snowman queue will have the original message and the others will be empty") {
+                    msgs snowman_msgs{Message("a", "1")};
+                    msgs empty;
+                    AllMessages actual = all_messages(sys);
+                    AllMessages expected = mk_msg_coll(snowman_msgs);
+                    REQUIRE(expected == actual);
                 }
             }
         }
@@ -787,11 +789,9 @@ TEST_CASE("JingleNet") {
         GIVEN("A JingleNet with the same message for every receiver") {
             JingleNet sys;
             send_msg_to_everyone(sys, "a", "1");
-            WHEN("Promoting the message") {
+            WHEN("Promoting the messages in this order: snowman -> elf1 -> elf2 -> reindeer -> santa") {
                 sys.apply_instruction("PROMOTE_ANNOUNCEMENTS a");
-                // tienes que saber que quiere decir following. 
-                // tal vez el codigo puede explicar que va a pasar?
-                THEN("The message will be moved to the next highest queue") {
+                THEN("The message will be moved from the original queue to the next queue") {
                     Message msg("a", "1");
                     msgs santa_msgs{msg, msg};
                     msgs reindeer_msgs{msg};
