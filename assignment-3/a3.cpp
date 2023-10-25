@@ -113,9 +113,10 @@ class Queue : public Queue_base<T> {
     this->elems--;
     if (this->has_items()) {
         this->first->prev = nullptr;
+    } else {
+        this->last = nullptr;
     }
 
-    this->last = this->is_empty() ? nullptr : this->last;
     delete remove;
   }
 
@@ -127,46 +128,6 @@ class Queue : public Queue_base<T> {
     return this->first->curr;
   }
 
-bool has_one_node() {
-    return this->elems == 1;
-}
-
-bool is_first_node(Node* nd) {
-    return nd == this->first;
-}
-
-bool is_last_node(Node* nd) {
-    return nd == this->last;
-}
-
-  /**
-   * @brief Takes a node and removes it from the queue
-   *
-   * @param remove the node to remove
-   * @return Node* the next node in the list following the deleted node
-   */
-  Node* remove_node(Node* remove) {
-    if (has_one_node()) {
-        this->first = nullptr;
-        this->last = nullptr;
-
-    } else if (is_first_node(remove)) {
-        this->first = remove->next;
-        this->first->prev = nullptr;
-
-    } else if (is_last_node(remove)) {
-        this->last = remove->prev;
-        this->last->next = nullptr;
-
-    } else {
-        remove->prev->next = remove->next;
-        remove->next->prev = remove->prev;
-    }
-    this->elems--;
-    delete remove;
-  }
-
-      // remove the following
       vector<T> items();
 };
 
