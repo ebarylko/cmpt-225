@@ -181,9 +181,6 @@ class JingleNet {
    * @param target the receiver to remove messages from
    * @return int the amount of messages to remove in the other queues
    */
-  // tal vez puedo hacer esto mas efficiente si
-  // no hago nada cuandoo no tengo un mensaje para
-  // annunciar
   int announce_n(int msgs_to_announce, Rank target) {
         Message announcing;
         Queue<Message>& to_remove = this->get_messages(target);
@@ -324,7 +321,7 @@ Rank next(Rank src) {
  * @param sender the sender of the messages to move
  */
 void promote_messages(const string& sender) {
-    for(Rank* curr = receiver + 3; curr != receiver - 1; curr--) {
+    for(Rank* curr = santa - 1; curr != snowman - 1; curr--) {
         Rank src = *curr;
         mv_msgs_from(sender, src, next(src));
     }
@@ -444,11 +441,6 @@ struct StringMaker<map<Rank, vector<T>>>
     return j.get_messages(receiver).items();
   }
 
-bool operator!=(const Message& fst,const Message& snd) {
-    return !(fst == snd);
-}
-
-//refactoriar esto
 ostream& operator<<(ostream& os, const vector<Message>& msgs) {
     os << "[";
     for(auto curr = msgs.begin(); curr != msgs.end(); curr++) {
