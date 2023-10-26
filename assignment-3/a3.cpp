@@ -171,12 +171,11 @@ class Queue : public Queue_base<T> {
  * @brief 
  JingleNet holds and manages the messages held by 
  santa, reindeer, elf2, elf1, and snowman
- It takes one of the four following instructions:
+ It takes one of the four following instructions and applies it:
  SEND sender-name receiver-name message 
  REMOVE_ALL sender-name
  ANNOUNCE [number of messages]
  PROMOTE_ANNOUNCEMENTS sender-name
- JingleNet takes one of these instructions and then applies it.
  * 
  */
 class JingleNet {
@@ -248,16 +247,17 @@ class JingleNet {
 
 typedef Queue<Message>& MessageQueueRef;
 
-  /**
-   * @brief Takes a number of messages to remove N and a receiver (santa|reindeer|elf2|elf1|snowman)
-   *  and removes N messages from the receiver's queue (less if the queue has less than N messages).
-   *  Returns the amount of messages left to remove in the other queues
-   *
-   * @param msgs_to_announce the number of messages to announce
-   * @param target the receiver to remove messages from
-   * @return int the amount of messages to remove in the other queues
-   */
-  int announce_n(int msgs_to_announce, Rank target) {
+/**
+ * @brief Takes a number of messages to remove N and one receiver from the
+ * following: santa, reindeer, elf2, elf1, snowman.
+ * Removes N messages from the receiver's queue (less if the queue has less than N messages)
+ * and returns the amount of messages left to remove in the other queues
+ *
+ * @param msgs_to_announce the number of messages to announce
+ * @param target the receiver to remove messages from
+ * @return int the amount of messages to remove in the other queues
+ */
+int announce_n(int msgs_to_announce, Rank target) {
         Message announcing;
         MessageQueueRef to_remove = this->get_messages(target);
 
@@ -283,11 +283,10 @@ Rank* snowman = receiver;
 Rank* santa = receiver + 4;
 
 /**
- * @brief takes a number of messages to announce N and announces N messages in total from the queue
- * in this order: santa -> reindeer -> elf2 -> elf1 -> snowman. For each queue, it announces
- * N - (the amount of messages from the previous queues), meaning if I have 
- * five messages in the santa queue and two messages in the reindeer queue, announcing five
- * messages will remove only the santa messages.
+ * @brief takes a number of messages to announce N and announces N messages in total following
+ * this order: santa -> reindeer -> elf2 -> elf1 -> snowman. For each queue, it announces
+ * N - (the amount of messages from the previous queues) messages. If this value is nonpositive,
+ * no messages are announced
  * @param num the number of messaages to announce
  */
 void announce_msgs(int num) {
