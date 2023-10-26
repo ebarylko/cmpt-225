@@ -131,6 +131,12 @@ class Queue : public Queue_base<T> {
      }
 
 
+/**
+ * @brief Returns true if the queue is empty
+ * 
+ * @return true if queue has no elements
+ * @return false if condition above false
+ */
   bool is_empty() const {
     return !this->size();
   }
@@ -152,10 +158,13 @@ class Queue : public Queue_base<T> {
  */
   void enqueue(const T& item) {
     Node* new_item = new Node(item);
+    // setting the first and last element to
+    // the new element if queue is empty
     if (this->is_empty()) {
       this->first = new_item;
       this->last = new_item;
     } else {
+      // Adding the element after the last element
       this->last->next = new_item;
       new_item->prev = this->last;
       this->last = new_item;
@@ -175,6 +184,8 @@ class Queue : public Queue_base<T> {
     Node* remove = this->first;
     this->first = remove->next;
     this->elems--;
+    // Changing the first and last element of the
+    // queue depending on how many items there are
     if (this->has_items()) {
         this->first->prev = nullptr;
     } else {
@@ -192,6 +203,8 @@ class Queue : public Queue_base<T> {
  * @return const T& the first element in the queue
  */
   const T& front() const {
+    // Checking if the queue is empty before
+    // returning the first element
     if (this->is_empty()) {
       throw runtime_error("front: queue is empty");
     }
@@ -228,8 +241,9 @@ typedef Queue<Message>& MessageQueueRef;
   int announce_n(int msgs_to_announce, Rank target) {
         Message announcing;
         MessageQueueRef to_remove = this->get_messages(target);
-        // Announcing all the messages and removing them from
-        // the queue
+
+        // Announcing messages while there messages left in 
+        // the queue and more messages need to be announced
         while (to_remove.has_items() && msgs_to_announce != 0) {
             announcing = to_remove.front();
             Announcement a(announcing.sender, target, announcing.content);
@@ -259,6 +273,9 @@ Rank* santa = receiver + 4;
  * @param num the number of messaages to announce
  */
 void announce_msgs(int num) {
+    // Announcing the messages starting from the santa queue
+    // and announcing the messages in the earlier queue if 
+    // there are messages left
     for (Rank* curr = santa; curr != snowman - 1; curr--) {
             num = this->announce_n(num, *curr);
     }
@@ -296,6 +313,7 @@ bool was_sent_from(const Message& msg, const string& sender) {
  * @return MessageQueueRef 
  */
 MessageQueueRef mv_msgs(MessageQueueRef src, MessageQueueRef dest) {
+    // Moving the messages from src to dest
     while (src.has_items()) {
         dest.enqueue(src.front());
         src.dequeue();
@@ -315,6 +333,7 @@ MessageQueueRef mv_msgs(MessageQueueRef src, MessageQueueRef dest) {
 MessageQueueRef remove_msgs(MessageQueueRef src, const string& sender) {
     Queue<Message> cpy;
     Message msg_to_check;
+    // Copying the messages that were not sent from the sender 
     while (src.has_items()) {
         msg_to_check = src.front();
         if (!was_sent_from(msg_to_check, sender)) {
@@ -322,6 +341,8 @@ MessageQueueRef remove_msgs(MessageQueueRef src, const string& sender) {
         }
         src.dequeue();
     }
+    // Returning the original list without the 
+    // messages from the sender
    mv_msgs(cpy, src);
 }
 
@@ -331,9 +352,10 @@ MessageQueueRef remove_msgs(MessageQueueRef src, const string& sender) {
  * @param sender the sender whose messages will be removed
  */
 void remove_all(const string& sender) {
+    // Removing the messages originating from the sender
+    // in every queue
     for (Rank* curr = snowman; curr != santa + 1; curr++) {
             this->remove_msgs(get_messages(*curr), sender);
-            // this->messages[to_index(*curr)] = this->remove_msgs(get_messages(*curr), sender);
     }
 }
 
@@ -347,9 +369,13 @@ typedef Queue<Message> MsgQueue;
  * @param sender the sender whose messages we will be moving
  */
 void mv_msgs_from(const string& sender, Rank src, Rank target) {
+    // Getting the messages from the 
+    // origin and destination targets
     MsgQueue& from = this->get_messages(src);
     MsgQueue& to = this->get_messages(target);
     MsgQueue tmp;
+
+    // Moving the messages from the origin to the destination
     while (from.has_items()) {
         Message msg = from.front();
         if (was_sent_from(msg, sender)) {
@@ -362,6 +388,13 @@ void mv_msgs_from(const string& sender, Rank src, Rank target) {
     mv_msgs(tmp, from);
 }
 
+/**
+ * @brief Takes a sender and returns 
+ * the value associated with that sender
+ * 
+ * @param num the sender to convert
+ * @return int the value of that sender
+ */
 int to_int(Rank num) {
     return static_cast<int>(num);
 }
@@ -384,17 +417,16 @@ Rank next(Rank src) {
 
 /**
  * @brief Takes a sender and moves all the messsages from that sender one 
- * queue higher than they originally were
- * 
+ * queue higher following this order: snowman -> elf1 -> elf2 -> reindeer -> santa
  * @param sender the sender of the messages to move
  */
 void promote_messages(const string& sender) {
+    // Moving messages from original queue to the target queue following the order above
     for(Rank* curr = santa - 1; curr != snowman - 1; curr--) {
         Rank src = *curr;
         mv_msgs_from(sender, src, next(src));
     }
 }
-
 
  public:
   ~JingleNet(){};
