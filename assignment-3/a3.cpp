@@ -39,24 +39,52 @@
 using namespace std;
 
 
-struct InProgress {
+
+#include <vector>
+
+
+
+// ostream& operator<<(ostream& os, const Message& msg) {
+//   os << msg.sender << ' ';
+//   os << msg.content;
+//   return os;
+// }
+
+// bool operator==(const Message& one, const Message two) {
+//     return one.content == two.content && one.sender == two.sender;
+// }
+
+// a queue for each of the following:
+// santa, reindeer, elf2, elf1, snowman
+class JingleNet {
+
+  struct Message {
+    typedef string Body, Sender, Receiver;
+    Sender sender;
+    Body content;
+    Message() : sender(""), content(""){};
+    Message(const Sender& from, const Body& content)
+        : sender(from), content(content){};
+  };
+
+    // This struct represents 
+    struct InProgress {
     string found;
     string rest;
-};    
+    };
 
-InProgress read_word(string search_in) {
+    InProgress read_word(string search_in) {
     int space_pos = search_in.find_first_of(" ");
     InProgress res;
-    
+
     if (space_pos != -1) {
-    res.found = search_in.substr(0, space_pos);
-    res.rest = search_in.substr(space_pos + 1);
+      res.found = search_in.substr(0, space_pos);
+      res.rest = search_in.substr(space_pos + 1);
     }
 
     return res;
-}
+    }
 
-#include <vector>
 template <typename T>
 class Queue : public Queue_base<T> {
   struct Node {
@@ -130,30 +158,6 @@ class Queue : public Queue_base<T> {
 
       vector<T> items();
 };
-
-
-struct Message {
-  typedef string Body, Sender, Receiver;
-  Sender sender;
-  Body content;
-  Message(): sender(""), content("") {};
-  Message(const Sender& from,const Body& content): sender(from), content(content){};
-};
-
-ostream& operator<<(ostream& os, const Message& msg) {
-  os << msg.sender << ' ';
-  os << msg.content;
-  return os;
-}
-
-bool operator==(const Message& one, const Message two) {
-    return one.content == two.content && one.sender == two.sender;
-}
-
-// a queue for each of the following:
-// santa, reindeer, elf2, elf1, snowman
-class JingleNet {
-
   // Enqueues the message from the sender to the queue where the receiver is
 
      void send_message(const Message& msg, Rank to) {
@@ -354,17 +358,17 @@ void promote_messages(const string& sender) {
 #include <sstream>
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 // #include "doctest.h"
-#include <stdarg.h>
+// #include <stdarg.h>
 
-template <typename T> vector<T> Queue<T>::items() {
-  vector<T> itms;
-  Node* curr_itm = this->first;
-  while (curr_itm) {
-    itms.push_back(curr_itm->curr);
-    curr_itm = curr_itm->next;
-  }
-  return itms;
-};
+// template <typename T> vector<T> JingleNet::Queue<T>::items() {
+//   vector<T> itms;
+//   Node* curr_itm = this->first;
+//   while (curr_itm) {
+//     itms.push_back(curr_itm->curr);
+//     curr_itm = curr_itm->next;
+//   }
+//   return itms;
+// };
 
 // namespace doctest {
 // template <typename T>
@@ -402,82 +406,82 @@ template <typename T> vector<T> Queue<T>::items() {
 // }  
 
 
-  /**
-   * @brief Takes a receiver and returns all the messages for that person
-   *
-   * @param receiver one of the following targets: santa, reindeer, elf2, elf1,
-   * snowman
-   * @return string all the messages the target has received
-   */
-  const vector<Message> messages_for(JingleNet& j, Rank receiver) {
-    return j.get_messages(receiver).items();
-  }
+//   /**
+//    * @brief Takes a receiver and returns all the messages for that person
+//    *
+//    * @param receiver one of the following targets: santa, reindeer, elf2, elf1,
+//    * snowman
+//    * @return string all the messages the target has received
+//    */
+//   const vector<Message> messages_for(JingleNet& j, Rank receiver) {
+//     return j.get_messages(receiver).items();
+//   }
 
-ostream& operator<<(ostream& os, const vector<Message>& msgs) {
-    os << "[";
-    for(auto curr = msgs.begin(); curr != msgs.end(); curr++) {
-      os << *curr;
-      if (curr != (--msgs.end())) {
-        os << ", ";
-      }
-    }
-    os << "]";
-    return os;
-}
+// ostream& operator<<(ostream& os, const vector<Message>& msgs) {
+//     os << "[";
+//     for(auto curr = msgs.begin(); curr != msgs.end(); curr++) {
+//       os << *curr;
+//       if (curr != (--msgs.end())) {
+//         os << ", ";
+//       }
+//     }
+//     os << "]";
+//     return os;
+// }
 
-ostream& operator<<(ostream& os, const pair<Rank, vector<Message>> trget_and_msgs) {
-  os << trget_and_msgs.second;
-  return os;
-}
+// ostream& operator<<(ostream& os, const pair<Rank, vector<Message>> trget_and_msgs) {
+//   os << trget_and_msgs.second;
+//   return os;
+// }
 
-typedef map<Rank, vector<Message>> AllMessages;
-ostream& operator<<(ostream& os, const AllMessages& msgs) {
-  for_each(msgs.begin(), msgs.end(), [&os](auto& trget_and_msgs) {
-    os << trget_and_msgs.second;
-  });
-  return os;
-}
-vector<Rank> receivers = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
-AllMessages all_messages(JingleNet& j) {
-    AllMessages all;
-    for_each(receivers.begin(), receivers.end(), [&all, &j](Rank target) {all[target] = messages_for(j, target);});
-    return all;
-}
-
-
-bool empty_msg(pair<Rank, vector<Message>> rnk_and_msg) {
-    return rnk_and_msg.second.empty();
-}
-
-bool has_no_messages(AllMessages& messages) {
-    return all_of(messages.begin(), messages.end(), empty_msg);
-}
+// typedef map<Rank, vector<Message>> AllMessages;
+// ostream& operator<<(ostream& os, const AllMessages& msgs) {
+//   for_each(msgs.begin(), msgs.end(), [&os](auto& trget_and_msgs) {
+//     os << trget_and_msgs.second;
+//   });
+//   return os;
+// }
+// vector<Rank> receivers = {Rank::SANTA, Rank::REINDEER, Rank::ELF2, Rank::ELF1, Rank::SNOWMAN};
+// AllMessages all_messages(JingleNet& j) {
+//     AllMessages all;
+//     for_each(receivers.begin(), receivers.end(), [&all, &j](Rank target) {all[target] = messages_for(j, target);});
+//     return all;
+// }
 
 
-string mk_instr(Rank target,const string& sender,const string& body) {
-    return "SEND " + sender + " " + to_string(target) + " " + body;
-}
+// bool empty_msg(pair<Rank, vector<Message>> rnk_and_msg) {
+//     return rnk_and_msg.second.empty();
+// }
 
-/**
- * @brief Takes a JingleNet and a message and sends the message to every target
- * 
- * @param sys the messaging system
- * @param sender the sender of the message
- * @param body the content of the message
- */
-void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body) {
-    for_each(receivers.begin(), receivers.end(), 
-    [&sys, &sender, &body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
-}
+// bool has_no_messages(AllMessages& messages) {
+//     return all_of(messages.begin(), messages.end(), empty_msg);
+// }
 
-typedef vector<Message> msgs;
-AllMessages mk_msg_coll(msgs snowman, msgs elf2, msgs elf1, msgs reindeer, msgs santa) {
-    return {{Rank::SANTA, santa}, {Rank::ELF1, elf1}, {Rank::ELF2, elf2}, {Rank::REINDEER, reindeer}, {Rank::SNOWMAN, snowman}};
-    }
-AllMessages mk_msg_coll(msgs snowman) {
-    msgs empty;
-    return mk_msg_coll(snowman, empty, empty, empty, empty);
-}
+
+// string mk_instr(Rank target,const string& sender,const string& body) {
+//     return "SEND " + sender + " " + to_string(target) + " " + body;
+// }
+
+// /**
+//  * @brief Takes a JingleNet and a message and sends the message to every target
+//  * 
+//  * @param sys the messaging system
+//  * @param sender the sender of the message
+//  * @param body the content of the message
+//  */
+// void send_msg_to_everyone(JingleNet& sys,const string& sender,const string& body) {
+//     for_each(receivers.begin(), receivers.end(), 
+//     [&sys, &sender, &body](Rank r) {sys.apply_instruction(mk_instr(r, sender, body));});
+// }
+
+// typedef vector<Message> msgs;
+// AllMessages mk_msg_coll(msgs snowman, msgs elf2, msgs elf1, msgs reindeer, msgs santa) {
+//     return {{Rank::SANTA, santa}, {Rank::ELF1, elf1}, {Rank::ELF2, elf2}, {Rank::REINDEER, reindeer}, {Rank::SNOWMAN, snowman}};
+//     }
+// AllMessages mk_msg_coll(msgs snowman) {
+//     msgs empty;
+//     return mk_msg_coll(snowman, empty, empty, empty, empty);
+// }
 
 
 // TEST_CASE("JingleNet") {
