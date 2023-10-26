@@ -39,25 +39,19 @@
 using namespace std;
 
 
-
-#include <vector>
-
-
-
-// ostream& operator<<(ostream& os, const Message& msg) {
-//   os << msg.sender << ' ';
-//   os << msg.content;
-//   return os;
-// }
-
-// bool operator==(const Message& one, const Message two) {
-//     return one.content == two.content && one.sender == two.sender;
-// }
-
-// a queue for each of the following:
-// santa, reindeer, elf2, elf1, snowman
+// JingleNet holds and manages the messages held by 
+// santa, reindeer, elf2, elf1, and snowman
+// It takes one of the four following instructions:
+// SEND sender-name receiver-name message 
+// REMOVE_ALL sender-name
+// ANNOUNCE [number of messages]
+// PROMOTE_ANNOUNCEMENTS sender-name
+// JingleNet takes one of these instructions and then applies it.
 class JingleNet {
 
+    // This struct represents a message 
+    // and contains a sender, receiver, and 
+    // body
   struct Message {
     typedef string Body, Sender, Receiver;
     Sender sender;
@@ -67,16 +61,29 @@ class JingleNet {
         : sender(from), content(content){};
   };
 
-    // This struct represents 
+    // This struct is used for 
+    // iterating over an instruction and 
+    // extracting the command, username, and
+    // message content (if using send)
     struct InProgress {
     string found;
     string rest;
     };
 
+/**
+ * @brief Takes either a full or incomplete instruction and
+ * returns the next word before a space and the rest of the
+ * instruction
+ * 
+ * @param search_in the instruction to look over
+ * @return InProgress a portion of the original instruction 
+ * and the rest of the instruction
+ */
     InProgress read_word(string search_in) {
     int space_pos = search_in.find_first_of(" ");
     InProgress res;
 
+    // Checking if a word has been found
     if (space_pos != -1) {
       res.found = search_in.substr(0, space_pos);
       res.rest = search_in.substr(space_pos + 1);
@@ -85,8 +92,14 @@ class JingleNet {
     return res;
     }
 
+// This class holds a 
+// collection of items and 
+// implements all the basic functions of a queue
 template <typename T>
 class Queue : public Queue_base<T> {
+
+  // This struct represents an item in the queue
+  // being able to go the next and previous item
   struct Node {
     Node* prev;
     T curr;
@@ -108,17 +121,35 @@ class Queue : public Queue_base<T> {
     }
   };
 
+/**
+ * @brief Returns the amount of elements in the queue
+ * 
+ * @return int the number of elements
+ */
   int size() const {
-     return this->elems; }
+     return this->elems; 
+     }
+
 
   bool is_empty() const {
     return !this->size();
   }
 
+  /**
+   * @brief Returns true if there are elements in the queue
+   * 
+   * @return true if the queue has elements
+   * @return false if the above condition is false
+   */
   bool has_items() const {
      return this->size(); 
      }
 
+/**
+ * @brief Takes an item and adds it to the end of the queue
+ * 
+ * @param item the item to add on to the end of the queue
+ */
   void enqueue(const T& item) {
     Node* new_item = new Node(item);
     if (this->is_empty()) {
@@ -132,6 +163,11 @@ class Queue : public Queue_base<T> {
     this->elems++;
   }
 
+/**
+ * @brief Removes the element at the front of the queue
+ * if the queue is not empty. Throws an error otherwise
+ * 
+ */
   void dequeue() {
     if (this->is_empty()) {
       throw runtime_error("dequeue: queue is empty");
@@ -149,6 +185,12 @@ class Queue : public Queue_base<T> {
   }
 
 
+/**
+ * @brief Returns the first element in the queue if nonempty. 
+ * Throws an error otherwise
+ * 
+ * @return const T& the first element in the queue
+ */
   const T& front() const {
     if (this->is_empty()) {
       throw runtime_error("front: queue is empty");
@@ -156,14 +198,20 @@ class Queue : public Queue_base<T> {
     return this->first->curr;
   }
 
-      vector<T> items();
 };
   // Enqueues the message from the sender to the queue where the receiver is
 
+/**
+ * @brief Takes a message and a target and sends the message to the target
+ * 
+ * @param msg the message to send
+ * @param to the recipient of the message
+ */
      void send_message(const Message& msg, Rank to) {
         get_messages(to).enqueue(msg);
     }
 
+  // The messages for santa, reindeer, elf2, elf1, snowman
   Queue<Message> messages[5];
 
 typedef Queue<Message>& MessageQueueRef;
@@ -179,7 +227,7 @@ typedef Queue<Message>& MessageQueueRef;
    */
   int announce_n(int msgs_to_announce, Rank target) {
         Message announcing;
-        Queue<Message>& to_remove = this->get_messages(target);
+        MessageQueueRef to_remove = this->get_messages(target);
         // Announcing all the messages and removing them from
         // the queue
         while (to_remove.has_items() && msgs_to_announce != 0) {
@@ -193,7 +241,7 @@ typedef Queue<Message>& MessageQueueRef;
         return msgs_to_announce;
   }
 
-
+// A list of all the receivers
 Rank receiver[5] = {Rank::SNOWMAN, Rank::ELF1, Rank::ELF2, Rank::REINDEER, Rank::SANTA};
 Rank* snowman = receiver;
 Rank* santa = receiver + 4;
@@ -216,19 +264,38 @@ void announce_msgs(int num) {
     }
 }
 
- public:
-  ~JingleNet(){};
-
-  Queue<Message>& get_messages(Rank to) {
+/**
+ * @brief Takes a target and returns the messages for that target
+ * 
+ * @param to the target to search
+ * @return MessageQueueRef the messages the target has
+ */
+  MessageQueueRef get_messages(Rank to) {
         return messages[to_int(to) - 1];
   }
 
-
+/**
+ * @brief Takes a message and a sender and returns true if 
+ * the message came from the sender. False otherwise
+ * 
+ * @param msg the message to check
+ * @param sender the potential sender of the message
+ * @return true if the message came from the sender
+ * @return false if the above is not true
+ */
 bool was_sent_from(const Message& msg, const string& sender) {
     return msg.sender == sender;
 }
 
-Queue<Message>& mv_msgs(Queue<Message>& src, Queue<Message>& dest) {
+/**
+ * @brief Takes two message collections, origin and dest, and moves all the 
+ * messages from origin to dest
+ * 
+ * @param src the collection to move from
+ * @param dest the collection to move messages to
+ * @return MessageQueueRef 
+ */
+MessageQueueRef mv_msgs(MessageQueueRef src, MessageQueueRef dest) {
     while (src.has_items()) {
         dest.enqueue(src.front());
         src.dequeue();
@@ -236,7 +303,16 @@ Queue<Message>& mv_msgs(Queue<Message>& src, Queue<Message>& dest) {
     return dest;
 }
 
-Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
+/**
+ * @brief Takes a message collection and a sender, and removes the 
+ * messages from the collection that were sent from that sender
+ * 
+ * @param src the message collection to look through
+ * @param sender the sender whose messages will be removed
+ * @return MessageQueueRef the collection without the messages
+ * sent by sender
+ */
+MessageQueueRef remove_msgs(MessageQueueRef src, const string& sender) {
     Queue<Message> cpy;
     Message msg_to_check;
     while (src.has_items()) {
@@ -246,7 +322,7 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
         }
         src.dequeue();
     }
-   return mv_msgs(cpy, src);
+   mv_msgs(cpy, src);
 }
 
 /**
@@ -256,7 +332,8 @@ Queue<Message>& remove_msgs(Queue<Message>& src, const string& sender) {
  */
 void remove_all(const string& sender) {
     for (Rank* curr = snowman; curr != santa + 1; curr++) {
-            this->messages[to_index(*curr)] = this->remove_msgs(get_messages(*curr), sender);
+            this->remove_msgs(get_messages(*curr), sender);
+            // this->messages[to_index(*curr)] = this->remove_msgs(get_messages(*curr), sender);
     }
 }
 
@@ -289,9 +366,9 @@ int to_int(Rank num) {
     return static_cast<int>(num);
 }
 
-int to_index(Rank num) {
-    return to_int(num) - 1;
-}
+// int to_index(Rank num) {
+//     return to_int(num) - 1;
+// }
 
 Rank from_int(int num) {
     return receiver[num - 1];
@@ -317,6 +394,12 @@ void promote_messages(const string& sender) {
         mv_msgs_from(sender, src, next(src));
     }
 }
+
+
+ public:
+  ~JingleNet(){};
+
+
 
 
   /**
@@ -354,6 +437,7 @@ void promote_messages(const string& sender) {
 };
 
 
+#include <vector>
 #include <map>
 #include <sstream>
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
