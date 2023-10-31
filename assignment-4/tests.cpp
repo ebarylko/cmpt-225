@@ -16,7 +16,7 @@ TEST_CASE("rand_num") {
             WHEN("Generating a random number in that range") {
                 int actual = rand_num(2, 2);
                 THEN("The number outputted should equal two") {
-                    REQUIRE(actual == 2);
+                    REQUIRE(2 == actual);
                 }
             }
         }
@@ -30,6 +30,20 @@ TEST_CASE("rand_num") {
                 }
                 THEN("All the values should lie in between 1 and 100") {
                     REQUIRE(all_of(actual.begin(), actual.end(), [](int val) {return 1 <= val && val <= 100;}));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("min_elem_pos") {
+    SUBCASE("The location of the smallest element in a collection with one element is the first spot") {
+        GIVEN("An collection with one element") {
+            vector<int> coll{1};
+            WHEN("Searching for the position of the smallest element") {
+                int pos = min_elem_pos(coll, 0);
+                THEN("The index of the smallest element will be zero") {
+                    REQUIRE(0 == pos);
                 }
             }
         }
