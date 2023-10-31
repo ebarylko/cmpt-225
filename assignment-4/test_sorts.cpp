@@ -45,32 +45,32 @@ void test_is_sorted_int()
     assert(is_sorted(v));
 }
 
-// void test_rand_vec()
-// {
-//     Test("test_rand_vec");
-//     vector<int> v = rand_vec(1, 1, 1);
-//     assert(v.size() == 1);
-//     assert(v[0] == 1);
+void test_rand_vec()
+{
+    Test("test_rand_vec");
+    vector<int> v = rand_vec(1, 1, 1);
+    assert(v.size() == 1);
+    assert(v[0] == 1);
 
-//     v = rand_vec(2, 1, 1);
-//     assert(v.size() == 2);
-//     assert(v[0] == 1);
-//     assert(v[1] == 1);
+    v = rand_vec(2, 1, 1);
+    assert(v.size() == 2);
+    assert(v[0] == 1);
+    assert(v[1] == 1);
 
-//     v = rand_vec(5, 1, 10);
-//     assert(v.size() == 5);
-//     for (int n : v)
-//     {
-//         assert(1 <= n && n <= 10);
-//     }
+    v = rand_vec(5, 1, 10);
+    assert(v.size() == 5);
+    for (int n : v)
+    {
+        assert(1 <= n && n <= 10);
+    }
 
-//     v = rand_vec(100, -15, 30);
-//     assert(v.size() == 100);
-//     for (int n : v)
-//     {
-//         assert(-15 <= n && n <= 30);
-//     }
-// }
+    v = rand_vec(100, -15, 30);
+    assert(v.size() == 100);
+    for (int n : v)
+    {
+        assert(-15 <= n && n <= 30);
+    }
+}
 
 void test_is_sorted_string()
 {
@@ -407,6 +407,7 @@ int main()
     test_is_sorted_int();
     test_is_sorted_string();
 
+    test_rand_vec();
     // test_bubble_sort_int();
     // test_bubble_sort_string();
 

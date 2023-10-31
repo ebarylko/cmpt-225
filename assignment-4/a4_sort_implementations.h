@@ -33,32 +33,6 @@
 
 using namespace std;
 
-/**
- * @brief Takes a current position and an end position and returns true 
- * if the current position is the end position. False otherwise.
- * 
- * @param pos the current position
- * @param end the final position
- * @return true if pos != end
- * @return false if the above is not true
- */
-bool not_at_end(int pos, int end) {
-    return pos != end;
-}
-
-/**
- * @brief Takes two elements and returns true if the first element is less than or equal
- * than the second
- * 
- * @tparam T the type of the elements
- * @param a the first element
- * @param b the second element
- * @return true if a <= b
- * @return false if the above is not true
- */
-template <typename T> bool is_ordered(const T& a, const T& b) {
-    return a <= b;
-}
 
 /**
  * @brief Takes a collection and returns true if it sorted in ascending order.
@@ -77,16 +51,40 @@ template <typename T> bool is_sorted(vector<T>& coll) {
     // // See if list is ordered and obtain the first element where 
     // // order does not hold (if unordered)
     while(curr != end && *curr <= *(curr + 1)) {
-        cout << "Checking the items " << endl;
         curr++;
     };
     return curr == end;
-    // while(pos < final_pos && is_ordered(coll[pos], coll[pos + 1])) {
-    //     pos++;
-    // }
-    // return pos >= ;
 }
 
+int rand_num(int min, int max) {
+    int end = max + 1;
+    int num = (rand() + min) % end;
+    while (min > num || num > max) {
+        num = (num + min) % end;
+    }
+    return num;
+}
+
+/**
+ * @brief Takes a collection of size N, a max and minimum number, and generates 
+ * a collection of size N of numbers ranging from the minimum to the maximum 
+ * 
+ * @param size the size of the collection
+ * @param min the smallest possible number
+ * @param max the largest possibe number
+ * @return vector<int> a collection of numbers ranging from min to max inclusive
+ */
+vector<int> rand_vec(int size, int min, int max) {
+    vector<int> rand_nums;
+    // Seeding the random number generator
+    srand(time(0));
+    // Adjusting the numbers so they are within 
+    // min and max
+    for(int i = 0; i < size; i++) {
+        rand_nums.push_back(rand_num(min, max));
+    }
+    return rand_nums;
+}
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
