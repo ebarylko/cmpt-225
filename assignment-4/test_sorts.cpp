@@ -70,6 +70,11 @@ void test_rand_vec()
     {
         assert(-15 <= n && n <= 30);
     }
+
+    {
+         vector<int> actual = rand_vec(0, 0, 0);
+         assert(actual.empty());
+     }
 }
 
 void test_is_sorted_string()
