@@ -45,6 +45,7 @@ using namespace std;
  */
 template <typename T> bool is_sorted(vector<T>& coll) {
     if (coll.size() <= 1) {
+        cout << "Sorted " << endl;
         return true;
     }
     auto curr = coll.cbegin();
@@ -104,7 +105,7 @@ template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
     T min = coll[start_pos];
     int min_index = start_pos;
     auto start = coll.begin();
-    for(auto curr = start_iter(coll, start_pos); curr != coll.end(); curr++) {
+    for(auto curr = start_iter(coll, start_pos + 1); curr != coll.end(); curr++) {
         if (min > *curr) {
             min = *curr;
             min_index = distance(start, curr);
@@ -113,7 +114,7 @@ template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
     return min_index;
 }
 
-template <typename T> void swap(vector<T> coll, int fst, int snd) {
+template <typename T> void swap(vector<T>& coll, int fst, int snd) {
     T& tmp = coll[fst];
     coll[fst] = coll[snd];
     coll[snd] = tmp;
@@ -128,6 +129,7 @@ Sort_stats selection_sort(vector<T> &v) {
     for(int pos = 0; pos < v.size(); pos++) {
         info.num_comparisons += v.size() - 1 - pos;
         int min_index = min_elem_pos(v, pos);
+        cout << min_index << "Smallest index " << endl;
         swap(v, pos, min_index);
     }
 
