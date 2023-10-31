@@ -202,21 +202,20 @@ void test_selection_sort_int()
 {
     Test("test_selection_sort_int");
     vector<int> v;
-    // assert(v.size() == 0);
-    // selection_sort(v);
-    // assert(is_sorted(v));
-    // v = {2};
-    // selection_sort(v);
-    // assert(is_sorted(v));
+    assert(v.size() == 0);
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    selection_sort(v);
+    assert(is_sorted(v));
     v = {2, 1};
     selection_sort(v);
-    print_vec(v);
     assert(is_sorted(v));
-    // selection_sort(v);
-    // assert(is_sorted(v));
-    // v = {2, 1, 0};
-    // selection_sort(v);
-    // assert(is_sorted(v));
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    selection_sort(v);
+    assert(is_sorted(v));
 }
 
 void test_selection_sort_string()
@@ -416,10 +415,10 @@ void test_selection_sort_string()
 
 int main()
 {
-    // test_is_sorted_int();
-    // test_is_sorted_string();
+    test_is_sorted_int();
+    test_is_sorted_string();
+    test_rand_vec();
 
-    // test_rand_vec();
     // test_bubble_sort_int();
     // test_bubble_sort_string();
 
@@ -427,7 +426,7 @@ int main()
     // test_insertion_sort_string();
 
     test_selection_sort_int();
-    // test_selection_sort_string();
+    test_selection_sort_string();
 
     // test_merge_sort_int();
     // test_merge_sort_string();

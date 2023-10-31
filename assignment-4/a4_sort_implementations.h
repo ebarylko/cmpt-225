@@ -45,7 +45,6 @@ using namespace std;
  */
 template <typename T> bool is_sorted(vector<T>& coll) {
     if (coll.size() <= 1) {
-        cout << "Sorted " << endl;
         return true;
     }
     auto curr = coll.cbegin();
@@ -129,7 +128,6 @@ Sort_stats selection_sort(vector<T> &v) {
     for(int pos = 0; pos < v.size(); pos++) {
         info.num_comparisons += v.size() - 1 - pos;
         int min_index = min_elem_pos(v, pos);
-        cout << min_index << "Smallest index " << endl;
         swap(v, pos, min_index);
     }
 
