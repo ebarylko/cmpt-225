@@ -56,7 +56,7 @@ bool not_at_end(int pos, int end) {
  * @return true if a <= b
  * @return false if the above is not true
  */
-template <typename T> bool is_ordered(T& a, T& b) {
+template <typename T> bool is_ordered(const T& a, const T& b) {
     return a <= b;
 }
 
@@ -69,14 +69,22 @@ template <typename T> bool is_ordered(T& a, T& b) {
  * @return false if the above is not true
  */
 template <typename T> bool is_sorted(vector<T>& coll) {
-    int pos = 0;
-    int final_pos = coll.size() - 1;
-    // See if list is ordered and obtain the first element where 
-    // order does not hold (if unordered)
-    while(not_at_end(pos, final_pos) && is_ordered(coll[pos], coll[pos + 1])) {
-        pos++;
+    if (coll.size() <= 1) {
+        return true;
     }
-    return !not_at_end(pos);
+    auto curr = coll.cbegin();
+    auto end = coll.cend() - 1;
+    // // See if list is ordered and obtain the first element where 
+    // // order does not hold (if unordered)
+    while(curr != end && *curr <= *(curr + 1)) {
+        cout << "Checking the items " << endl;
+        curr++;
+    };
+    return curr == end;
+    // while(pos < final_pos && is_ordered(coll[pos], coll[pos + 1])) {
+    //     pos++;
+    // }
+    // return pos >= ;
 }
 
 
