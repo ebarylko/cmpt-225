@@ -48,4 +48,26 @@ TEST_CASE("min_elem_pos") {
             }
         }
     }
+    SUBCASE("The location of the smallest element in a collection with unique elements is the position with the smallest value") {
+        GIVEN("A collection wit unique values") {
+            vector<int> coll{1, 3, -4, 2};
+            WHEN("Finding the position of the smallest element") {
+                int pos = min_elem_pos(coll, 0);
+                THEN("The index of the smallest location should be 2") {
+                    REQUIRE(2 == pos);
+                }
+            }
+        }
+    }
+    SUBCASE("The location of the smallest element in a collection with duplicates is the position of the first instance of the smallest value") {
+        GIVEN("A collection with dupllicate values") {
+            vector<int> coll{2, 3, 1, 1};
+            WHEN("Finding the position of the smallest element") {
+                int pos = min_elem_pos(coll, 0);
+                THEN("The index of the smallest element is 2") {
+                    REQUIRE(2 == pos);
+                }
+            }
+        }
+    }
 }
