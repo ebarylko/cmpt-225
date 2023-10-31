@@ -192,48 +192,48 @@ void test_is_sorted_string()
 //     assert(is_sorted(v));
 // }
 
-// void test_selection_sort_int()
-// {
-//     Test("test_selection_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_selection_sort_int()
+{
+    Test("test_selection_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    selection_sort(v);
+    assert(is_sorted(v));
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    selection_sort(v);
+    assert(is_sorted(v));
+}
 
-// void test_selection_sort_string()
-// {
-//     Test("test_selection_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     selection_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_selection_sort_string()
+{
+    Test("test_selection_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    selection_sort(v);
+    assert(is_sorted(v));
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    selection_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    selection_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_merge_sort_int()
 // {
@@ -419,8 +419,8 @@ int main()
     // test_insertion_sort_int();
     // test_insertion_sort_string();
 
-    // test_selection_sort_int();
-    // test_selection_sort_string();
+    test_selection_sort_int();
+    test_selection_sort_string();
 
     // test_merge_sort_int();
     // test_merge_sort_string();

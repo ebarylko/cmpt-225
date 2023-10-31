@@ -27,6 +27,7 @@
 #pragma once
 
 #include "a4_base.h"
+#include <iterator>
 //
 // Do NOT add any other #includes to this file!
 //
@@ -56,6 +57,13 @@ template <typename T> bool is_sorted(vector<T>& coll) {
     return curr == end;
 }
 
+/**
+ * @brief Takes a minimum and a maximum number and generates a random number within those two numbers
+ * 
+ * @param min the smallest possible number
+ * @param max the largest possible number
+ * @return int a number that lies in between min and max
+ */
 int rand_num(int min, int max) {
     int end = max + 1;
     int num = (rand() + min) % end;
@@ -84,6 +92,48 @@ vector<int> rand_vec(int size, int min, int max) {
         rand_nums.push_back(rand_num(min, max));
     }
     return rand_nums;
+}
+
+template <typename T> auto start_iter(const vector<T>& coll, int start_pos) {
+    auto iter = coll.begin();
+    advance(iter, start_pos);
+    return iter;
+}
+
+template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
+    T min = coll[start_pos];
+    int min_index = start_pos;
+    auto start = coll.begin();
+    for(auto curr = start_iter(coll, start_pos); curr != coll.end(); curr++) {
+        if (min > *curr) {
+            min = *curr;
+            min_index = distance(start, curr);
+        }
+    }
+    return min_index;
+}
+
+template <typename T> void swap(vector<T> coll, int fst, int snd) {
+    T& tmp = coll[fst];
+    coll[fst] = coll[snd];
+    coll[snd] = tmp;
+}
+
+template <typename T>
+Sort_stats selection_sort(vector<T> &v) {
+    Sort_stats info{"selection sort", v.size(), 0, 0};
+
+    clock_t start = clock();
+    // finding the smallest element and moving it to the front in each iteration
+    for(int pos = 0; pos < v.size(); pos++) {
+        info.num_comparisons += v.size() - 1 - pos;
+        int min_index = min_elem_pos(v, pos);
+        swap(v, pos, min_index);
+    }
+
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+    return info;
 }
 
 //
