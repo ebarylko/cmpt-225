@@ -71,3 +71,25 @@ TEST_CASE("min_elem_pos") {
         }
     }
 }
+
+void print_vec(const vector<int>& coll) {
+    for(auto curr = coll.begin(); curr != coll.end(); curr++) {
+        cout << *curr << endl;
+    }
+}
+
+TEST_CASE("swap") {
+    SUBCASE("Swapping two elements in a collection changes their positions") {
+        GIVEN("A collection of elements") {
+            vector<int> coll{1, 2, 3};
+            WHEN("Swapping the first and last element") {
+               swap(coll, 0, 2);
+               print_vec(coll);
+                THEN("The first and last element in the collection will interchange positions") {
+                    vector<int> expected{3, 2, 1};
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}

@@ -114,7 +114,7 @@ template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
 }
 
 template <typename T> void swap(vector<T>& coll, int fst, int snd) {
-    T& tmp = coll[fst];
+    T tmp = coll[fst];
     coll[fst] = coll[snd];
     coll[snd] = tmp;
 }
