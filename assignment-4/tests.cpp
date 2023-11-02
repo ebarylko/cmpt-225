@@ -1,13 +1,12 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-#include "a4_base.h"
-#include "a4_sort_implementations.h"
 #include "test.h"
 #include <cassert>
+#include "a4_base.h"
+#include "a4_sort_implementations.h"
 #include <string>
 #include <sstream>
 #include <list>
 #include <algorithm>  
+#include "doctest.h"
 #include "autocheck/autocheck.hpp"
 namespace ac = autocheck;
 using namespace std;
@@ -42,26 +41,58 @@ template<> struct StringMaker<NextElems> {
 };
 };  // namespace doctest
 
+struct prop_insert_sorted_t {
+  template <typename T>
+  bool operator() (vector<T>& coll) {
+    vector<T> expected = coll;
+    sort(expected);
+    insertion_sort(coll);
+    return expected == coll;
+  }
+};
+
 TEST_CASE("rand_num") {
-    SUBCASE("Generating a random number from the range [a, a] returns the value a") {
-        GIVEN("A range of values [2, 2]") {
-            WHEN("Generating a random number in that range") {
-                int actual = rand_num(2, 2);
-                THEN("The number outputted should equal two") {
-                    REQUIRE(2 == actual);
-                }
-            }
-        }
+  SUBCASE(
+      "Generating a random number from the range [a, a] returns the value a") {
+    GIVEN("A range of values [2, 2]") {
+      WHEN("Generating a random number in that range") {
+        int actual = rand_num(2, 2);
+        THEN("The number outputted should equal two") { REQUIRE(2 == actual); }
+      }
     }
-    SUBCASE("Generating a value in the range [a, b] returns a value x which has the following properties: a <= x <= b") {
-        GIVEN( "A range of values [1, 100]" ) {
-            WHEN("Generating 100 values in this range") {
-                vector<int> actual;
-                for(int i = 0; i < 100; i++) {
-                    actual.push_back(rand_num(1, 100));
-                }
-                THEN("All the values should lie in between 1 and 100") {
-                    REQUIRE(all_of(actual.begin(), actual.end(), [](int val) {return 1 <= val && val <= 100;}));
+  }
+  SUBCASE(
+      "Generating a value in the range [a, b] returns a value x which has the "
+      "following properties: a <= x <= b") {
+    GIVEN("A range of values [1, 100]") {
+      WHEN("Generating 100 values in this range") {
+        vector<int> actual;
+        for (int i = 0; i < 100; i++) {
+          actual.push_back(rand_num(1, 100));
+        }
+        THEN("All the values should lie in between 1 and 100") {
+          REQUIRE(all_of(actual.begin(), actual.end(),
+                         [](int val) { return 1 <= val && val <= 100; }));
+        }
+      }
+    }
+  }
+}
+
+struct prop_reverse_t {
+  template <typename Container>
+  bool operator() (const Container& xs) const {
+    return prop_reverse_f(xs);
+  }
+};
+
+TEST_CASE("Insertion sort") {
+    SUBCASE("Sorting a collection of numbers") {
+        GIVEN("A collection of numbers") {
+            WHEN("Ordering the collection") {
+                THEN("The collection will be in ascending order") {
+                    ac::check<std::vector<int>>(prop_reverse_t());
+                    // ac::check<vector<int>>(prop_insert_sorted_t(), 100, ac::make_arbitrary<std::vector<int>>());
                 }
             }
         }

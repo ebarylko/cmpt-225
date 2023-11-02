@@ -1,6 +1,6 @@
 #ifndef AUTOCHECK_APPLY_HPP
 #define AUTOCHECK_APPLY_HPP
-
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <type_traits>
 #include <tuple>
 
