@@ -8,8 +8,8 @@
 #include <sstream>
 #include <list>
 #include <algorithm>  
-// #include "rapidcheck.h"
-
+#include "autocheck/autocheck.hpp"
+namespace ac = autocheck;
 using namespace std;
 
 namespace doctest {
