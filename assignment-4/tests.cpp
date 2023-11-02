@@ -210,8 +210,21 @@ TEST_CASE("add_smallest_elem") {
             vector<int> sorted;
             WHEN("Addng the smallest elem from the first to the second collection") {
                 NextElems actual = add_smallest_elem(sorted, coll, 0, 1);
-                THEN("The position of the next items to check should be updated based on the item moved earlier") {
+                THEN("The position of the next items to check will include an invalid position for the second location") {
                     NextElems expected{0, 2};
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("Adding an item from the first location updates the position of the first location") {
+        GIVEN("A nonempty collection of unordered items and a second collection") {
+            vector<int> coll{1, 2};
+            vector<int> sorted;
+            WHEN("Addng the first element from the unordered collection to the ordered one") {
+                NextElems actual = add_smallest_elem(sorted, coll, 0, 1);
+                THEN("The location of the first item will be incremented by one") {
+                    NextElems expected{1, 1};
                     REQUIRE(expected == actual);
                 }
             }
