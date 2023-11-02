@@ -227,6 +227,10 @@ struct NextElems {
     NextElems(int first, int second): fst(first), snd(second) {};
 };
 
+bool operator==(const NextElems& a, const NextElems& b) {
+    return a.fst == b.fst && a.snd == b.snd;
+}
+
 /**
  * @brief Takes a sorted collection, another collection and two locations in the the secondary collection 
  * and adds the smallest of the values in both locations to the sorted collection. Returns the 
@@ -267,7 +271,9 @@ template <typename T> void merge(vector<T>& coll, int start, int mid, int end) {
     vector<int> sorted_portion;
     int curr_first = start, curr_snd = mid;
     while (start < mid && curr_snd < end) {
-        add_smallest_elem(sorted_portion, coll, curr_first, curr_snd);
+        NextElems next = (sorted_portion, coll, curr_first, curr_snd);
+        start = next.fst;
+        curr_snd = next.snd;
     }
     add_remaining_items(sorted_portion, coll, curr_first, mid - 1);
     add_remaining_items(sorted_portion, coll, curr_snd, end);

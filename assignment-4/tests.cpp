@@ -31,6 +31,15 @@ struct StringMaker<vector<T>> {
     return oss.str().c_str();
   }
 };
+
+template<> struct StringMaker<NextElems> {
+  static String convert(const NextElems& coll) {
+    ostringstream oss;
+    oss << "[";
+    oss << coll.fst << ", " << coll.snd << "]";
+    return oss.str().c_str();
+  }
+};
 };  // namespace doctest
 
 TEST_CASE("rand_num") {
@@ -191,6 +200,19 @@ TEST_CASE("add_smallest_elem") {
                 THEN("The smallest element should appear at the end of the second collection") {
                     vector<int> expected{1};
                     REQUIRE(expected == sorted);
+                }
+            }
+        }
+    }
+    SUBCASE("Adding an item returns the updated positions of the next items to check") {
+        GIVEN("A nonempty collection of unordered items and a second collection") {
+            vector<int> coll{2, 1};
+            vector<int> sorted;
+            WHEN("Addng the smallest elem from the first to the second collection") {
+                NextElems actual = add_smallest_elem(sorted, coll, 0, 1);
+                THEN("The position of the next items to check should be updated based on the item moved earlier") {
+                    NextElems expected{0, 2};
+                    REQUIRE(expected == actual);
                 }
             }
         }
