@@ -149,48 +149,48 @@ void test_bubble_sort_string()
     assert(is_sorted(v));
 }
 
-// void test_insertion_sort_int()
-// {
-//     Test("test_insertion_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_insertion_sort_int()
+{
+    Test("test_insertion_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    insertion_sort(v);
+    assert(is_sorted(v));
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    insertion_sort(v);
+    assert(is_sorted(v));
+}
 
-// void test_insertion_sort_string()
-// {
-//     Test("test_insertion_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     insertion_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_insertion_sort_string()
+{
+    Test("test_insertion_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    insertion_sort(v);
+    assert(is_sorted(v));
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    insertion_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    insertion_sort(v);
+    assert(is_sorted(v));
+}
 
 void print_vec(const vector<int>& coll) {
     for(auto curr = coll.begin(); curr != coll.end(); curr++) {
@@ -422,8 +422,8 @@ int main()
     test_bubble_sort_int();
     test_bubble_sort_string();
 
-    // test_insertion_sort_int();
-    // test_insertion_sort_string();
+    test_insertion_sort_int();
+    test_insertion_sort_string();
 
     // test_selection_sort_int();
     // test_selection_sort_string();

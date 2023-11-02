@@ -200,7 +200,7 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     Sort_stats info{"insertion sort", v.size(), 0, 0};
     clock_t start = clock();
 
-    for(int pos = 1; pos < v.size; pos++) {
+    for(int pos = 1; pos < v.size(); pos++) {
         insert_sort_order(v, pos, info);
     }
     clock_t end = clock();
