@@ -5,11 +5,33 @@
 #include "test.h"
 #include <cassert>
 #include <string>
+#include <sstream>
+#include <list>
 #include <algorithm>  
 // #include "rapidcheck.h"
 
 using namespace std;
 
+namespace doctest {
+template <typename T>
+struct StringMaker<vector<T>> {
+  static String convert(const vector<T>& coll) {
+    ostringstream oss;
+
+    oss << "[";
+    // NOLINTNEXTLINE(*-use-auto)
+    for (typename std::vector<T>::const_iterator it = coll.begin();
+         it != coll.end();) {
+      oss << *it;
+      if (++it != coll.end()) {
+        oss << ", ";
+      }
+    }
+    oss << "]";
+    return oss.str().c_str();
+  }
+};
+};  // namespace doctest
 
 TEST_CASE("rand_num") {
     SUBCASE("Generating a random number from the range [a, a] returns the value a") {
@@ -127,5 +149,18 @@ TEST_CASE("bubble swap") {
                     }
                 }
         }
+}
+SUBCASE("Moving the largest element to the end in a sorted collection does not change the collection") {
+    GIVEN("An ordered collection") {
+        vector<int> coll{1, 2, 3};
+        Sort_stats info;
+        WHEN("Moving the largest element to the end") {
+            bubble_swap(coll, 2, info);
+            THEN("The collection should remain unchanged") {
+                vector<int> expected{1, 2, 3};
+                REQUIRE(expected == coll);
+            }
+        }
+    }
 }
 }
