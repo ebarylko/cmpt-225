@@ -106,48 +106,48 @@ void test_is_sorted_string()
     assert(is_sorted(v));
 }
 
-// void test_bubble_sort_int()
-// {
-//     Test("test_bubble_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_bubble_sort_int()
+{
+    Test("test_bubble_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    bubble_sort(v);
+    assert(is_sorted(v));
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    bubble_sort(v);
+    assert(is_sorted(v));
+}
 
-// void test_bubble_sort_string()
-// {
-//     Test("test_bubble_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     bubble_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_bubble_sort_string()
+{
+    Test("test_bubble_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    bubble_sort(v);
+    assert(is_sorted(v));
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    bubble_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    bubble_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_insertion_sort_int()
 // {
@@ -419,14 +419,14 @@ int main()
     test_is_sorted_string();
     test_rand_vec();
 
-    // test_bubble_sort_int();
-    // test_bubble_sort_string();
+    test_bubble_sort_int();
+    test_bubble_sort_string();
 
     // test_insertion_sort_int();
     // test_insertion_sort_string();
 
-    test_selection_sort_int();
-    test_selection_sort_string();
+    // test_selection_sort_int();
+    // test_selection_sort_string();
 
     // test_merge_sort_int();
     // test_merge_sort_string();

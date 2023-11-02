@@ -120,8 +120,7 @@ TEST_CASE("bubble swap") {
                 vector<int> coll{5, 1, 2, 3}; 
                 Sort_stats info;
                 WHEN("Moving the largest element to the end") {
-                    bubble_swap(coll, 0, info);
-                    print_vec(coll);
+                    bubble_swap(coll, 3, info);
                     THEN("The largest element should be at the end") {
                         vector<int> expected{1, 2, 3, 5};
                         REQUIRE(expected == coll);

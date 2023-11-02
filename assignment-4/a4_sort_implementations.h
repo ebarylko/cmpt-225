@@ -96,7 +96,10 @@ vector<int> rand_vec(int size, int min, int max) {
 
 template <typename T> auto start_iter(const vector<T>& coll, int start_pos) {
     auto iter = coll.begin();
-    advance(iter, start_pos);
+    // advance(iter, start_pos);
+    for(int i = 0; i < start_pos; i++) {
+        iter++;
+    }
     return iter;
 }
 
@@ -148,9 +151,7 @@ Sort_stats selection_sort(vector<T> &v) {
  */
 template <typename T> void bubble_swap(vector<T> &coll, int end, Sort_stats& info) {
     for(int pos = 0; pos < end; pos++) {
-        cout << "The element " << pos << " " << coll[pos] << endl;
         if (coll[pos] > coll[pos + 1]) {
-            cout << "The element is larget" << endl;
             swap(coll, pos, pos + 1);
             info.num_comparisons++;
         }
@@ -165,7 +166,7 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
     // Move largest element to the end, and then do the same 
     // on the rest of the collection
     int final_pos = coll.size() - 1;
-    while (final_pos) {
+    while (final_pos > 0) {
         bubble_swap(coll, final_pos, info);
         final_pos--;
     }
