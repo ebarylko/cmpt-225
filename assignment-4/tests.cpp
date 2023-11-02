@@ -6,6 +6,7 @@
 #include <cassert>
 #include <string>
 #include <algorithm>  
+// #include "rapidcheck.h"
 
 using namespace std;
 
@@ -72,19 +73,12 @@ TEST_CASE("min_elem_pos") {
     }
 }
 
-void print_vec(const vector<int>& coll) {
-    for(auto curr = coll.begin(); curr != coll.end(); curr++) {
-        cout << *curr << endl;
-    }
-}
-
 TEST_CASE("swap") {
     SUBCASE("Swapping two elements in a collection changes their positions") {
         GIVEN("A collection of elements") {
             vector<int> coll{1, 2, 3};
             WHEN("Swapping the first and last element") {
                swap(coll, 0, 2);
-               print_vec(coll);
                 THEN("The first and last element in the collection will interchange positions") {
                     vector<int> expected{3, 2, 1};
                     REQUIRE(expected == coll);
@@ -92,4 +86,47 @@ TEST_CASE("swap") {
             }
         }
     }
+}
+
+bool no_comparisons(const Sort_stats& info) {
+    return info.num_comparisons == 0;
+}
+
+void print_vec(const vector<int>& coll) {
+    for(auto curr = coll.begin(); curr != coll.end(); curr++) {
+        cout << *curr << endl;
+    }
+}
+
+TEST_CASE("bubble swap") {
+    SUBCASE("Moving the largest element to the end in an empty collection does nothing") {
+        GIVEN("An empty collection") {
+            vector<int> coll;
+            Sort_stats info;
+            WHEN("Moving the largest element to the end") {
+                bubble_swap(coll, 0, info);
+                THEN("Nothing occurs to the collection") {
+                    REQUIRE(coll.empty());
+                    REQUIRE(no_comparisons(info));
+                }
+            }
+        }
+    }
+    SUBCASE(
+        "Moving the largest element to the end in a nonempty collection "
+        "returns a collection with the same amount of elements and with the "
+        "largest element placed at the end") {
+            GIVEN("A nonempty collection") {
+                vector<int> coll{5, 1, 2, 3}; 
+                Sort_stats info;
+                WHEN("Moving the largest element to the end") {
+                    bubble_swap(coll, 0, info);
+                    print_vec(coll);
+                    THEN("The largest element should be at the end") {
+                        vector<int> expected{1, 2, 3, 5};
+                        REQUIRE(expected == coll);
+                    }
+                }
+        }
+}
 }

@@ -136,6 +136,45 @@ Sort_stats selection_sort(vector<T> &v) {
     return info;
 }
 
+
+/**
+ * @brief Takes a collection, an end position, and moves the 
+ * largest value in the collection to the end
+ * 
+ * @tparam T 
+ * @param coll the collection to look through
+ * @param end the last position to look at
+ * @param info the information about the operations occuring with bubble sort
+ */
+template <typename T> void bubble_swap(vector<T> &coll, int end, Sort_stats& info) {
+    for(int pos = 0; pos < end; pos++) {
+        cout << "The element " << pos << " " << coll[pos] << endl;
+        if (coll[pos] > coll[pos + 1]) {
+            cout << "The element is larget" << endl;
+            swap(coll, pos, pos + 1);
+            info.num_comparisons++;
+        }
+    }
+}
+
+template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
+    Sort_stats info{"bubble sort", coll.size(), 0, 0};
+    
+    clock_t start = clock();
+
+    // Move largest element to the end, and then do the same 
+    // on the rest of the collection
+    int final_pos = coll.size() - 1;
+    while (final_pos) {
+        bubble_swap(coll, final_pos, info);
+        final_pos--;
+    }
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
+
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
 // well as is_sorted and rand_vec. You can use other helper functions if needed.
