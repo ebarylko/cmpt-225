@@ -188,6 +188,8 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
  */
 template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int end, Sort_stats& info) {
     int curr = end;
+    // Continue swapping element until there 
+    // are no more elements or the element is in its correct spot
     while (curr != 0 && coll[curr] < coll[curr - 1]) {
             swap(coll, curr, curr - 1);
             info.num_comparisons++;
@@ -200,6 +202,8 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     Sort_stats info{"insertion sort", v.size(), 0, 0};
     clock_t start = clock();
 
+    // Ordering the elements by moving the element
+    // at the current position to its correct spot
     for(int pos = 1; pos < v.size(); pos++) {
         insert_sort_order(v, pos, info);
     }
@@ -208,6 +212,98 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
 
     return info;
 }
+
+template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, int curr, int end) {
+    while (curr > end) {
+        dest.push_back(src[curr]);
+        curr++;
+    }
+
+}
+
+struct NextElems {
+    int fst;
+    int snd;
+    NextElems(int first, int second): fst(first), snd(second) {};
+};
+
+/**
+ * @brief Takes a sorted collection, another collection and two locations in the the secondary collection 
+ * and adds the smallest of the values in both locations to the sorted collection. Returns the 
+ * locations of the new numbers to try
+ * 
+ * @param sorted the sorted collection
+ * @param cpy_from the collection to copy from
+ * @param fst the first position in cpy_from to look at
+ * @param snd the second position in cpy_from to look at
+ * @return NextElems the next positions in cpy_from to compare
+ */
+template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& cpy_from, int fst, int snd) {
+    int fst_val = cpy_from[fst];
+    int snd_val = cpy_from[snd];
+
+    if (fst_val < snd_val) {
+        sorted.push_back(fst_val);
+        fst++;
+    } else {
+        sorted.push_back(snd_val);
+        snd++;
+    }
+
+    return NextElems{fst, snd};
+}
+
+/**
+ * @brief takes a collection, a start and end point, and a middle point inbetween them, and sorts the 
+ * items ascending in the collection from the start to end point
+ * 
+ * @tparam T 
+ * @param coll the collection passed
+ * @param start the point from where to start sorting
+ * @param mid the middle point in between start and end
+ * @param end the point in the collection to stop sorting at
+ */
+template <typename T> void merge(vector<T>& coll, int start, int mid, int end) {
+    vector<int> sorted_portion;
+    int curr_first = start, curr_snd = mid;
+    while (start < mid && curr_snd < end) {
+        add_smallest_elem(sorted_portion, coll, curr_first, curr_snd);
+    }
+    add_remaining_items(sorted_portion, coll, curr_first, mid - 1);
+    add_remaining_items(sorted_portion, coll, curr_snd, end);
+}
+
+template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid, int final) {
+    if (start == final || start > final) {
+        return;
+    }
+
+    int lower_end = mid - 1;
+    int lower_mid = (lower_end - start + 1) / 2;
+    int actual_low_mid = lower_mid + start;
+    merge_sort_order(coll, start, actual_low_mid, lower_end);
+
+    int high_mid = (final - mid + 1) / 2;
+    int actual_high_mid = mid + high_mid;
+    merge_sort_order(coll, mid, actual_high_mid, final);
+    merge(coll, start, mid, final);
+}
+
+template <typename T> Sort_stats merge_sort(vector<T> &v) {
+    Sort_stats info{"merge sort", v.size(), 0, 0};
+    clock_t start = clock();
+
+    // Ordering the elements by moving the element
+    // at the current position to its correct spot
+    int final_pos = v.size() - 1;
+    int mid = (final_pos + 1) / 2;
+    merge_sort_order(v, 0, mid, final_pos);
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
+
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
 // well as is_sorted and rand_vec. You can use other helper functions if needed.

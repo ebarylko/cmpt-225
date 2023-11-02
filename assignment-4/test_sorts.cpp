@@ -425,8 +425,8 @@ int main()
     test_insertion_sort_int();
     test_insertion_sort_string();
 
-    // test_selection_sort_int();
-    // test_selection_sort_string();
+    test_selection_sort_int();
+    test_selection_sort_string();
 
     // test_merge_sort_int();
     // test_merge_sort_string();

@@ -180,3 +180,19 @@ TEST_CASE("insert_sort_order") {
         }
     }
 }
+
+TEST_CASE("add_smallest_elem") {
+    SUBCASE("The smaller of the two items in a collection is added to the end of another collection") {
+        GIVEN("A nonempty unordered collection and an empty second collection") {
+            vector<int> coll{2, 1};
+            vector<int> sorted;
+            WHEN("Adding the smallest element from the first collection onto the second") {
+                add_smallest_elem(sorted, coll, 0, 1);
+                THEN("The smallest element should appear at the end of the second collection") {
+                    vector<int> expected{1};
+                    REQUIRE(expected == sorted);
+                }
+            }
+        }
+    }
+}
