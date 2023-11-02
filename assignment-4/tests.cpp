@@ -164,3 +164,19 @@ SUBCASE("Moving the largest element to the end in a sorted collection does not c
     }
 }
 }
+
+TEST_CASE("insert_sort_order") {
+    SUBCASE("When ordering an element in a collection, the element is moved to its correct location") {
+        GIVEN("A nonempty collection") {
+            vector<int> coll{1, 2, 3, -1};
+            Sort_stats info;
+            WHEN("Ordering the last element") {
+                insert_sort_order(coll, 3, info);
+                THEN("The collection should be in ascending order") {
+                    vector<int> expected{-1, 1, 2, 3};
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}

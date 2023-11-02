@@ -176,6 +176,38 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
     return info;
 }
 
+/**
+ * @brief Takes a collection and a start position and moves the element at the start position
+ *  to its correct location
+ * 
+ * @tparam T 
+ * @param coll the collection passed
+ * @param start the position where the element to move will be
+ * @param info the current information about the operations that occurred while sorting
+ * @return Sort_stats information about the operations occuring while sorting
+ */
+template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int end, Sort_stats& info) {
+    int curr = end;
+    while (curr != 0 && coll[curr] < coll[curr - 1]) {
+            swap(coll, curr, curr - 1);
+            info.num_comparisons++;
+            curr--;
+        }
+    return info;
+}
+
+template <typename T> Sort_stats insertion_sort(vector<T> &v) {
+    Sort_stats info{"insertion sort", v.size(), 0, 0};
+    clock_t start = clock();
+
+    for(int pos = 1; pos < v.size; pos++) {
+        insert_sort_order(v, pos, info);
+    }
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
 // well as is_sorted and rand_vec. You can use other helper functions if needed.
