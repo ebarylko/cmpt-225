@@ -315,12 +315,23 @@ TEST_CASE("overwrite_coll") {
 }
 
 TEST_CASE("merge") {
-    SUBCASE("Ordering an ordred collection returns the same collection") {
+    SUBCASE("Ordering an ordered collection returns the same collection") {
         GIVEN("An ordered collection") {
             vector<int> coll{1,2, 3, 4};
             WHEN("Ordering the collection") {
                 THEN("The collection will remain unchanged") {
                     vector<int> expected{1, 2, 3, 4};
+                    REQUIRE(expected == merge(coll, 0, 2, 3));
+                }
+            }
+        }
+    }
+    SUBCASE("Ordering a partially unordered collection returns the collection in ascending order") {
+        GIVEN("A partially unordered collection") {
+            vector<int> coll{4, 5, 1, 2};
+            WHEN("Ordering the collection") {
+                THEN("The collection is in ascending order") {
+                    vector<int> expected{1, 2, 4, 5};
                     REQUIRE(expected == merge(coll, 0, 2, 3));
                 }
             }

@@ -305,7 +305,7 @@ template <typename T> vector<T>& overwrite_coll(vector<T>& src, vector<T>& cpy_f
 template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int end) {
     vector<T> sorted_portion;
     int curr_first = start, curr_snd = mid;
-    while (curr_first < mid && curr_snd < end) {
+    while (curr_first < mid && curr_snd <= end) {
 
         NextElems next = add_smallest_elem(sorted_portion, coll, curr_first, curr_snd);
         if (curr_first != next.fst) {
