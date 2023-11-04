@@ -57,6 +57,10 @@ template <typename T> bool is_sorted(vector<T>& coll) {
     return curr == end;
 }
 
+int random_sign(int min) {
+    return min >= 0 ? 1 : rand() % 2 == 0 ? 1 : -1;
+}
+
 /**
  * @brief Takes a minimum and a maximum number and generates a random number within those two numbers
  * 
@@ -65,10 +69,11 @@ template <typename T> bool is_sorted(vector<T>& coll) {
  * @return int a number that lies in between min and max
  */
 int rand_num(int min, int max) {
-    int end = max + 1;
+    int end = max >= 0 ? max + 1 : max  - 1;
     int num = (rand() + min) % end;
     while (min > num || num > max) {
-        num = (num + min) % end;
+        cout << "Generating value " << num << endl;
+        num = random_sign(min) * ((num + min) % end);
     }
     return num;
 }
