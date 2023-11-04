@@ -70,7 +70,7 @@ TEST_CASE("rand_num") {
     GIVEN("A range of values [-10, -1]") 
     WHEN("Generating 100 values in this range") {
         vector<int> actual;
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 4; i++) {
           actual.push_back(rand_num(-10, -1));
         }
         THEN("All the values should lie in between -10 and -1") {

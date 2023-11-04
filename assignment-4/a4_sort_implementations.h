@@ -69,10 +69,12 @@ int random_sign(int min) {
  * @return int a number that lies in between min and max
  */
 int rand_num(int min, int max) {
-    int end = max >= 0 ? max + 1 : max  - 1;
+    int end = max >= 0 ? max + 1 : min  - 1;
     int num = (rand() + min) % end;
     while (min > num || num > max) {
+        cout << "The min " << end << endl;
         cout << "Generating value " << num << endl;
+        cout << "Modified value " << (num + min) % end << endl;
         num = random_sign(min) * ((num + min) % end);
     }
     return num;
