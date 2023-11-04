@@ -226,7 +226,7 @@ template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, 
     if (curr > end) {
         return;
     }
-    while (curr > end) {
+    while (curr <= end) {
         dest.push_back(src[curr]);
         curr++;
     }

@@ -282,4 +282,16 @@ TEST_CASE("add_remaining_items") {
             }
         }
     }
+    SUBCASE("Adding items using a valid range copies the elements from the second collection onto the first") {
+        GIVEN("An initial empty collection and a nonempty second collection") {
+            vector<int> coll;
+            vector<int> src{1, 2};
+            WHEN("Copying all the elements from the second collection onto the first") {
+                add_remaining_items(coll, src, 0, 1);
+                THEN("The first collection should only have the items in the second collection") {
+                    REQUIRE(src == coll);
+                }
+            }
+        }
+    }
 }
