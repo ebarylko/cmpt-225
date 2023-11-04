@@ -74,9 +74,6 @@ int rand_num(int min, int max) {
     // Continue generating numbers until one is within
     // min and max
     while (min > num || num > max) {
-        cout << "The min " << end << endl;
-        cout << "Generating value " << num << endl;
-        cout << "Modified value " << (num + min) % end << endl;
         num = random_sign(min) * ((num + min) % end);
     }
     return num;
@@ -364,7 +361,7 @@ bool operator== (const SwapLocations& a, const SwapLocations& b) {
 
 template <typename T> int larger_than(const vector<T>& coll, int start, int end,const T& pivot) {
     int curr_pos = start;
-    while (curr_pos <= end && coll[curr_pos] < pivot) {
+    while (curr_pos <= end && coll[curr_pos] <= pivot) {
         curr_pos++;
     }
     return curr_pos > end ? -1 : curr_pos;
@@ -383,7 +380,7 @@ template <typename T> int find_elem(const vector<T>& coll, int start, int end,co
         return larger_than(coll, start, end, pivot);
     }
 
-    return smaller_than(coll, end, start, pivot);
+    return smaller_than(coll, start, end, pivot);
 }
 
 /**
@@ -395,10 +392,7 @@ template <typename T> int find_elem(const vector<T>& coll, int start, int end,co
 template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end) {
     // int end_dist = coll.size() - end;
     T pivot_val = coll[(end - start + 1) / 2];
-    return SwapLocations(find_elem(coll, start, end, pivot_val), find_elem(coll, end, start, pivot_val));
-    // auto small = find_if(rbegin(coll) - end_dist, rend(coll) + start, [](T& item) {return pivot_val > item});
-    // auto large = find_if(coll.begin() + start, coll.end() - end_dist, [](T& item) {return item > pivot_val});
-    // return SwapLocations(find_dist(coll, small + 1, end - start + 1), find_dist(coll, end + 1, end - start + 1));
+    return SwapLocations(find_elem(coll, end, start, pivot_val), find_elem(coll, start, end, pivot_val));
 }
 
 // template <typename T>

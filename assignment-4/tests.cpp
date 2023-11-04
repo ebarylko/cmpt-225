@@ -42,7 +42,7 @@ template<> struct StringMaker<SwapLocations> {
   static String convert(const SwapLocations& locs) {
     ostringstream oss;
     oss << "[";
-    oss << locs.large << ", " << locs.small << "]";
+    oss << locs.small << ", " << locs.large << "]";
     return oss.str().c_str();
   }
 };
@@ -267,7 +267,6 @@ TEST_CASE("Insertion sort") {
     SUBCASE("Sorting a collection of numbers") {
         GIVEN("A collection of numbers") {
             vector<int> coll = rand_vec(100, -100, 100);
-            print_vec(coll);
             vector<int> expected = coll;
             WHEN("Ordering the collection") {
                 insertion_sort(coll);
@@ -343,6 +342,34 @@ TEST_CASE("merge") {
                 THEN("The collection is in ascending order") {
                     vector<int> expected{1, 2, 4, 5};
                     REQUIRE(expected == merge(coll, 0, 2, 3));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("smaller_than") {
+    SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
+        GIVEN("A collection where the pivot is the greatest element") {
+            vector<int> coll{1, 2, 3, -4};
+            WHEN("Finding an element smaller than the pivot") {
+                int actual = smaller_than(coll, 3, 0, 3);
+                THEN("The smallest element found is the last element") {
+                    REQUIRE(3 == actual);
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("larger_than") {
+    SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
+        GIVEN("A collection where the pivot is the greatest element") {
+            vector<int> coll{1, 2, 3, -4};
+            WHEN("Finding an element smaller than the pivot") {
+                int actual = larger_than(coll, 0, 3, 3);
+                THEN("The smallest element found is the last element") {
+                    REQUIRE(-1 == actual);
                 }
             }
         }
