@@ -50,15 +50,14 @@ TEST_CASE("rand_num") {
       }
     }
   }
+}
+TEST_CASE("rand_vec") {
   SUBCASE(
       "Generating a value in the range [a, b] returns a value x which has the "
       "following properties: a <= x <= b") {
     GIVEN("A range of values [1, 100]") {
       WHEN("Generating 100 values in this range") {
-        vector<int> actual;
-        for (int i = 0; i < 100; i++) {
-          actual.push_back(rand_num(1, 100));
-        }
+        vector<int> actual = rand_vec(100, 1, 100);
         THEN("All the values should lie in between 1 and 100") {
           REQUIRE(all_of(actual.begin(), actual.end(),
                          [](int val) { return 1 <= val && val <= 100; }));
@@ -67,33 +66,28 @@ TEST_CASE("rand_num") {
     }
   }
   SUBCASE("Random negative values can be generated") {
-    GIVEN("A range of values [-10, -1]") 
+    GIVEN("A range of values [-10, -1]")
     WHEN("Generating 100 values in this range") {
-        vector<int> actual;
-        for (int i = 0; i < 100; i++) {
-          actual.push_back(rand_num(-10, -1));
-        }
-        THEN("All the values lie in between -10 and -1") {
-          REQUIRE(all_of(actual.begin(), actual.end(),
-                         [](int val) { return -10 <= val && val <= -1; }));
-        }
+      vector<int> actual = rand_vec(100, -10, -1);
+      THEN("All the values lie in between -10 and -1") {
+        REQUIRE(all_of(actual.begin(), actual.end(),
+                       [](int val) { return -10 <= val && val <= -1; }));
+      }
     }
   }
   SUBCASE("Random and positive values can be generated") {
     GIVEN("A range of values [-10, 10]") {
         WHEN("Generating 100 values in this range") {
-            vector<int> actual;
-        for (int i = 0; i < 100; i++) {
-          actual.push_back(rand_num(-10, 10));
-        }
-        THEN("All the values lie in between -10 and 10") {
+          vector<int> actual = rand_vec(100, -10, 10);
+          THEN("All the values lie in between -10 and 10") {
           REQUIRE(all_of(actual.begin(), actual.end(),
                          [](int val) { return -10 <= val && val <= 10; }));
-        }
+          }
         }
     }
   }
 }
+
 
 TEST_CASE("min_elem_pos") {
     SUBCASE("The location of the smallest element in a collection with one element is the first spot") {
@@ -270,6 +264,20 @@ TEST_CASE("Insertion sort") {
                 THEN("The collection will be in ascending order") {
                     sort(expected.begin(), expected.end());
                     REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}
+TEST_CASE("add_remaining_items") {
+    SUBCASE("Adding items using an invalid range does nothing to the list being added to") {
+        GIVEN("An initial collection and a nonempty second collection") {
+            vector<int> coll;
+            vector<int> src{1, 2};
+            WHEN("Copying elements from the second collection to the first using an invalid range") {
+                add_remaining_items(coll, src, 1, 0);
+                THEN("The first collection remains unchanged") {
+                    REQUIRE(coll.empty());
                 }
             }
         }

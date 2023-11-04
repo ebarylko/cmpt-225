@@ -71,6 +71,8 @@ int random_sign(int min) {
 int rand_num(int min, int max) {
     int end = max >= 0 ? max + 1 : min  - 1;
     int num = random_sign(min) * (rand() + min) % end;
+    // Continue generating numbers until one is within
+    // min and max
     while (min > num || num > max) {
         cout << "The min " << end << endl;
         cout << "Generating value " << num << endl;
@@ -221,6 +223,9 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
 }
 
 template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, int curr, int end) {
+    if (curr > end) {
+        return;
+    }
     while (curr > end) {
         dest.push_back(src[curr]);
         curr++;

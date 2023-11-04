@@ -241,25 +241,25 @@ void test_selection_sort_string()
     assert(is_sorted(v));
 }
 
-// void test_merge_sort_int()
-// {
-//     Test("test_merge_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_merge_sort_int()
+{
+    Test("test_merge_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    merge_sort(v);
+    assert(is_sorted(v));
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    merge_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_merge_sort_string()
 // {
@@ -428,7 +428,7 @@ int main()
     test_selection_sort_int();
     test_selection_sort_string();
 
-    // test_merge_sort_int();
+    test_merge_sort_int();
     // test_merge_sort_string();
 
     // test_quick_sort_int();
