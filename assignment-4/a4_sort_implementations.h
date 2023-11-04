@@ -419,46 +419,54 @@ bool has_valid_locations(const SwapLocations& locs) {
     return !outside_range(locs) && !overlapping(locs); 
 }
 
-// template <typename T>
-// void quick_order(vector<T>& coll, int start, int end) {
-//     if (start == end) {
-//         return;
-//     }
+bool none_greater_than_pivot(int index) {
+    return index == -1;
+}
 
-//     int pivot_loc = (end - start + 1) / 2;
-//     T pivot_val = coll[pivot_loc];
-//     SwapLocations swap = find_swap_pair(coll, start, end, pivot_val);
-//     while (has_valid_locations(swap)) {
-//         swap(coll, swap.large, swap.small);
-//         swap = find_swap_pair(coll, swap.large, swap.small, pivot_val);
-//     }
+bool none_less_than_pivot(int index) {
+    return index == -1;
+}
 
-//     if (no_elem_>_than_pivot(swap.large, end)) {
-//         swap(end, pivot_loc);
-//         quick_order(coll, start, end - 1);
-//     }
-//     elseif(no_elem_<_than_pivot(swap.small, start)) {
-//         swap(start, pivot_loc);
+template <typename T>
+void quick_order(vector<T>& coll, int start, int end) {
+    if (start == end || start > end) {
+        return;
+    }
 
-//     } else {
-//         quick_order(coll, start, pivot_loc - 1);
-//         quick_order(coll, pivot_loc + 1, end);
-//     }
-// }
+    int pivot_loc = (end - start + 1) / 2;
+    SwapLocations positions = find_swap_pair(coll, start, end);
+    while (has_valid_locations(positions)) {
+        swap(coll, positions.large, positions.small);
+        positions = find_swap_pair(coll, positions.large, positions.small);
+    }
 
-// template <typename T> Sort_stats quick_sort(vector<T> &v) {
-// // 1: crear el Sort_stats objeto
-// // 2: llamar quicksort con el pivot.
-// // 3: devolver el objeto
-//     Sort_stats info{"quick sort", v.size(), 0, 0};
-//     clock_t start = clock();
+    if (none_greater_than_pivot(positions.large)) {
+        swap(coll, end, pivot_loc);
+        quick_order(coll, start, end - 1);
+    }
+    else if(none_less_than_pivot(positions.small)) {
+        cout << "smallest " << endl;
+        swap(coll, start, pivot_loc);
+        quick_order(coll, start + 1, end);
+    } else {
+        quick_order(coll, start, pivot_loc - 1);
+        quick_order(coll, pivot_loc + 1, end);
+    }
+}
 
-//     quick_order(v, 0, v.size() - 1);
-//     clock_t end = clock();
-//     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+template <typename T> Sort_stats quick_sort(vector<T> &v) {
+// 1: crear el Sort_stats objeto
+// 2: llamar quicksort con el pivot.
+// 3: devolver el objeto
+    Sort_stats info{"quick sort", v.size(), 0, 0};
+    clock_t start = clock();
 
-//     return info;
-// }
+    quick_order(v, 0, v.size() - 1);
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as

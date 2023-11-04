@@ -427,14 +427,44 @@ TEST_CASE("find_swap_pair") {
 
 TEST_CASE("has_valid_locations") {
     SUBCASE("Locations where one of the positions is invalid are not valid locations") {
-        GIVEN("A location where the smallest element has an invalid index") {
-            SwapLocations locs(-1, 4);
-            WHEN("Checking if the locations are valid") {
-                THEN("The locations are deemed invalid") {
-                    REQUIRE_FALSE(has_valid_locations(locs));
+            SUBCASE(
+                "A location where the smallest element has an invalid index is "
+                "a invalid location") {
+                GIVEN(
+                    "A location where the smallest element has an invalid "
+                    "index") {
+                    SwapLocations locs(-1, 4);
+                    WHEN("Checking if the locations are valid") {
+                        THEN("The locations are deemed invalid") {
+                          REQUIRE_FALSE(has_valid_locations(locs));
+                        }
+                    }
                 }
             }
-        }
+            SUBCASE(
+                "A location where the largest element has an invalid index is "
+                "an invalid location") {
+                GIVEN(
+                    "A location where the largest element has an invalid "
+                    "index") {
+                    SwapLocations locs(1, -1);
+                    WHEN("Checking if the locations are valid") {
+                        THEN("The location is deemed invalid") {
+                          REQUIRE_FALSE(has_valid_locations(locs));
+                        }
+                    }
+                }
+            }
+    }
+    SUBCASE("Locations where the positions overlap are invalid locations") {
+            GIVEN("A location where the index of the smallest element is smaller than the bigger element") {
+                SwapLocations locs(0, 2);
+                WHEN("Checking if the locations are valid") {
+                    THEN("The location is deemed invalid") {
+                        REQUIRE_FALSE(has_valid_locations(locs));
+                    }
+                }
+            }
     }
 }
 
