@@ -313,3 +313,17 @@ TEST_CASE("overwrite_coll") {
         }
     }
 }
+
+TEST_CASE("merge") {
+    SUBCASE("Ordering an ordred collection returns the same collection") {
+        GIVEN("An ordered collection") {
+            vector<int> coll{1,2, 3, 4};
+            WHEN("Ordering the collection") {
+                THEN("The collection will remain unchanged") {
+                    vector<int> expected{1, 2, 3, 4};
+                    REQUIRE(expected == merge(coll, 0, 2, 3));
+                }
+            }
+        }
+    }
+}

@@ -280,7 +280,7 @@ template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& 
  * @param end the last position to copy from
  * @return vector<T> the overwritten collection
  */
-template <typename T> vector<T> overwrite_coll(vector<T>& src, vector<T>& cpy_from, int start) {
+template <typename T> vector<T>& overwrite_coll(vector<T>& src, vector<T>& cpy_from, int start) {
     auto curr = src.begin();
     advance(curr, start);
     auto cpy_val = cpy_from.begin();
@@ -307,12 +307,10 @@ template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int 
     int curr_first = start, curr_snd = mid;
     while (curr_first < mid && curr_snd < end) {
 
-        NextElems next = (sorted_portion, coll, curr_first, curr_snd);
+        NextElems next = add_smallest_elem(sorted_portion, coll, curr_first, curr_snd);
         if (curr_first != next.fst) {
-            sorted_portion.push_back(coll[curr_first]);
             curr_first = next.fst;
         } else {
-            sorted_portion.push_back(coll[curr_snd]);
             curr_snd = next.snd;
         }
     }
