@@ -254,8 +254,8 @@ bool operator==(const NextElems& a, const NextElems& b) {
  * @return NextElems the next positions in cpy_from to compare
  */
 template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& cpy_from, int fst, int snd) {
-    int fst_val = cpy_from[fst];
-    int snd_val = cpy_from[snd];
+    T fst_val = cpy_from[fst];
+    T snd_val = cpy_from[snd];
 
     if (fst_val < snd_val) {
         sorted.push_back(fst_val);
@@ -333,7 +333,7 @@ template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid,
     int high_mid = (final - mid + 1) / 2;
     int actual_high_mid = mid + high_mid;
     merge_sort_order(coll, mid, actual_high_mid, final);
-    return merge(coll, start, mid, final);
+    merge(coll, start, mid, final);
 }
 
 template <typename T> Sort_stats merge_sort(vector<T> &v) {
@@ -350,6 +350,97 @@ template <typename T> Sort_stats merge_sort(vector<T> &v) {
 
     return info;
 }
+
+struct SwapLocations {
+    int small;
+    int large;
+    SwapLocations(int a, int b): small(a), large(b){};
+};
+
+bool operator== (const SwapLocations& a, const SwapLocations& b) {
+    return a.large == b.large && a.small == b.small;
+}
+
+
+template <typename T> int larger_than(const vector<T>& coll, int start, int end,const T& pivot) {
+    int curr_pos = start;
+    while (curr_pos <= end && coll[curr_pos] < pivot) {
+        curr_pos++;
+    }
+    return curr_pos > end ? -1 : curr_pos;
+}
+
+template <typename T> int smaller_than(const vector<T>& coll, int start, int end,const T& pivot) {
+    int curr_pos = start;
+    while (curr_pos >= end && coll[curr_pos] > pivot) {
+        curr_pos--;
+    }
+    return curr_pos < end ? -1 : curr_pos;
+}
+
+template <typename T> int find_elem(const vector<T>& coll, int start, int end,const T& pivot) {
+    if (start < end) {
+        return larger_than(coll, start, end, pivot);
+    }
+
+    return smaller_than(coll, end, start, pivot);
+}
+
+/**
+ * @brief Takes a collection, the first and final indexes of the collection, the value of the pivot,
+ *  and returns the indexes of the next items to swap.
+ * 
+ * @tparam T 
+ */
+template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end) {
+    // int end_dist = coll.size() - end;
+    T pivot_val = coll[(end - start + 1) / 2];
+    return SwapLocations(find_elem(coll, start, end, pivot_val), find_elem(coll, end, start, pivot_val));
+    // auto small = find_if(rbegin(coll) - end_dist, rend(coll) + start, [](T& item) {return pivot_val > item});
+    // auto large = find_if(coll.begin() + start, coll.end() - end_dist, [](T& item) {return item > pivot_val});
+    // return SwapLocations(find_dist(coll, small + 1, end - start + 1), find_dist(coll, end + 1, end - start + 1));
+}
+
+// template <typename T>
+// void quick_order(vector<T>& coll, int start, int end) {
+//     if (start == end) {
+//         return;
+//     }
+
+//     int pivot_loc = (end - start + 1) / 2;
+//     T pivot_val = coll[pivot_loc];
+//     SwapLocations swap = find_swap_pair(coll, start, end, pivot_val);
+//     while (has_valid_locations(swap)) {
+//         swap(coll, swap.large, swap.small);
+//         swap = find_swap_pair(coll, swap.large, swap.small, pivot_val);
+//     }
+
+//     if (no_elem_>_than_pivot(swap.large, end)) {
+//         swap(end, pivot_loc);
+//         quick_order(coll, start, end - 1);
+//     }
+//     elseif(no_elem_<_than_pivot(swap.small, start)) {
+//         swap(start, pivot_loc);
+
+//     } else {
+//         quick_order(coll, start, pivot_loc - 1);
+//         quick_order(coll, pivot_loc + 1, end);
+//     }
+// }
+
+// template <typename T> Sort_stats quick_sort(vector<T> &v) {
+// // 1: crear el Sort_stats objeto
+// // 2: llamar quicksort con el pivot.
+// // 3: devolver el objeto
+//     Sort_stats info{"quick sort", v.size(), 0, 0};
+//     clock_t start = clock();
+
+//     quick_order(v, 0, v.size() - 1);
+//     clock_t end = clock();
+//     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+//     return info;
+// }
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as

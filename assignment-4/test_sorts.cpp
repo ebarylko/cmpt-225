@@ -261,28 +261,28 @@ void test_merge_sort_int()
     assert(is_sorted(v));
 }
 
-// void test_merge_sort_string()
-// {
-//     Test("test_merge_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     merge_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_merge_sort_string()
+{
+    Test("test_merge_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    merge_sort(v);
+    assert(is_sorted(v));
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    merge_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    merge_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_quick_sort_int()
 // {
@@ -429,7 +429,7 @@ int main()
     test_selection_sort_string();
 
     test_merge_sort_int();
-    // test_merge_sort_string();
+    test_merge_sort_string();
 
     // test_quick_sort_int();
     // test_quick_sort_string();

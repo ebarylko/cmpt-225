@@ -37,6 +37,16 @@ template<> struct StringMaker<NextElems> {
     return oss.str().c_str();
   }
 };
+
+template<> struct StringMaker<SwapLocations> {
+  static String convert(const SwapLocations& locs) {
+    ostringstream oss;
+    oss << "[";
+    oss << locs.large << ", " << locs.small << "]";
+    return oss.str().c_str();
+  }
+};
+
 };  // namespace doctest
 
 
@@ -338,3 +348,54 @@ TEST_CASE("merge") {
         }
     }
 }
+
+TEST_CASE("find_swap_pair") {
+    SUBCASE(
+        "Finding the position of the items to swap when there is no "
+        "item larger than the pivot returns an invalid index for the "
+        "larger element") {
+        GIVEN(
+            "A collection with a pivot that is larger than any other element") {
+            vector<int> coll{1, 2, 3, -4};
+            WHEN("Finding the elements to swap") {
+                SwapLocations actual = find_swap_pair(coll, 0, 3);
+                THEN("The index of the larger element is invalid") {
+                    SwapLocations expected(3, -1);
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("merge_sort") {
+    SUBCASE("Ordering a random list of integers returns a list in ascending order") {
+        GIVEN("A collection of random integers") {
+            vector<int> coll = rand_vec(100, -100, 100);
+            WHEN("Sorting the collection") {
+                THEN("The collection is in ascending order") {
+                    vector<int> expected{coll};
+                    sort(expected.begin(), expected.end());
+                    merge_sort(coll);
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}
+
+// TEST_CASE("quick_sort") {
+//     SUBCASE("Ordering a random list of numbers returns the list in ascending order") {
+//         GIVEN("A collection of random numbers") {
+//             vector<int> coll = rand_vec(100, -100, 100);
+//             WHEN("Sorting the collection") {
+//                 THEN("The collection is in ascending order") {
+//                     vector<int> expected{coll};
+//                     sort(expected.begin(), expected.end());
+//                     quick_sort(coll);
+//                     REQUIRE(expected == coll);
+//                 }
+//             }
+//         }
+//     }
+// }
