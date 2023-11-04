@@ -70,7 +70,7 @@ int random_sign(int min) {
  */
 int rand_num(int min, int max) {
     int end = max >= 0 ? max + 1 : min  - 1;
-    int num = (rand() + min) % end;
+    int num = random_sign(min) * (rand() + min) % end;
     while (min > num || num > max) {
         cout << "The min " << end << endl;
         cout << "Generating value " << num << endl;
