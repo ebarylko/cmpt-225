@@ -230,7 +230,6 @@ template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, 
         dest.push_back(src[curr]);
         curr++;
     }
-
 }
 
 struct NextElems {
@@ -270,6 +269,30 @@ template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& 
 }
 
 /**
+ * @brief Takes a collection to overwrite, a collection to copy from, and a starting and ending point 
+ * for the collection to copy from. Copies all the elements from the start to the end point
+ * in the second collection to the first collection
+ * 
+ * @tparam T 
+ * @param src the collection to copy to
+ * @param cpy_from the collection to copy from
+ * @param start the point from where to stop copying
+ * @param end the last position to copy from
+ * @return vector<T> the overwritten collection
+ */
+template <typename T> vector<T> overwrite_coll(vector<T>& src, vector<T>& cpy_from, int start) {
+    auto curr = src.begin();
+    advance(curr, start);
+    auto cpy_val = cpy_from.begin();
+    while (cpy_val != cpy_from.end()) {
+        *curr = *cpy_val;
+        cpy_val++;
+        curr++;
+    }
+    return src;
+}
+
+/**
  * @brief takes a collection, a start and end point, and a middle point inbetween them, and sorts the 
  * items ascending in the collection from the start to end point
  * 
@@ -279,16 +302,24 @@ template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& 
  * @param mid the middle point in between start and end
  * @param end the point in the collection to stop sorting at
  */
-template <typename T> void merge(vector<T>& coll, int start, int mid, int end) {
-    vector<int> sorted_portion;
+template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int end) {
+    vector<T> sorted_portion;
     int curr_first = start, curr_snd = mid;
-    while (start < mid && curr_snd < end) {
+    while (curr_first < mid && curr_snd < end) {
+
         NextElems next = (sorted_portion, coll, curr_first, curr_snd);
-        start = next.fst;
-        curr_snd = next.snd;
+        if (curr_first != next.fst) {
+            sorted_portion.push_back(coll[curr_first]);
+            curr_first = next.fst;
+        } else {
+            sorted_portion.push_back(coll[curr_snd]);
+            curr_snd = next.snd;
+        }
     }
+
     add_remaining_items(sorted_portion, coll, curr_first, mid - 1);
     add_remaining_items(sorted_portion, coll, curr_snd, end);
+    return overwrite_coll(coll, sorted_portion, start);
 }
 
 template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid, int final) {
@@ -304,7 +335,7 @@ template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid,
     int high_mid = (final - mid + 1) / 2;
     int actual_high_mid = mid + high_mid;
     merge_sort_order(coll, mid, actual_high_mid, final);
-    merge(coll, start, mid, final);
+    return merge(coll, start, mid, final);
 }
 
 template <typename T> Sort_stats merge_sort(vector<T> &v) {

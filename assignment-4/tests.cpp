@@ -295,3 +295,21 @@ TEST_CASE("add_remaining_items") {
         }
     }
 }
+
+TEST_CASE("overwrite_coll") {
+    SUBCASE(
+        "Overwriting a range of items in the source collection with the items "
+        "of a second collection replaces the items in the first collection "
+        "contained in the range with the items of the second collection") {
+        GIVEN(
+            "A nonempty collection to overwrite and a collection to copy from") {
+            vector<int> overwrite{1, 2, 3};
+            vector<int> cpy_from{4, 5, 6};
+            WHEN("Overwriting the first collection with the elements of the second collection") {
+                THEN("The first and second collection will have the same elements") {
+                    REQUIRE(overwrite_coll(overwrite, cpy_from, 0) == cpy_from);
+                }
+            }
+        }
+    }
+}
