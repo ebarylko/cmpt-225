@@ -369,12 +369,24 @@ template <typename T> int larger_than(const vector<T>& coll, int start, int end,
 
 template <typename T> int smaller_than(const vector<T>& coll, int start, int end,const T& pivot) {
     int curr_pos = start;
-    while (curr_pos >= end && coll[curr_pos] > pivot) {
+    while (curr_pos >= end && coll[curr_pos] >= pivot) {
         curr_pos--;
     }
     return curr_pos < end ? -1 : curr_pos;
 }
 
+/**
+ * @brief Takes a collection, a starting and ending location, and a pivot and returns the position 
+ * of an element larger or smaller than the pivot depending on the start and end location
+ * 
+ * @tparam T 
+ * @param coll the collection to search over
+ * @param start the location in the collection to start at
+ * @param end the location in the collection to stop searching at
+ * @param pivot the element which divides the collection
+ * @return int the position of the element larger or smaller than the pivot if it exists. returns
+ * -1 otherwise.
+ */
 template <typename T> int find_elem(const vector<T>& coll, int start, int end,const T& pivot) {
     if (start < end) {
         return larger_than(coll, start, end, pivot);
@@ -390,9 +402,21 @@ template <typename T> int find_elem(const vector<T>& coll, int start, int end,co
  * @tparam T 
  */
 template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end) {
-    // int end_dist = coll.size() - end;
     T pivot_val = coll[(end - start + 1) / 2];
     return SwapLocations(find_elem(coll, end, start, pivot_val), find_elem(coll, start, end, pivot_val));
+}
+
+
+bool overlapping(const SwapLocations& locs) {
+    return locs.large > locs.small || locs.small < locs.large;
+}
+
+bool outside_range(const SwapLocations& locs) {
+    return locs.large == -1 || locs.small == -1;
+}
+
+bool has_valid_locations(const SwapLocations& locs) {
+    return !outside_range(locs) && !overlapping(locs); 
 }
 
 // template <typename T>

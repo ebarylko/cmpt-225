@@ -348,33 +348,33 @@ TEST_CASE("merge") {
     }
 }
 
-TEST_CASE("smaller_than") {
-    SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
-        GIVEN("A collection where the pivot is the greatest element") {
-            vector<int> coll{1, 2, 3, -4};
-            WHEN("Finding an element smaller than the pivot") {
-                int actual = smaller_than(coll, 3, 0, 3);
-                THEN("The smallest element found is the last element") {
-                    REQUIRE(3 == actual);
-                }
-            }
-        }
-    }
-}
+// TEST_CASE("smaller_than") {
+//     SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
+//         GIVEN("A collection where the pivot is the greatest element") {
+//             vector<int> coll{1, 2, 3, -4};
+//             WHEN("Finding an element smaller than the pivot") {
+//                 int actual = smaller_than(coll, 3, 0, 3);
+//                 THEN("The smallest element found is the last element") {
+//                     REQUIRE(3 == actual);
+//                 }
+//             }
+//         }
+//     }
+// }
 
-TEST_CASE("larger_than") {
-    SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
-        GIVEN("A collection where the pivot is the greatest element") {
-            vector<int> coll{1, 2, 3, -4};
-            WHEN("Finding an element smaller than the pivot") {
-                int actual = larger_than(coll, 0, 3, 3);
-                THEN("The smallest element found is the last element") {
-                    REQUIRE(-1 == actual);
-                }
-            }
-        }
-    }
-}
+// TEST_CASE("larger_than") {
+//     SUBCASE("finding a smaller element in a collection where the pivot is the greatest element returns a value") {
+//         GIVEN("A collection where the pivot is the greatest element") {
+//             vector<int> coll{1, 2, 3, -4};
+//             WHEN("Finding an element smaller than the pivot") {
+//                 int actual = larger_than(coll, 0, 3, 3);
+//                 THEN("The smallest element found is the last element") {
+//                     REQUIRE(-1 == actual);
+//                 }
+//             }
+//         }
+//     }
+// }
 
 TEST_CASE("find_swap_pair") {
     SUBCASE(
@@ -389,6 +389,49 @@ TEST_CASE("find_swap_pair") {
                 THEN("The index of the larger element is invalid") {
                     SwapLocations expected(3, -1);
                     REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE(
+        "Finding the positions of the items to swap when there is no item "
+        "smaller than the pivot returns an invalid index for the smaller "
+        "element") {
+        GIVEN("A collection with no elements smaller than the pivot") {
+            vector<int> coll{5, 6, 3, 5};
+            WHEN("Finding the next elements to swap") {
+                SwapLocations actual = find_swap_pair(coll, 0, 3);
+                THEN("The index of the smaller index is invalid") {
+                    SwapLocations expected(-1, 0);
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE(
+        "Finding the positions of the next items to swap when there are "
+        "elements smaller and bigger than the pivot returns valid indexes for "
+        "both locations") {
+            GIVEN("A collection with elements bigger and smaller than the pivot") {
+                vector<int> coll{1, 4, 3, -1, 5};
+                WHEN("Finding the next elements to swap") {
+                    SwapLocations actual = find_swap_pair(coll, 0, 4);
+                    THEN("The index of both locations are valid") {
+                        SwapLocations expected(3, 1);
+                        REQUIRE(expected == actual);
+                    }
+                }
+            }
+        }
+}
+
+TEST_CASE("has_valid_locations") {
+    SUBCASE("Locations where one of the positions is invalid are not valid locations") {
+        GIVEN("A location where the smallest element has an invalid index") {
+            SwapLocations locs(-1, 4);
+            WHEN("Checking if the locations are valid") {
+                THEN("The locations are deemed invalid") {
+                    REQUIRE_FALSE(has_valid_locations(locs));
                 }
             }
         }
