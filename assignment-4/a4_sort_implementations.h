@@ -434,9 +434,6 @@ template <typename T> Sort_stats& nothing(vector<T>& coll, int pos, Sort_stats& 
 
 #define INSERTION 0
 
-bool is_small_collection(int start, int end) {
-    return end - start <= 6;
-}
 
 template <typename T>
 void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func_const = 1) {
@@ -444,7 +441,7 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
         return;
     }
 
-    if (is_small_collection(start, end) && func_const == INSERTION) {
+    if (end - start <= 6 && func_const == INSERTION) {
         insert_sort(coll, start, end, info);
         return;
     }
