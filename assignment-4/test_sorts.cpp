@@ -296,37 +296,36 @@ void test_quick_sort_int()
     assert(is_sorted(v));
     v = {2, 1};
     quick_sort(v);
-    print_vec(v);
     assert(is_sorted(v));
-    // quick_sort(v);
-    // assert(is_sorted(v));
-    // v = {2, 1, 0};
-    // quick_sort(v);
-    // assert(is_sorted(v));
+    quick_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    quick_sort(v);
+    assert(is_sorted(v));
 }
 
-// void test_quick_sort_string()
-// {
-//     Test("test_quick_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     quick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     quick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     quick_sort(v);
-//     assert(is_sorted(v));
-//     quick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     quick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     quick_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_quick_sort_string()
+{
+    Test("test_quick_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    quick_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    quick_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    quick_sort(v);
+    assert(is_sorted(v));
+    quick_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    quick_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    quick_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_shell_sort_int()
 // {
@@ -433,7 +432,7 @@ int main()
     // test_merge_sort_string();
 
     test_quick_sort_int();
-    // test_quick_sort_string();
+    test_quick_sort_string();
 
     // test_shell_sort_int();
     // test_shell_sort_string();

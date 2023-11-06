@@ -359,40 +359,22 @@ bool operator== (const SwapLocations& a, const SwapLocations& b) {
 }
 
 
-template <typename T> int larger_than(const vector<T>& coll, int start, int end,const T& pivot) {
+template <typename T> int find_larger_than(const vector<T>& coll, int start, int pivot_pos) {
+    T pivot = coll[pivot_pos];
     int curr_pos = start;
-    while (curr_pos <= end && coll[curr_pos] <= pivot) {
+    while (curr_pos <= pivot_pos && coll[curr_pos] <= pivot) {
         curr_pos++;
     }
-    return curr_pos > end ? -1 : curr_pos;
+    return curr_pos > pivot_pos ? -1 : curr_pos;
 }
 
-template <typename T> int smaller_than(const vector<T>& coll, int start, int end,const T& pivot) {
+template <typename T> int find_smaller_than(const vector<T>& coll, int start,int pivot_pos) {
     int curr_pos = start;
-    while (curr_pos >= end && coll[curr_pos] >= pivot) {
+    T pivot = coll[pivot_pos];
+    while (curr_pos >= pivot_pos && coll[curr_pos] >= pivot) {
         curr_pos--;
     }
-    return curr_pos < end ? -1 : curr_pos;
-}
-
-/**
- * @brief Takes a collection, a starting and ending location, and a pivot and returns the position 
- * of an element larger or smaller than the pivot depending on the start and end location
- * 
- * @tparam T 
- * @param coll the collection to search over
- * @param start the location in the collection to start at
- * @param end the location in the collection to stop searching at
- * @param pivot the element which divides the collection
- * @return int the position of the element larger or smaller than the pivot if it exists. returns
- * -1 otherwise.
- */
-template <typename T> int find_elem(const vector<T>& coll, int start, int end,const T& pivot) {
-    if (start < end) {
-        return larger_than(coll, start, end, pivot);
-    }
-
-    return smaller_than(coll, start, end, pivot);
+    return curr_pos < pivot_pos ? -1 : curr_pos;
 }
 
 /**
@@ -401,22 +383,21 @@ template <typename T> int find_elem(const vector<T>& coll, int start, int end,co
  * 
  * @tparam T 
  */
-template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end) {
-    T pivot_val = coll[(end - start + 1) / 2];
-    return SwapLocations(find_elem(coll, end, start, pivot_val), find_elem(coll, start, end, pivot_val));
+template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end, int pivot_pos) {
+    return SwapLocations(find_smaller_than(coll, end, pivot_pos), find_larger_than(coll, start, pivot_pos));
 }
 
 
 bool overlapping(const SwapLocations& locs) {
-    return locs.large > locs.small || locs.small < locs.large;
+    return locs.large > locs.small;
 }
 
-bool outside_range(const SwapLocations& locs) {
-    return locs.large == -1 || locs.small == -1;
+bool both_sides_sorted(const SwapLocations& locs) {
+    return locs.large == -1 && locs.small == -1;
 }
 
-bool has_valid_locations(const SwapLocations& locs) {
-    return !outside_range(locs) && !overlapping(locs); 
+bool can_swap(const SwapLocations& locs) {
+    return !both_sides_sorted(locs); 
 }
 
 bool none_greater_than_pivot(int index) {
@@ -427,31 +408,44 @@ bool none_less_than_pivot(int index) {
     return index == -1;
 }
 
+
+bool can_swap_both(const SwapLocations& swap_info) {
+    return swap_info.large != -1 && swap_info.small != -1;
+}
+
+bool can_swap_smaller(const SwapLocations& info) {
+    return info.small != -1 && info.large == -1;
+}
+
 template <typename T>
-void quick_order(vector<T>& coll, int start, int end) {
-    if (start == end || start > end) {
+void quick_order(vector<T>& coll, int start, int end, Sort_stats& info) {
+    if (start >= end) {
         return;
     }
 
-    int pivot_loc = (end - start + 1) / 2;
-    SwapLocations positions = find_swap_pair(coll, start, end);
-    while (has_valid_locations(positions)) {
-        swap(coll, positions.large, positions.small);
-        positions = find_swap_pair(coll, positions.large, positions.small);
-    }
+    int pivot_loc = start + (end - start + 1) / 2;
+    SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc);
+    
+    while (can_swap(swap_info)) {
+        if (can_swap_both(swap_info)) {
+            swap(coll, swap_info.large, swap_info.small);
+            info.num_comparisons++;
+        } else if (can_swap_smaller(swap_info)) {
+            swap(coll, swap_info.small, pivot_loc);
+            info.num_comparisons++;
+            swap_info.large = pivot_loc;
+            pivot_loc = swap_info.small;
+        } else {
+            swap(coll, swap_info.large, pivot_loc);
+            info.num_comparisons++;
+            swap_info.small = pivot_loc;
+            pivot_loc = swap_info.large;
+        }
 
-    if (none_greater_than_pivot(positions.large)) {
-        swap(coll, end, pivot_loc);
-        quick_order(coll, start, end - 1);
+        swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc);
     }
-    else if(none_less_than_pivot(positions.small)) {
-        cout << "smallest " << endl;
-        swap(coll, start, pivot_loc);
-        quick_order(coll, start + 1, end);
-    } else {
-        quick_order(coll, start, pivot_loc - 1);
-        quick_order(coll, pivot_loc + 1, end);
-    }
+        quick_order(coll, start, pivot_loc - 1, info);
+        quick_order(coll, pivot_loc + 1, end, info);
 }
 
 template <typename T> Sort_stats quick_sort(vector<T> &v) {
@@ -461,12 +455,15 @@ template <typename T> Sort_stats quick_sort(vector<T> &v) {
     Sort_stats info{"quick sort", v.size(), 0, 0};
     clock_t start = clock();
 
-    quick_order(v, 0, v.size() - 1);
+    quick_order(v, 0, v.size() - 1, info);
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 
     return info;
 }
+
+template <typename T>
+Sort_stats shell_sort(vector<T> &v);
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
