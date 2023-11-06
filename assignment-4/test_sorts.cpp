@@ -370,48 +370,48 @@ void test_shell_sort_string()
     assert(is_sorted(v));
 }
 
-// void test_iquick_sort_int()
-// {
-//     Test("test_iquick_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_iquick_sort_int()
+{
+    Test("test_iquick_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    iquick_sort(v);
+    assert(is_sorted(v));
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    iquick_sort(v);
+    assert(is_sorted(v));
+}
 
-// void test_iquick_sort_string()
-// {
-//     Test("test_iquick_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     iquick_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_iquick_sort_string()
+{
+    Test("test_iquick_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    iquick_sort(v);
+    assert(is_sorted(v));
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    iquick_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    iquick_sort(v);
+    assert(is_sorted(v));
+}
 
 int main()
 {
@@ -437,8 +437,8 @@ int main()
     test_shell_sort_int();
     test_shell_sort_string();
 
-    // test_iquick_sort_int();
-    // test_iquick_sort_string();
+    test_iquick_sort_int();
+    test_iquick_sort_string();
 
     cout << "\nall sorting tests passed!" << endl;
 } // main

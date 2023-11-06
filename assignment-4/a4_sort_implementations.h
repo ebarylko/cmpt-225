@@ -445,7 +445,7 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
     }
 
     if (is_small_collection(start, end) && func_const == INSERTION) {
-        insert_sort_order(coll, start, end, info);
+        insert_sort(coll, start, end, info);
         return;
     }
 
@@ -539,7 +539,6 @@ template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
         gap /= 2;
     }
 
-    // hacer una funcion que encapsula la implementacion de insertion sort
     // calling insertion sort on the final pass
     insert_sort(coll, 0, coll.size() - 1, info);
 }
@@ -556,44 +555,17 @@ Sort_stats shell_sort(vector<T> &v) {
     return info;
 }
 
-// template <typename T> void iquick_sort_impl(vector<T>& coll, Sort_stats& info) {
-//     if (start >= end) {
-//         return;
-//     }
 
-//     int pivot_loc = start + (end - start + 1) / 2;
-//     SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc, info);
-    
-//     while (can_swap(swap_info)) {
-//         if (can_swap_both(swap_info)) {
-//             swap(coll, swap_info.large, swap_info.small);
-//         } else if (can_swap_smaller(swap_info)) {
-//             swap(coll, swap_info.small, pivot_loc);
-//             swap_info.large = pivot_loc;
-//             pivot_loc = swap_info.small;
-//         } else {
-//             swap(coll, swap_info.large, pivot_loc);
-//             swap_info.small = pivot_loc;
-//             pivot_loc = swap_info.large;
-//         }
+template <typename T> Sort_stats iquick_sort(vector<T> &v) {
+    Sort_stats info{"iquick sort", v.size(), 0, 0};
+    clock_t start = clock();
 
-//         swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc, info);
-//     }
-//         quick_order(coll, start, pivot_loc - 1, info);
-//         quick_order(coll, pivot_loc + 1, end, info);
-// }
+    quick_order(v, 0, v.size() - 1, info, 0);
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 
-// template <typename T>
-// Sort_stats iquick_sort(vector<T> &v) {
-//     Sort_stats info{"iquick sort", v.size(), 0, 0};
-//     clock_t start = clock();
-
-//     iquick_sort_impl(v, info);
-//     clock_t end = clock();
-//     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
-
-//     return info;
-// }
+    return info;
+}
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
