@@ -574,18 +574,18 @@ TEST_CASE("order_elems_by_gap") {
     }
 }
 
-// TEST_CASE("shell_sort") {
-//     SUBCASE("Ordering a random list of numbers returns the list in ascending order") {
-//         GIVEN("A collection of random numbers") {
-//             vector<int> coll = rand_vec(100, -100, 100);
-//             WHEN("Sorting the collection") {
-//                 THEN("The collection is in ascending order") {
-//                     vector<int> expected{coll};
-//                     sort(expected.begin(), expected.end());
-//                     shell_sort(coll);
-//                     REQUIRE(expected == coll);
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("shell_sort") {
+    SUBCASE("Ordering a random list of numbers returns the list in ascending order") {
+        GIVEN("A collection of random numbers") {
+            vector<int> coll = rand_vec(100, -100, 100);
+            WHEN("Sorting the collection") {
+                THEN("The collection is in ascending order") {
+                    vector<int> expected{coll};
+                    sort(expected.begin(), expected.end());
+                    shell_sort(coll);
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}
