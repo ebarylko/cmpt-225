@@ -211,7 +211,7 @@ TEST_CASE("insert_sort_order") {
             vector<int> coll{1, 2, 3, -1};
             Sort_stats info;
             WHEN("Ordering the last element") {
-                insert_sort_order(coll, 3, info);
+                insert_sort_order(coll,0, 3, info);
                 THEN("The collection should be in ascending order") {
                     vector<int> expected{-1, 1, 2, 3};
                     REQUIRE(expected == coll);

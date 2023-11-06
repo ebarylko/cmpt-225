@@ -27,7 +27,6 @@
 #pragma once
 
 #include "a4_base.h"
-#include <iterator>
 //
 // Do NOT add any other #includes to this file!
 //
@@ -102,7 +101,6 @@ vector<int> rand_vec(int size, int min, int max) {
 
 template <typename T> auto start_iter(const vector<T>& coll, int start_pos) {
     auto iter = coll.begin();
-    // advance(iter, start_pos);
     for(int i = 0; i < start_pos; i++) {
         iter++;
     }
@@ -192,16 +190,22 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
  * @param info the current information about the operations that occurred while sorting
  * @return Sort_stats information about the operations occuring while sorting
  */
-template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int end, Sort_stats& info) {
+template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int start, int end, Sort_stats& info) {
     int curr = end;
     // Continue swapping element until there 
     // are no more elements or the element is in its correct spot
-    while (curr != 0 && coll[curr] < coll[curr - 1]) {
+    while (curr != start && coll[curr] < coll[curr - 1]) {
             swap(coll, curr, curr - 1);
             info.num_comparisons++;
             curr--;
         }
     return info;
+}
+
+template <typename T> void insert_sort(vector<T>& coll, int start, int end, Sort_stats& info) {
+    for (int curr_end = start + 1; curr_end <= end; curr_end++) {
+        insert_sort_order(coll, start, curr_end, info);
+    }
 }
 
 
@@ -212,9 +216,10 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
 
     // Ordering the elements by moving the element
     // at the current position to its correct spot
-    for(int pos = 1; pos < v.size(); pos++) {
-        insert_sort_order(v, pos, info);
-    }
+    insert_sort(v, 0, v.size() - 1, info);
+    // for(int pos = 1; pos < v.size(); pos++) {
+    //     insert_sort_order(v, 0, pos, info);
+    // }
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 
@@ -421,9 +426,26 @@ bool can_swap_smaller(const SwapLocations& info) {
     return info.small != -1 && info.large == -1;
 }
 
+template <typename T> Sort_stats& nothing(vector<T>& coll, int pos, Sort_stats& info) {
+    auto start = coll.begin();
+    info.num_comparisons += pos - pos;
+    return info;
+}
+
+#define INSERTION 0
+
+bool is_small_collection(int start, int end) {
+    return end - start <= 6;
+}
+
 template <typename T>
-void quick_order(vector<T>& coll, int start, int end, Sort_stats& info) {
+void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func_const = 1) {
     if (start >= end) {
+        return;
+    }
+
+    if (is_small_collection(start, end) && func_const == INSERTION) {
+        insert_sort_order(coll, start, end, info);
         return;
     }
 
@@ -445,8 +467,8 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info) {
 
         swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc, info);
     }
-        quick_order(coll, start, pivot_loc - 1, info);
-        quick_order(coll, pivot_loc + 1, end, info);
+        quick_order(coll, start, pivot_loc - 1, info, func_const);
+        quick_order(coll, pivot_loc + 1, end, info, func_const);
 }
 
 template <typename T> Sort_stats quick_sort(vector<T> &v) {
@@ -510,15 +532,16 @@ template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
         return;
     }
 
+    // order the elements by the gap and modify gap for
+    // next iteration
     while (gap != 1) {
         order_elems_by_gap(coll, gap, info);
         gap /= 2;
     }
 
     // hacer una funcion que encapsula la implementacion de insertion sort
-    for(int pos = 1; pos < coll.size(); pos++) {
-        insert_sort_order(coll, pos, info);
-    }
+    // calling insertion sort on the final pass
+    insert_sort(coll, 0, coll.size() - 1, info);
 }
 
 template <typename T>
@@ -532,6 +555,45 @@ Sort_stats shell_sort(vector<T> &v) {
 
     return info;
 }
+
+// template <typename T> void iquick_sort_impl(vector<T>& coll, Sort_stats& info) {
+//     if (start >= end) {
+//         return;
+//     }
+
+//     int pivot_loc = start + (end - start + 1) / 2;
+//     SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc, info);
+    
+//     while (can_swap(swap_info)) {
+//         if (can_swap_both(swap_info)) {
+//             swap(coll, swap_info.large, swap_info.small);
+//         } else if (can_swap_smaller(swap_info)) {
+//             swap(coll, swap_info.small, pivot_loc);
+//             swap_info.large = pivot_loc;
+//             pivot_loc = swap_info.small;
+//         } else {
+//             swap(coll, swap_info.large, pivot_loc);
+//             swap_info.small = pivot_loc;
+//             pivot_loc = swap_info.large;
+//         }
+
+//         swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc, info);
+//     }
+//         quick_order(coll, start, pivot_loc - 1, info);
+//         quick_order(coll, pivot_loc + 1, end, info);
+// }
+
+// template <typename T>
+// Sort_stats iquick_sort(vector<T> &v) {
+//     Sort_stats info{"iquick sort", v.size(), 0, 0};
+//     clock_t start = clock();
+
+//     iquick_sort_impl(v, info);
+//     clock_t end = clock();
+//     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+//     return info;
+// }
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
