@@ -359,21 +359,23 @@ bool operator== (const SwapLocations& a, const SwapLocations& b) {
 }
 
 
-template <typename T> int find_larger_than(const vector<T>& coll, int start, int pivot_pos) {
+template <typename T> int find_larger_than(const vector<T>& coll, int start, int pivot_pos, Sort_stats& info) {
     T pivot = coll[pivot_pos];
     int curr_pos = start;
     while (curr_pos <= pivot_pos && coll[curr_pos] <= pivot) {
         curr_pos++;
     }
+    info.num_comparisons += pivot_pos - curr_pos + 1;
     return curr_pos > pivot_pos ? -1 : curr_pos;
 }
 
-template <typename T> int find_smaller_than(const vector<T>& coll, int start,int pivot_pos) {
+template <typename T> int find_smaller_than(const vector<T>& coll, int start,int pivot_pos, Sort_stats& info) {
     int curr_pos = start;
     T pivot = coll[pivot_pos];
     while (curr_pos >= pivot_pos && coll[curr_pos] >= pivot) {
         curr_pos--;
     }
+    info.num_comparisons += start - curr_pos + 1;
     return curr_pos < pivot_pos ? -1 : curr_pos;
 }
 
@@ -383,8 +385,8 @@ template <typename T> int find_smaller_than(const vector<T>& coll, int start,int
  * 
  * @tparam T 
  */
-template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end, int pivot_pos) {
-    return SwapLocations(find_smaller_than(coll, end, pivot_pos), find_larger_than(coll, start, pivot_pos));
+template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end, int pivot_pos, Sort_stats& info) {
+    return SwapLocations(find_smaller_than(coll, end, pivot_pos, info), find_larger_than(coll, start, pivot_pos, info));
 }
 
 
@@ -424,25 +426,22 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info) {
     }
 
     int pivot_loc = start + (end - start + 1) / 2;
-    SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc);
+    SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc, info);
     
     while (can_swap(swap_info)) {
         if (can_swap_both(swap_info)) {
             swap(coll, swap_info.large, swap_info.small);
-            info.num_comparisons++;
         } else if (can_swap_smaller(swap_info)) {
             swap(coll, swap_info.small, pivot_loc);
-            info.num_comparisons++;
             swap_info.large = pivot_loc;
             pivot_loc = swap_info.small;
         } else {
             swap(coll, swap_info.large, pivot_loc);
-            info.num_comparisons++;
             swap_info.small = pivot_loc;
             pivot_loc = swap_info.large;
         }
 
-        swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc);
+        swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc, info);
     }
         quick_order(coll, start, pivot_loc - 1, info);
         quick_order(coll, pivot_loc + 1, end, info);

@@ -384,8 +384,9 @@ TEST_CASE("find_swap_pair") {
         GIVEN(
             "A collection with a pivot that is larger than any other element") {
             vector<int> coll{1, 2, 3, -4};
+            Sort_stats info;
             WHEN("Finding the elements to swap") {
-                SwapLocations actual = find_swap_pair(coll, 0, 3, 2);
+                SwapLocations actual = find_swap_pair(coll, 0, 3, 2, info);
                 THEN("The index of the larger element is invalid") {
                     SwapLocations expected(3, -1);
                     REQUIRE(expected == actual);
@@ -399,8 +400,9 @@ TEST_CASE("find_swap_pair") {
         "element") {
         GIVEN("A collection with no elements smaller than the pivot") {
             vector<int> coll{5, 6, 3, 5};
+            Sort_stats info;
             WHEN("Finding the next elements to swap") {
-                SwapLocations actual = find_swap_pair(coll, 0, 3, 2);
+                SwapLocations actual = find_swap_pair(coll, 0, 3, 2, info);
                 THEN("The index of the smaller index is invalid") {
                     SwapLocations expected(-1, 0);
                     REQUIRE(expected == actual);
@@ -414,8 +416,9 @@ TEST_CASE("find_swap_pair") {
         "both locations") {
             GIVEN("A collection with elements bigger and smaller than the pivot") {
                 vector<int> coll{1, 4, 3, -1, 5};
+                Sort_stats info;
                 WHEN("Finding the next elements to swap") {
-                    SwapLocations actual = find_swap_pair(coll, 0, 4, 2);
+                    SwapLocations actual = find_swap_pair(coll, 0, 4, 2, info);
                     THEN("The index of both locations are valid") {
                         SwapLocations expected(3, 1);
                         REQUIRE(expected == actual);
