@@ -204,6 +204,8 @@ template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int end, Sor
     return info;
 }
 
+
+
 template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     Sort_stats info{"insertion sort", v.size(), 0, 0};
     clock_t start = clock();
@@ -448,9 +450,6 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info) {
 }
 
 template <typename T> Sort_stats quick_sort(vector<T> &v) {
-// 1: crear el Sort_stats objeto
-// 2: llamar quicksort con el pivot.
-// 3: devolver el objeto
     Sort_stats info{"quick sort", v.size(), 0, 0};
     clock_t start = clock();
 
@@ -461,8 +460,78 @@ template <typename T> Sort_stats quick_sort(vector<T> &v) {
     return info;
 }
 
+/**
+ * @brief Takes the current position and the final position
+ * of the collection and returns true if we are not at the end of the collection
+ * 
+ * @param curr_pos the current position
+ * @param end the final index of the collection
+ * @return true if we are not at the end of the collection
+ * @return false if the above is not true
+ */
+bool is_pair_within_coll(int curr_pos, int end) {
+    return curr_pos < end;
+}
+
+/**
+ * @brief Takes a collection, a distance G, and details about the number of comparisons made so far and 
+ * orders every pair of elements seperated by G ascendingly
+ * 
+ * @tparam T 
+ * @param coll the collection being ordered
+ * @param gap the distance between the elements being compared
+ * @param info the current amount of comparisons done in the algorithm
+ */
+template <typename T> void order_elems_by_gap(vector<T>& coll, int gap, Sort_stats& info) {
+    int curr_pos = 0;
+    // hacer que el segun elemento esta con un nombre
+    while (is_pair_within_coll(curr_pos + gap, coll.size())) {
+        if (coll[curr_pos] > coll[curr_pos + gap]) {
+            info.num_comparisons++;
+            swap(coll, curr_pos, curr_pos + gap);
+        }
+        curr_pos++;
+    }
+}
+
+/**
+ * @brief Takes a collection and information about the number of comparisons occurring and returns
+ * the collection is ascending order
+ * 
+ * @tparam T 
+ * @param coll the collection to sort
+ * @param info details about the type of sort and comparisons done up to now
+ */
+template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
+    int gap = coll.size() / 2;
+
+    // Leaving since collection is already sorted
+    if (gap == 0) {
+        return;
+    }
+
+    while (gap != 1) {
+        order_elems_by_gap(coll, gap, info);
+        gap /= 2;
+    }
+
+    // hacer una funcion que encapsula la implementacion de insertion sort
+    for(int pos = 1; pos < coll.size(); pos++) {
+        insert_sort_order(coll, pos, info);
+    }
+}
+
 template <typename T>
-Sort_stats shell_sort(vector<T> &v);
+Sort_stats shell_sort(vector<T> &v) {
+    Sort_stats info{"shell sort", v.size(), 0, 0};
+    clock_t start = clock();
+
+    shell_sort_impl(v, info);
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as

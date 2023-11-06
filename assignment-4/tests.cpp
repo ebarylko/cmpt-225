@@ -513,6 +513,37 @@ TEST_CASE("quick_sort") {
     }
 }
 
+TEST_CASE("is_pair_within_coll") {
+    SUBCASE(
+        "A pair where the second element is within the collection is a valid "
+        "pair") {
+        GIVEN(
+            "The location of the second element which is inside the "
+            "collection") {
+            int pos = 2;
+            WHEN("Checking if the location is inside the collection") {
+                THEN("The location will be deemed valid") {
+                    REQUIRE(is_pair_within_coll(pos, 3));
+                }
+            }
+        }
+    }
+    SUBCASE(
+        "A pair where the second element is outside the collection is an "
+        "invalid pair") {
+        GIVEN(
+            "The location of the second element which is outside the "
+            "collection") {
+            int pos = 2;
+            WHEN("Checking if the location is inside the collection") {
+                THEN("The location will be deemed invalid") {
+                    REQUIRE_FALSE(is_pair_within_coll(pos, 1));
+                }
+            }
+        }
+    }
+}
+
 // TEST_CASE("shell_sort") {
 //     SUBCASE("Ordering a random list of numbers returns the list in ascending order") {
 //         GIVEN("A collection of random numbers") {
