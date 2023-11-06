@@ -327,48 +327,48 @@ void test_quick_sort_string()
     assert(is_sorted(v));
 }
 
-// void test_shell_sort_int()
-// {
-//     Test("test_shell_sort_int");
-//     vector<int> v;
-//     assert(v.size() == 0);
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {2};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {2, 1, 0};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_shell_sort_int()
+{
+    Test("test_shell_sort_int");
+    vector<int> v;
+    assert(v.size() == 0);
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {2};
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1};
+    shell_sort(v);
+    assert(is_sorted(v));
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {2, 1, 0};
+    shell_sort(v);
+    assert(is_sorted(v));
+}
 
-// void test_shell_sort_string()
-// {
-//     Test("test_shell_sort_string");
-//     vector<string> v;
-//     assert(v.size() == 0);
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b"};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a"};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {"b", "a", "c"};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-//     v = {"a", "b", "c"};
-//     shell_sort(v);
-//     assert(is_sorted(v));
-// }
+void test_shell_sort_string()
+{
+    Test("test_shell_sort_string");
+    vector<string> v;
+    assert(v.size() == 0);
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {"b"};
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a"};
+    shell_sort(v);
+    assert(is_sorted(v));
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {"b", "a", "c"};
+    shell_sort(v);
+    assert(is_sorted(v));
+    v = {"a", "b", "c"};
+    shell_sort(v);
+    assert(is_sorted(v));
+}
 
 // void test_iquick_sort_int()
 // {
@@ -415,27 +415,27 @@ void test_quick_sort_string()
 
 int main()
 {
-    // test_is_sorted_int();
-    // test_is_sorted_string();
-    // test_rand_vec();
+    test_is_sorted_int();
+    test_is_sorted_string();
+    test_rand_vec();
 
-    // test_bubble_sort_int();
-    // test_bubble_sort_string();
+    test_bubble_sort_int();
+    test_bubble_sort_string();
 
-    // test_insertion_sort_int();
-    // test_insertion_sort_string();
+    test_insertion_sort_int();
+    test_insertion_sort_string();
 
-    // test_selection_sort_int();
-    // test_selection_sort_string();
+    test_selection_sort_int();
+    test_selection_sort_string();
 
-    // test_merge_sort_int();
-    // test_merge_sort_string();
+    test_merge_sort_int();
+    test_merge_sort_string();
 
     test_quick_sort_int();
     test_quick_sort_string();
 
-    // test_shell_sort_int();
-    // test_shell_sort_string();
+    test_shell_sort_int();
+    test_shell_sort_string();
 
     // test_iquick_sort_int();
     // test_iquick_sort_string();

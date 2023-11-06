@@ -551,8 +551,22 @@ TEST_CASE("order_elems_by_gap") {
             Sort_stats info;
             WHEN("Ordering the elements using the gap") {
                 order_elems_by_gap(coll, gap, info);
-                THEN("The collections remains unchanged") {
+                THEN("The collection remains unchanged") {
                     vector<int> expected{-2, -12, 1};
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+    SUBCASE("Ordering the elements with a gap smaller than the size of the collection leaves the collection partially ordered") {
+        GIVEN("A collection with a gap smaller than the size of the collection") {
+            vector<int> coll{13, -1, -4, -29};
+            int gap = 2;
+            Sort_stats info;
+            WHEN("Ordering the elements using the gap") {
+                order_elems_by_gap(coll, gap, info);
+                THEN("The collection will have some elements swapped around") {
+                    vector<int> expected{-4, -29, 13, -1};
                     REQUIRE(expected == coll);
                 }
             }
