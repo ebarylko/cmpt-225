@@ -543,6 +543,22 @@ TEST_CASE("is_pair_within_coll") {
         }
     }
 }
+TEST_CASE("order_elems_by_gap") {
+    SUBCASE("Ordering the elements with a gap bigger than the size of the collection leaves the collection as it was") {
+        GIVEN("A collection and a gap bigger than the size of the collection") {
+            vector<int> coll{-2, -12, 1};
+            int gap = 4;
+            Sort_stats info;
+            WHEN("Ordering the elements using the gap") {
+                order_elems_by_gap(coll, gap, info);
+                THEN("The collections remains unchanged") {
+                    vector<int> expected{-2, -12, 1};
+                    REQUIRE(expected == coll);
+                }
+            }
+        }
+    }
+}
 
 // TEST_CASE("shell_sort") {
 //     SUBCASE("Ordering a random list of numbers returns the list in ascending order") {
