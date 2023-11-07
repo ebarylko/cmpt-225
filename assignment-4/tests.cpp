@@ -9,6 +9,10 @@
 #include "doctest.h"
 using namespace std;
 
+auto mk_vec(initializer_list<int> nums) {
+    return vector<int>(nums);
+}
+
 namespace doctest {
 template <typename T>
 struct StringMaker<vector<T>> {
@@ -607,16 +611,6 @@ TEST_CASE("iquick_sort") {
     }
 }
 
-TEST_CASE("Heap") {
-    SUBCASE("An new heap has no elements") {
-        GIVEN("A new heap") {
-            Heap<int> heap;
-            THEN("It will be empty") {
-                REQUIRE(heap.empty());
-            }
-        }
-    }
-}
 
 TEST_CASE("parent") {
     SUBCASE("The root has no parent") {
@@ -658,6 +652,57 @@ TEST_CASE("smaller_than_parent") {
                     REQUIRE_FALSE(smaller_than_parent(coll, 1, 0));
                 }
             }
+        }
+    }
+    SUBCASE("The root is not smaller than its nonexistent parent") {
+        GIVEN("A heap with just the root") {
+            vector<int> coll{1};
+            WHEN("Comparing the root with its parent") {
+                THEN("The root is noted to not be smaller than its parent") {
+                    REQUIRE_FALSE(smaller_than_parent(coll, 0, -1));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("Heap") {
+    SUBCASE("An new heap has no elements") {
+        GIVEN("A new heap") {
+            Heap<int> heap;
+            THEN("It will be empty") {
+                REQUIRE(heap.empty());
+            }
+        }
+    }
+    SUBCASE("insert") {
+        SUBCASE(
+            "Inserting an element into an empty heap changes the first element "
+            "to be the recently inserted one") {
+            GIVEN("An empty heap") {
+                Heap<int> heap;
+                WHEN("Inserting into the heap") {
+                    heap.insert(1);
+                    THEN("The heap will have the inserted item as the first element") {
+                          vector<int> expected = mk_vec({1});
+                          REQUIRE(expected == heap.items());
+                    }
+                }
+            }
+        }
+        SUBCASE("Inserting a smaller second element into a heap will cause the heap to swap the elements") {
+            GIVEN("A heap with a sole element") {
+                Heap<int> heap;
+                heap.insert(1);
+                WHEN("Inserting an element smaller than the root") {
+                    heap.insert(0);
+                    THEN("The heap will swap the elements") {
+                        vector<int> expected = mk_vec({0, 1});
+                        REQUIRE(expected == heap.items());
+                    }
+                }
+            }
+
         }
     }
 }

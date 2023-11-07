@@ -571,37 +571,47 @@ int parent(int child) {
     return child == 0 ? -1 : (child - 1) / 2;
 }
 
+/**
+ * @brief Takes a collection and the position of a child and its parent, and returns true if the
+ * parent is within the collection and is greater than its child. False otherwise
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param child_pos the location of the child in the collection
+ * @param parent_pos the location of the parent in the collection
+ * @return true if the parent has a valid location and is greater than its child
+ * @return false if the condition above goes unsatisfied
+ */
 template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, int parent_pos) {
-    return coll[child_pos] < coll[parent_pos];
+    if (parent_pos == -1 || coll[child_pos] >= coll[parent_pos]) {
+        return 0;
+    }
+    return 1;
 }
 
 template <typename T>
 class Heap {
     vector<T> coll;
 
-    // /**
-    //  * @brief Takes the position of the element to move and adjusts it so it is at a location
-    //  * where it satisfies the heap property
-    //  * 
-    //  * @param elem_to_move the index of the element to move up
-    //  */
-    // void bubble_up(int elem_to_move) {
-    //     if (!this->empty()) {
-    //         return;
-    //     }
+    /**
+     * @brief Takes the position of the element to move and adjusts it so it is at a location
+     * where it satisfies the heap property
+     * 
+     * @param elem_to_move the index of the element to move up
+     */
+    void bubble_up(int elem_to_move) {
+        int parent_pos = parent(elem_to_move);
 
-    //     int parent_pos = parent(elem_to_move);
-
-    //     /**
-    //      * @brief Swapping the element upwards until it is in the correct position
-    //      * 
-    //      */
-    //     while (smaller_than_parent(this->coll, elem_to_move, parent_pos)) {
-    //         swap(this->coll, elem_to_move, parent_pos);
-    //         elem_to_move = parent_pos;
-    //         parent_pos = parent(elem_to_move);
-    //     }
-    // }
+        /**
+         * @brief Swapping the element upwards until it is in the correct position
+         * 
+         */
+        while (smaller_than_parent(this->coll, elem_to_move, parent_pos)) {
+            swap(this->coll, elem_to_move, parent_pos);
+            elem_to_move = parent_pos;
+            parent_pos = parent(elem_to_move);
+        }
+    }
 
     // void bubble_down(int elem_pos) {
     //     if (this->is_empty()) {
@@ -626,10 +636,14 @@ class Heap {
         return !this->size();
     }
 
-    // void insert(T& item) {
-    //     coll.push_back(item);
-    //     bubble_up(coll.size() - 1);
-    // }
+    void insert(const T& item) {
+        coll.push_back(item);
+        bubble_up(coll.size() - 1);
+    }
+
+    vector<T> items() {
+        return vector<T>(this->coll);
+    }
 
     // void remove_min() {
     //     swap(this->coll, 0, coll.size() - 1);
