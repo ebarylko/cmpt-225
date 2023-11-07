@@ -627,5 +627,14 @@ TEST_CASE("parent") {
                 }
             }
         }
+    }  
+    SUBCASE("A parent exists for an element which is not the root") {
+        GIVEN("A position of an element which is not the root") {
+            WHEN("Finding the parent") {
+                THEN("A valid location is given") {
+                    REQUIRE(0 == parent(2));
+                }
+            }
+        }
     }
 }
