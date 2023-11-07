@@ -704,5 +704,18 @@ TEST_CASE("Heap") {
             }
 
         }
+        SUBCASE("Inserting multiple elements into the heap causes the heap to enforce the heap order") {
+            GIVEN("An empty heap") {
+                Heap<int> heap;
+                WHEN("Adding many elements to the heap") {
+                    heap.insert_n({5, 9, 15, 6, 4, 8, 2, 11, 1, 3});
+                    THEN("The heap obeys the min heap order and has the elements ordered correctly") {
+                        vector<int> expected = mk_vec({1, 2, 4, 5, 3, 15, 8, 11, 9, 6});
+                        REQUIRE(expected == heap.items());
+
+                    }
+                }
+            }
+        }
     }
 }

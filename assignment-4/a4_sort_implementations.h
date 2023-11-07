@@ -641,6 +641,12 @@ class Heap {
         bubble_up(coll.size() - 1);
     }
 
+    void insert_n(const vector<T>& items) {
+        for (T item : items) {
+            this->insert(item);
+        }
+    }
+
     vector<T> items() {
         return vector<T>(this->coll);
     }
