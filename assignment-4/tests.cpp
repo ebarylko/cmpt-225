@@ -634,31 +634,31 @@ TEST_CASE("parent") {
 }
 
 TEST_CASE("smaller_than_parent") {
-    SUBCASE("A child which is less than its parent is noted as such") {
-        GIVEN("A heap which has a parent greater than its child") {
+    SUBCASE("A child which is smaller than its parent") {
+        GIVEN("A heap element greater than its child") {
             vector<int> coll{3, 1};
-            WHEN("Comparing the parent and child") {
-                THEN("the parent is noted to be greater than its child") {
+            WHEN("Calling the function on the parent and child") {
+                THEN("Returns true") {
                     REQUIRE(smaller_than_parent(coll, 1, 0));
                 }
             }
         }
     }
-    SUBCASE("A child which is greater than its parent is noted as such") {
-        GIVEN("A heap which has a parent smaller than its child") {
+    SUBCASE("A child which is greater than its parent") {
+        GIVEN("A heap with a parent smaller than its child") {
             vector<int> coll{0, 1};
-            WHEN("Comparing the parent and child") {
-                THEN("the parent is noted to be smaller than its child") {
+            WHEN("Calling the function on the parent and child") {
+                THEN("returns false") {
                     REQUIRE_FALSE(smaller_than_parent(coll, 1, 0));
                 }
             }
         }
     }
-    SUBCASE("The root is not smaller than its nonexistent parent") {
+    SUBCASE("The root is not smaller than its parent") {
         GIVEN("A heap with just the root") {
             vector<int> coll{1};
-            WHEN("Comparing the root with its parent") {
-                THEN("The root is noted to not be smaller than its parent") {
+            WHEN("calling the function on the root") {
+                THEN("returns false") {
                     REQUIRE_FALSE(smaller_than_parent(coll, 0, -1));
                 }
             }
@@ -667,11 +667,21 @@ TEST_CASE("smaller_than_parent") {
 }
 
 TEST_CASE("bigger_than_children") {
-    SUBCASE("An element in the heap which does not have children is not bigger than its children") {
-        GIVEN("A heap with an element which has no children") {
+    SUBCASE("An childrenless element is not bigger than its children") {
+        GIVEN("A heap with a childless element") {
             vector<int> coll{1};
-            WHEN("Seeing if the element is bigger than its children") {
-                THEN("it is noted to not be bigger than its children") {
+            WHEN("calling the function on that element") {
+                THEN("returns false") {
+                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                }
+            }
+        }
+    }
+    SUBCASE("An element with at least one child bigger than it") {
+        GIVEN("A heap element with one bigger child") {
+            vector<int> coll{1, 2};
+            WHEN("Calling the function on that element") {
+                THEN("Returns false") {
                     REQUIRE_FALSE(bigger_than_children(coll, 0));
                 }
             }
