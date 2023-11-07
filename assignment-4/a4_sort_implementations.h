@@ -561,6 +561,16 @@ template <typename T> Sort_stats iquick_sort(vector<T> &v) {
     return info;
 }
 
+/**
+ * @brief Takes a position in the heap and returns the location of the parent for that position
+ * 
+ * @param child a position in the heap
+ * @return int the position of the parent of child
+ */
+int parent(int child) {
+    return child == 0 ? -1 : (child - 1) / 2;
+}
+
 template <typename T>
 class Heap {
     vector<T> coll;

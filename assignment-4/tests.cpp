@@ -607,12 +607,24 @@ TEST_CASE("iquick_sort") {
     }
 }
 
-TEST_CASE("empty") {
+TEST_CASE("Heap") {
     SUBCASE("An new heap has no elements") {
         GIVEN("A new heap") {
             Heap<int> heap;
             THEN("It will be empty") {
                 REQUIRE(heap.empty());
+            }
+        }
+    }
+}
+
+TEST_CASE("parent") {
+    SUBCASE("The root has no parent") {
+        GIVEN("The position of the root") {
+            WHEN("Finding the parent of the root") {
+                THEN("No parent is found") {
+                    REQUIRE(-1 == parent(0));
+                }
             }
         }
     }
