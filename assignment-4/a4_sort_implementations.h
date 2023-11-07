@@ -612,17 +612,23 @@ template <typename T> bool has_invalid_child(vector<T>& coll, int parent_pos) {
     return is_invalid(size, child_1) || is_invalid(size, child_2);
 }
 
-template <typename T> bool valid_child_pos(vector<T>& coll, int parent_pos) {
-    int base = 2 * parent_pos;
-    return base + ( is_invalid(coll.size(), base + 1) ? 2 : 1 );
+bool valid_child_pos(int parent_pos) {
+    cout << "Parent pos: " << parent_pos << endl;
+    cout << " valid pos: " << 2 * parent_pos + 1 << endl;
+    return 2 * parent_pos + 1;
 }
 
 template <typename T> int find_smallest_child(vector<T>& coll, int parent_pos) {
     int child_1 = 2 * parent_pos + 1;
     int child_2 = 2 * parent_pos + 2;
+    cout << "Parent " << parent_pos << endl;
+    cout << "Child_1, child_2 " << child_1 << ", " << child_2 << endl;
     if (has_invalid_child(coll, parent_pos)) {
-        return valid_child_pos(coll, parent_pos);
+        cout << "Returning b/c of invalid child with this parent: " << parent_pos << endl;
+        cout << valid_child_pos(parent_pos) << ":child pos" << endl;
+        return valid_child_pos(parent_pos);
     }
+    cout << "No invalid children" << endl;
     return coll[child_1] > coll[child_2] ? child_2 : child_1;
 }
 
@@ -656,8 +662,15 @@ class Heap {
         }
 
         while (is_bigger_than_children(coll, elem_pos)) {
+            cout << "Bigger than children " << endl;
+            cout << "Finding the smallest child of " << elem_pos << endl;
             int child_to_swap = find_smallest_child(coll, elem_pos);
+            cout << "The child to swap " << child_to_swap << endl;
+            cout << "The collection before ----" << endl;
+            cout << this->coll << endl;
             swap(coll, elem_pos, child_to_swap); 
+            cout << "The collection after ----" << endl;
+            cout << this->coll << endl;
             elem_pos = child_to_swap;
         }
     }
@@ -670,6 +683,10 @@ class Heap {
     }
 
     bool is_empty() const {
+        cout << "The size " << " ---- " << this->size() << endl; 
+        cout << "Elems ----- " << endl;
+        cout << this->coll << endl;
+        cout << " -------- " << endl;
         return !this->size();
     }
 
@@ -690,10 +707,12 @@ class Heap {
 
     void remove_min() {
         if (!this->is_empty()) {
+            cout << "Removing elemes " << endl;
             swap(this->coll, 0, coll.size() - 1);
             this->coll.pop_back();
             bubble_down(0);
         }
+        cout << "Empty " << endl;
     }
 
     T min() {
@@ -704,15 +723,51 @@ class Heap {
 };
 
 
-// template <typename T> class Priority_Queue {
-//     Heap<T> t;
-//     int elems;
-//     public:
-//     void insert(T& item);
-//     void remove_min();
-//     const T& min();
-//     int size();
-// };
+template <typename T> class Priority_Queue {
+    Heap<T> t;
+    public:
+    void insert(T& item) {
+        t.insert(item);
+    }
+    void remove_min() {
+        t.remove_min();
+    }
+    const T min() {
+        return t.min();
+    }
+    int size() {
+        return t.size();
+    }
+
+    void insert_n(vector<T>& coll) {
+        t.insert_n(coll);
+    }
+
+    void sort(vector<T>& coll) {
+        this->t.insert_n(coll);
+        cout << coll << endl;
+        coll.clear();
+        while (!this->t.is_empty()) {
+            coll.push_back(this->min());
+            this->remove_min();
+        }
+    }
+};
+
+
+template <typename T>
+Sort_stats priority_queue_sort(vector<T> &v) {
+    Sort_stats info{"priority queue sort", v.size(), 0, 0};
+    clock_t start = clock();
+    Priority_Queue<T> pq;
+
+    pq.sort(v);
+
+    clock_t end = clock();
+    info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
+
+    return info;
+}
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as
