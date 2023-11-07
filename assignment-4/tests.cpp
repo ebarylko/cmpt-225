@@ -666,6 +666,19 @@ TEST_CASE("smaller_than_parent") {
     }
 }
 
+TEST_CASE("bigger_than_children") {
+    SUBCASE("An element in the heap which does not have children is not bigger than its children") {
+        GIVEN("A heap with an element which has no children") {
+            vector<int> coll{1};
+            WHEN("Seeing if the element is bigger than its children") {
+                THEN("it is noted to not be bigger than its children") {
+                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                }
+            }
+        }
+    }
+}
+
 TEST_CASE("Heap") {
     SUBCASE("An new heap has no elements") {
         GIVEN("A new heap") {

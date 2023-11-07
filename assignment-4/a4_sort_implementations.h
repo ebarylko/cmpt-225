@@ -589,6 +589,14 @@ template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, i
     return 1;
 }
 
+template <typename T> bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos) {
+    return child_pos < coll.size() && coll[parent_pos] > coll[child_pos];
+}
+
+    template <typename T> bool bigger_than_children(vector<T>& coll, int parent_pos) {
+        return bigger_than_child(coll, parent_pos, 2*parent_pos + 1) || bigger_than_child(coll, parent_pos, 2*parent_pos + 2);
+    }
+
 template <typename T>
 class Heap {
     vector<T> coll;
@@ -657,9 +665,9 @@ class Heap {
     //     bubble_down(0);
     // }
 
-    // T min() {
-    //     return this->coll[0];
-    // }
+    T min() {
+        return this->coll[0];
+    }
 
 
 };
