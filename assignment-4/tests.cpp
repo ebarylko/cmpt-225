@@ -638,3 +638,16 @@ TEST_CASE("parent") {
         }
     }
 }
+
+TEST_CASE("smaller_than_parent") {
+    SUBCASE("A child which is less than its parent is noted as such") {
+        GIVEN("A heap which has a parent greater than its child") {
+            vector<int> coll{3, 1};
+            WHEN("Comparing the parent and child") {
+                THEN("the parent is noted to be greater than its child") {
+                    REQUIRE(smaller_than_parent(coll, 1, 0));
+                }
+            }
+        }
+    }
+}

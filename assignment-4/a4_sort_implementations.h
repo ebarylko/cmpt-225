@@ -571,6 +571,10 @@ int parent(int child) {
     return child == 0 ? -1 : (child - 1) / 2;
 }
 
+template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, int parent_pos) {
+    return coll[child_pos] < coll[parent_pos];
+}
+
 template <typename T>
 class Heap {
     vector<T> coll;
@@ -592,7 +596,7 @@ class Heap {
     //      * @brief Swapping the element upwards until it is in the correct position
     //      * 
     //      */
-    //     while (smaller_than_parent(coll, elem_to_move)) {
+    //     while (smaller_than_parent(this->coll, elem_to_move, parent_pos)) {
     //         swap(this->coll, elem_to_move, parent_pos);
     //         elem_to_move = parent_pos;
     //         parent_pos = parent(elem_to_move);
