@@ -686,6 +686,32 @@ TEST_CASE("bigger_than_children") {
                 }
             }
         }
+        GIVEN("A heap element with two larger child") {
+            vector<int> coll{1, 2, 3};
+            WHEN("Calling the function on that element") {
+                THEN("Returns false") {
+                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                }
+            }
+        }
+    }
+    SUBCASE("An element with at least one child smaller than it") {
+        GIVEN("A heap element with one smaller child") {
+            vector<int> coll{1, 0};
+            WHEN("Calling the function on that element") {
+                THEN("Returns true") {
+                    REQUIRE(bigger_than_children(coll, 0));
+                }
+            }
+        }
+        GIVEN("A heap element with two smaller children") {
+            vector<int> coll{1, 0, -1};
+            WHEN("Calling the function on that element") {
+                THEN("Returns true") {
+                    REQUIRE(bigger_than_children(coll, 0));
+                }
+            }
+        }
     }
 }
 
