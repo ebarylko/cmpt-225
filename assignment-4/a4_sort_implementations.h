@@ -582,22 +582,30 @@ int parent(int child) {
  * @return true if the parent has a valid location and is greater than its child
  * @return false if the condition above goes unsatisfied
  */
-template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, int parent_pos) {
-    if (parent_pos == -1 || coll[child_pos] >= coll[parent_pos]) {
+template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, int parent_pos, Sort_stats& info) {
+    if (parent_pos == -1) {
+        return 0;
+    }
+    if (coll[child_pos] >= coll[parent_pos]) {
+        info.num_comparisons++;
         return 0;
     }
     return 1;
 }
 
 template <typename T>
-bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos) {
-    return child_pos < coll.size() && coll[parent_pos] > coll[child_pos];
+bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos, Sort_stats& info) {
+    if (child_pos < coll.size() && coll[parent_pos] > coll[child_pos]) {
+        info.num_comparisons++;
+        return 1;
+    }
+    return 0;
 }
 
 template <typename T>
-bool is_bigger_than_children(vector<T>& coll, int parent_pos) {
-    return bigger_than_child(coll, parent_pos, 2 * parent_pos + 1) ||
-           bigger_than_child(coll, parent_pos, 2 * parent_pos + 2);
+bool is_bigger_than_children(vector<T>& coll, int parent_pos, Sort_stats& info) {
+    return bigger_than_child(coll, parent_pos, 2 * parent_pos + 1, info) ||
+           bigger_than_child(coll, parent_pos, 2 * parent_pos + 2, info);
 }
 
 
@@ -606,19 +614,21 @@ template <typename T> bool not_in_range(const vector<T>& coll, int child_pos) {
     return child_pos >= size;
 }
 
-template <typename T> int find_smallest_child(const vector<T>& coll, int parent_pos) {
+template <typename T> int find_smallest_child(const vector<T>& coll, int parent_pos, Sort_stats& info) {
     int child_1 = 2 * parent_pos + 1;
     int child_2 = 2 * parent_pos + 2;
     if (not_in_range(coll, child_2)) {
         return child_1;
     }
+
+    info.num_comparisons++;
     return coll[child_1] > coll[child_2] ? child_2 : child_1;
 }
 
 template <typename T>
 class Heap {
     vector<T> coll;
-
+    Sort_stats info;
     /**
      * @brief Takes the position of the element to move and adjusts it so it is at a location
      * where it satisfies the heap property
@@ -632,7 +642,7 @@ class Heap {
          * @brief Swapping the element upwards until it is in the correct position
          * 
          */
-        while (smaller_than_parent(this->coll, elem_to_move, parent_pos)) {
+        while (smaller_than_parent(this->coll, elem_to_move, parent_pos, this->info)) {
             swap(this->coll, elem_to_move, parent_pos);
             elem_to_move = parent_pos;
             parent_pos = parent(elem_to_move);
@@ -644,8 +654,8 @@ class Heap {
             return;
         }
 
-        while (is_bigger_than_children(coll, elem_pos)) {
-            int child_to_swap = find_smallest_child(coll, elem_pos);
+        while (is_bigger_than_children(coll, elem_pos, this->info)) {
+            int child_to_swap = find_smallest_child(coll, elem_pos, this->info);
             swap(coll, elem_pos, child_to_swap); 
             elem_pos = child_to_swap;
         }
@@ -689,7 +699,10 @@ class Heap {
         return this->coll[0];
     }
 
-
+    Sort_stats& sort_info() {
+        this->info.sort_name = "priority queue sort";
+        return this->info;
+    }
 };
 
 
@@ -713,6 +726,10 @@ template <typename T> class Priority_Queue {
         t.insert_n(coll);
     }
 
+    Sort_stats& sort_info() {
+        return this->t.sort_info();
+    }
+
     void sort(vector<T>& coll) {
         this->t.insert_n(coll);
         coll.clear();
@@ -726,15 +743,17 @@ template <typename T> class Priority_Queue {
 
 template <typename T>
 Sort_stats priority_queue_sort(vector<T> &v) {
-    Sort_stats info{"priority queue sort", v.size(), 0, 0};
-    clock_t start = clock();
     Priority_Queue<T> pq;
+    Sort_stats& info = pq.sort_info();
+    info.vector_size = v.size();
+
+    clock_t start = clock();
 
     pq.sort(v);
 
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
-
+    
     return info;
 }
 

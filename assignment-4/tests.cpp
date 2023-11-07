@@ -652,10 +652,11 @@ TEST_CASE("parent") {
 TEST_CASE("smaller_than_parent") {
     SUBCASE("A child which is smaller than its parent") {
         GIVEN("A heap element greater than its child") {
+            Sort_stats info;
             vector<int> coll{3, 1};
             WHEN("Calling the function on the parent and child") {
                 THEN("Returns true") {
-                    REQUIRE(smaller_than_parent(coll, 1, 0));
+                    REQUIRE(smaller_than_parent(coll, 1, 0, info));
                 }
             }
         }
@@ -663,9 +664,10 @@ TEST_CASE("smaller_than_parent") {
     SUBCASE("A child which is greater than its parent") {
         GIVEN("A heap with a parent smaller than its child") {
             vector<int> coll{0, 1};
+            Sort_stats info;
             WHEN("Calling the function on the parent and child") {
                 THEN("returns false") {
-                    REQUIRE_FALSE(smaller_than_parent(coll, 1, 0));
+                    REQUIRE_FALSE(smaller_than_parent(coll, 1, 0, info));
                 }
             }
         }
@@ -673,9 +675,10 @@ TEST_CASE("smaller_than_parent") {
     SUBCASE("The root is not smaller than its parent") {
         GIVEN("A heap with just the root") {
             vector<int> coll{1};
+            Sort_stats info;
             WHEN("calling the function on the root") {
                 THEN("returns false") {
-                    REQUIRE_FALSE(smaller_than_parent(coll, 0, -1));
+                    REQUIRE_FALSE(smaller_than_parent(coll, 0, -1, info));
                 }
             }
         }
@@ -685,10 +688,11 @@ TEST_CASE("smaller_than_parent") {
 TEST_CASE("is_bigger_than_children") {
     SUBCASE("An childrenless element is not bigger than its children") {
         GIVEN("A heap with a childless element") {
+            Sort_stats info;
             vector<int> coll{1};
             WHEN("calling the function on that element") {
                 THEN("returns false") {
-                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0, info));
                 }
             }
         }
@@ -696,17 +700,19 @@ TEST_CASE("is_bigger_than_children") {
     SUBCASE("An element with at least one child bigger than it") {
         GIVEN("A heap element with one bigger child") {
             vector<int> coll{1, 2};
+            Sort_stats info;
             WHEN("Calling the function on that element") {
                 THEN("Returns false") {
-                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0, info));
                 }
             }
         }
         GIVEN("A heap element with two larger child") {
             vector<int> coll{1, 2, 3};
+            Sort_stats info;
             WHEN("Calling the function on that element") {
                 THEN("Returns false") {
-                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0, info));
                 }
             }
         }
@@ -714,17 +720,19 @@ TEST_CASE("is_bigger_than_children") {
     SUBCASE("An element with at least one child smaller than it") {
         GIVEN("A heap element with one smaller child") {
             vector<int> coll{1, 0};
+            Sort_stats info;
             WHEN("Calling the function on that element") {
                 THEN("Returns true") {
-                    REQUIRE(is_bigger_than_children(coll, 0));
+                    REQUIRE(is_bigger_than_children(coll, 0, info));
                 }
             }
         }
         GIVEN("A heap element with two smaller children") {
             vector<int> coll{1, 0, -1};
+            Sort_stats info;
             WHEN("Calling the function on that element") {
                 THEN("Returns true") {
-                    REQUIRE(is_bigger_than_children(coll, 0));
+                    REQUIRE(is_bigger_than_children(coll, 0, info));
                 }
             }
         }
@@ -759,9 +767,10 @@ TEST_CASE("find_smallest_child") {
     SUBCASE("Heap element with an invalid child") {
         GIVEN("A heap element with an invalid child") {
             vector<int> coll{1, 2};
+            Sort_stats info;
             WHEN("Calling the function") {
                 THEN("The smallest child has an index of 1") {
-                    REQUIRE(1 == find_smallest_child(coll, 0));
+                    REQUIRE(1 == find_smallest_child(coll, 0, info));
                 }
             }
         }
@@ -769,9 +778,10 @@ TEST_CASE("find_smallest_child") {
     SUBCASE("Heap element with no invalid children") {
         GIVEN("A heap element with valid children") {
             vector<int> coll{1, 2, 0};
+            Sort_stats info;
             WHEN("Calling the function") {
                 THEN("The smallest child has an index of 2") {
-                    REQUIRE(2 == find_smallest_child(coll, 0));
+                    REQUIRE(2 == find_smallest_child(coll, 0, info));
                 }
             }
         }
@@ -780,9 +790,10 @@ TEST_CASE("find_smallest_child") {
         GIVEN("Heap element with a valid child") {
             vector<int> coll{-58, -31, -28, 82, -15, 50, -12, -25};
             vector<int> copy{coll};
+            Sort_stats info;
             WHEN("Calling the function") {
                 THEN("Smallest child has an index of 7") {
-                    int child_pos = find_smallest_child(coll, 3);
+                    int child_pos = find_smallest_child(coll, 3, info);
                     REQUIRE(copy == coll);
                     REQUIRE(7 == child_pos);
                 }
