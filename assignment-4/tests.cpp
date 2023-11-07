@@ -738,6 +738,19 @@ TEST_CASE("has_invalid_child") {
     }
 }
 
+TEST_CASE("find_smallest_child") {
+    SUBCASE("Heap element with an invalid child") {
+        GIVEN("A heap element with an invalid child") {
+            vector<int> coll{1, 2};
+            WHEN("Calling the function") {
+                THEN("The smallest child has an index of 1") {
+                    REQUIRE(1 == find_smallest_child(coll, 0));
+                }
+            }
+        }
+    }
+}
+
 TEST_CASE("Heap") {
     SUBCASE("An new heap has no elements") {
         GIVEN("A new heap") {
