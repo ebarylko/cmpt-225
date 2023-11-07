@@ -217,9 +217,6 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     // Ordering the elements by moving the element
     // at the current position to its correct spot
     insert_sort(v, 0, v.size() - 1, info);
-    // for(int pos = 1; pos < v.size(); pos++) {
-    //     insert_sort_order(v, 0, pos, info);
-    // }
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 
@@ -563,6 +560,86 @@ template <typename T> Sort_stats iquick_sort(vector<T> &v) {
 
     return info;
 }
+
+template <typename T>
+class Heap {
+    vector<T> coll;
+
+    // /**
+    //  * @brief Takes the position of the element to move and adjusts it so it is at a location
+    //  * where it satisfies the heap property
+    //  * 
+    //  * @param elem_to_move the index of the element to move up
+    //  */
+    // void bubble_up(int elem_to_move) {
+    //     if (!this->empty()) {
+    //         return;
+    //     }
+
+    //     int parent_pos = parent(elem_to_move);
+
+    //     /**
+    //      * @brief Swapping the element upwards until it is in the correct position
+    //      * 
+    //      */
+    //     while (smaller_than_parent(coll, elem_to_move)) {
+    //         swap(this->coll, elem_to_move, parent_pos);
+    //         elem_to_move = parent_pos;
+    //         parent_pos = parent(elem_to_move);
+    //     }
+    // }
+
+    // void bubble_down(int elem_pos) {
+    //     if (this->is_empty()) {
+    //         return;
+    //     }
+
+    //     while (bigger_than_children(coll, elem_pos)) {
+    //         int child_to_swap = find_smallest_child(coll, elem_pos);
+    //         swap(coll, elem_pos, child_to_swap); 
+    //         elem_pos = child_to_swap;
+    //     }
+    // }
+
+    public: 
+    ~Heap() {};
+    
+    int size() const {
+        return this->coll.size();
+    }
+
+    bool empty() const {
+        return !this->size();
+    }
+
+    // void insert(T& item) {
+    //     coll.push_back(item);
+    //     bubble_up(coll.size() - 1);
+    // }
+
+    // void remove_min() {
+    //     swap(this->coll, 0, coll.size() - 1);
+    //     this->coll.pop_back();
+    //     bubble_down(0);
+    // }
+
+    // T min() {
+    //     return this->coll[0];
+    // }
+
+
+};
+
+
+// template <typename T> class Priority_Queue {
+//     Heap<T> t;
+//     int elems;
+//     public:
+//     void insert(T& item);
+//     void remove_min();
+//     const T& min();
+//     int size();
+// };
 
 //
 // Put the implementations of all the functions listed in a4_base.h here, as

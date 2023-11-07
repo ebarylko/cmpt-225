@@ -606,3 +606,14 @@ TEST_CASE("iquick_sort") {
         }
     }
 }
+
+TEST_CASE("empty") {
+    SUBCASE("An new heap has no elements") {
+        GIVEN("A new heap") {
+            Heap<int> heap;
+            THEN("It will be empty") {
+                REQUIRE(heap.empty());
+            }
+        }
+    }
+}
