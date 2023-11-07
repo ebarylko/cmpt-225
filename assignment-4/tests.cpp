@@ -749,6 +749,16 @@ TEST_CASE("find_smallest_child") {
             }
         }
     }
+    SUBCASE("Heap element with no invalid children") {
+        GIVEN("A heap element with valid children") {
+            vector<int> coll{1, 2, 0};
+            WHEN("Calling the function") {
+                THEN("The smallest child has an index of 2") {
+                    REQUIRE(2 == find_smallest_child(coll, 0));
+                }
+            }
+        }
+    }
 }
 
 TEST_CASE("Heap") {
@@ -811,6 +821,31 @@ SUBCASE("remove_min") {
                 heap.remove_min();
                 THEN("The heap remains unchanged") {
                     REQUIRE(heap.items().empty());
+                }
+            }
+        }
+    }
+    SUBCASE("Removing from a heap with one element") {
+        GIVEN("An heap with one element") {
+            Heap<int> heap;
+            heap.insert(1);
+            WHEN("Calling the function") {
+                heap.remove_min();
+                THEN("The heap is empty") {
+                    REQUIRE(heap.items().empty());
+                }
+            }
+        }
+    }
+    SUBCASE("Removing from a heap with many elements") {
+        GIVEN("An heap with many elements") {
+            Heap<int> heap;
+            heap.insert_n({5, 9, 15, 6, 4, 8, 2, 11, 1, 3});
+            WHEN("Calling the function") {
+                heap.remove_min();
+                THEN("The heap order is maintained") {
+                    vector<int> expected = mk_vec({2, 3, 4, 5, 6, 15, 8, 11, 9});
+                    REQUIRE(expected == heap.items());
                 }
             }
         }
