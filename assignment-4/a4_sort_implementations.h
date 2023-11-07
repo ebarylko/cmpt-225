@@ -595,9 +595,35 @@ bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos) {
 }
 
 template <typename T>
-bool bigger_than_children(vector<T>& coll, int parent_pos) {
+bool is_bigger_than_children(vector<T>& coll, int parent_pos) {
     return bigger_than_child(coll, parent_pos, 2 * parent_pos + 1) ||
            bigger_than_child(coll, parent_pos, 2 * parent_pos + 2);
+}
+
+
+bool is_invalid(int size, int pos) {
+    return pos >= size;
+}
+
+template <typename T> bool has_invalid_child(vector<T>& coll, int parent_pos) {
+    int size = coll.size();
+    int child_1 = 2 * parent_pos + 1;
+    int child_2 = 2 * parent_pos + 2;
+    return is_invalid(size, child_1) || is_invalid(size, child_2);
+}
+
+template <typename T> bool valid_child_pos(vector<T>& coll, int parent_pos) {
+    int base = 2 * parent_pos;
+    return base + ( is_invalid(coll.size(), base + 1) ? 2 : 1 );
+}
+
+template <typename T> int find_smallest_child(vector<T>& coll, int parent_pos) {
+    int child_1 = 2 * parent_pos + 1;
+    int child_2 = 2 * parent_pos + 2;
+    if (has_invalid_child(coll, parent_pos)) {
+        return valid_child_pos(coll, parent_pos);
+    }
+    return coll[child_1] > coll[child_2] ? child_2 : child_1;
 }
 
 template <typename T>
@@ -624,17 +650,17 @@ class Heap {
         }
     }
 
-    // void bubble_down(int elem_pos) {
-    //     if (this->is_empty()) {
-    //         return;
-    //     }
+    void bubble_down(int elem_pos) {
+        if (this->is_empty()) {
+            return;
+        }
 
-    //     while (bigger_than_children(coll, elem_pos)) {
-    //         int child_to_swap = find_smallest_child(coll, elem_pos);
-    //         swap(coll, elem_pos, child_to_swap); 
-    //         elem_pos = child_to_swap;
-    //     }
-    // }
+        while (is_bigger_than_children(coll, elem_pos)) {
+            int child_to_swap = find_smallest_child(coll, elem_pos);
+            swap(coll, elem_pos, child_to_swap); 
+            elem_pos = child_to_swap;
+        }
+    }
 
     public: 
     ~Heap() {};
@@ -643,7 +669,7 @@ class Heap {
         return this->coll.size();
     }
 
-    bool empty() const {
+    bool is_empty() const {
         return !this->size();
     }
 
@@ -662,11 +688,13 @@ class Heap {
         return vector<T>(this->coll);
     }
 
-    // void remove_min() {
-    //     swap(this->coll, 0, coll.size() - 1);
-    //     this->coll.pop_back();
-    //     bubble_down(0);
-    // }
+    void remove_min() {
+        if (!this->is_empty()) {
+            swap(this->coll, 0, coll.size() - 1);
+            this->coll.pop_back();
+            bubble_down(0);
+        }
+    }
 
     T min() {
         return this->coll[0];

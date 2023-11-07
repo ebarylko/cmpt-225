@@ -666,13 +666,13 @@ TEST_CASE("smaller_than_parent") {
     }
 }
 
-TEST_CASE("bigger_than_children") {
+TEST_CASE("is_bigger_than_children") {
     SUBCASE("An childrenless element is not bigger than its children") {
         GIVEN("A heap with a childless element") {
             vector<int> coll{1};
             WHEN("calling the function on that element") {
                 THEN("returns false") {
-                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
                 }
             }
         }
@@ -682,7 +682,7 @@ TEST_CASE("bigger_than_children") {
             vector<int> coll{1, 2};
             WHEN("Calling the function on that element") {
                 THEN("Returns false") {
-                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
                 }
             }
         }
@@ -690,7 +690,7 @@ TEST_CASE("bigger_than_children") {
             vector<int> coll{1, 2, 3};
             WHEN("Calling the function on that element") {
                 THEN("Returns false") {
-                    REQUIRE_FALSE(bigger_than_children(coll, 0));
+                    REQUIRE_FALSE(is_bigger_than_children(coll, 0));
                 }
             }
         }
@@ -700,7 +700,7 @@ TEST_CASE("bigger_than_children") {
             vector<int> coll{1, 0};
             WHEN("Calling the function on that element") {
                 THEN("Returns true") {
-                    REQUIRE(bigger_than_children(coll, 0));
+                    REQUIRE(is_bigger_than_children(coll, 0));
                 }
             }
         }
@@ -708,7 +708,30 @@ TEST_CASE("bigger_than_children") {
             vector<int> coll{1, 0, -1};
             WHEN("Calling the function on that element") {
                 THEN("Returns true") {
-                    REQUIRE(bigger_than_children(coll, 0));
+                    REQUIRE(is_bigger_than_children(coll, 0));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("has_invalid_child") {
+    SUBCASE("heap element with one invalid child") {
+        GIVEN("A heap element with an invalid child") {
+            vector<int> coll{1, 2};
+            WHEN("Calling the function on the element") {
+                THEN("Returns true") {
+                    REQUIRE(has_invalid_child(coll, 0));
+                }
+            }
+        }
+    }
+    SUBCASE("heap element with no invalid children") {
+        GIVEN("A heap element with no invalid children") {
+            vector<int> coll{1, 2, 3};
+            WHEN("Calling the function on the element") {
+                THEN("Returns false") {
+                    REQUIRE_FALSE(has_invalid_child(coll, 0));
                 }
             }
         }
@@ -720,7 +743,7 @@ TEST_CASE("Heap") {
         GIVEN("A new heap") {
             Heap<int> heap;
             THEN("It will be empty") {
-                REQUIRE(heap.empty());
+                REQUIRE(heap.is_empty());
             }
         }
     }
@@ -767,4 +790,17 @@ TEST_CASE("Heap") {
             }
         }
     }
+SUBCASE("remove_min") {
+    SUBCASE("Removing from empty heap") {
+        GIVEN("An empty heap") {
+            Heap<int> heap;
+            WHEN("Calling the function") {
+                heap.remove_min();
+                THEN("The heap remains unchanged") {
+                    REQUIRE(heap.items().empty());
+                }
+            }
+        }
+    }
+}
 }
