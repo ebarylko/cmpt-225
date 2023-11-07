@@ -601,34 +601,17 @@ bool is_bigger_than_children(vector<T>& coll, int parent_pos) {
 }
 
 
-bool is_invalid(int size, int pos) {
-    return pos >= size;
-}
-
-template <typename T> bool has_invalid_child(vector<T>& coll, int parent_pos) {
+template <typename T> bool not_in_range(const vector<T>& coll, int child_pos) {
     int size = coll.size();
-    int child_1 = 2 * parent_pos + 1;
-    int child_2 = 2 * parent_pos + 2;
-    return is_invalid(size, child_1) || is_invalid(size, child_2);
+    return child_pos >= size;
 }
 
-bool valid_child_pos(int parent_pos) {
-    cout << "Parent pos: " << parent_pos << endl;
-    cout << " valid pos: " << 2 * parent_pos + 1 << endl;
-    return 2 * parent_pos + 1;
-}
-
-template <typename T> int find_smallest_child(vector<T>& coll, int parent_pos) {
+template <typename T> int find_smallest_child(const vector<T>& coll, int parent_pos) {
     int child_1 = 2 * parent_pos + 1;
     int child_2 = 2 * parent_pos + 2;
-    cout << "Parent " << parent_pos << endl;
-    cout << "Child_1, child_2 " << child_1 << ", " << child_2 << endl;
-    if (has_invalid_child(coll, parent_pos)) {
-        cout << "Returning b/c of invalid child with this parent: " << parent_pos << endl;
-        cout << valid_child_pos(parent_pos) << ":child pos" << endl;
-        return valid_child_pos(parent_pos);
+    if (not_in_range(coll, child_2)) {
+        return child_1;
     }
-    cout << "No invalid children" << endl;
     return coll[child_1] > coll[child_2] ? child_2 : child_1;
 }
 
@@ -662,15 +645,8 @@ class Heap {
         }
 
         while (is_bigger_than_children(coll, elem_pos)) {
-            cout << "Bigger than children " << endl;
-            cout << "Finding the smallest child of " << elem_pos << endl;
             int child_to_swap = find_smallest_child(coll, elem_pos);
-            cout << "The child to swap " << child_to_swap << endl;
-            cout << "The collection before ----" << endl;
-            cout << this->coll << endl;
             swap(coll, elem_pos, child_to_swap); 
-            cout << "The collection after ----" << endl;
-            cout << this->coll << endl;
             elem_pos = child_to_swap;
         }
     }
@@ -683,10 +659,6 @@ class Heap {
     }
 
     bool is_empty() const {
-        cout << "The size " << " ---- " << this->size() << endl; 
-        cout << "Elems ----- " << endl;
-        cout << this->coll << endl;
-        cout << " -------- " << endl;
         return !this->size();
     }
 
@@ -707,12 +679,10 @@ class Heap {
 
     void remove_min() {
         if (!this->is_empty()) {
-            cout << "Removing elemes " << endl;
             swap(this->coll, 0, coll.size() - 1);
             this->coll.pop_back();
             bubble_down(0);
         }
-        cout << "Empty " << endl;
     }
 
     T min() {
@@ -745,7 +715,6 @@ template <typename T> class Priority_Queue {
 
     void sort(vector<T>& coll) {
         this->t.insert_n(coll);
-        cout << coll << endl;
         coll.clear();
         while (!this->t.is_empty()) {
             coll.push_back(this->min());
