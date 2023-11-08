@@ -922,7 +922,7 @@ TEST_CASE("priority queue sort") {
     
     SUBCASE("Sorting large collection") {
         GIVEN("A large collection") {
-            vector<int> coll = rand_vec(100, -199, 100);
+            vector<int> coll = rand_vec(50000, -600, 200);
             WHEN("Sorting the collection") {
                 vector<int> expected{coll};
                 sort(expected.begin(), expected.end());

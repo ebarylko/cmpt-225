@@ -69,7 +69,7 @@ int random_sign(int min) {
  */
 int rand_num(int min, int max) {
     int end = max >= 0 ? max + 1 : min  - 1;
-    int num = random_sign(min) * (rand() + min) % end;
+    int num = random_sign(min) * ((rand() % end) + min);
     // Continue generating numbers until one is within
     // min and max
     while (min > num || num > max) {
