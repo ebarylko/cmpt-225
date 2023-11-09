@@ -374,7 +374,6 @@ template <typename T> int find_larger_than(const vector<T>& coll, int start, int
         curr_pos++;
         info.num_comparisons++;
     }
-    // info.num_comparisons += pivot_pos - curr_pos + 1;
     return curr_pos > pivot_pos ? -1 : curr_pos;
 }
 
@@ -385,7 +384,6 @@ template <typename T> int find_smaller_than(const vector<T>& coll, int start,int
         curr_pos--;
         info.num_comparisons++;
     }
-    // info.num_comparisons += start - curr_pos + 1;
     return curr_pos < pivot_pos ? -1 : curr_pos;
 }
 
@@ -444,7 +442,7 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
         return;
     }
 
-    if (end - start <= 6 && func_const == INSERTION) {
+    if (end - start <= 12 && func_const == INSERTION) {
         insert_sort(coll, start, end, info);
         return;
     }
