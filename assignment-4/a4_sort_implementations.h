@@ -309,6 +309,16 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     return info;
 }
 
+/**
+ * @brief Takes a destination collection dest, a source collection src, a starting and ending point,
+ *  and copies all the elements in src from the starting to the ending point over to dest
+ * 
+ * @tparam T 
+ * @param dest the collection to copy to
+ * @param src the collection to copy from
+ * @param curr the starting point in src
+ * @param end the ending point in src
+ */
 template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, int curr, int end) {
     if (curr > end) {
         return;
@@ -319,15 +329,15 @@ template <typename T> void add_remaining_items(vector<T>& dest, vector<T>& src, 
     }
 }
 
+/**
+ * @brief This datatype represents pairs of element positions in a collection to compare 
+ */
 struct NextElems {
     int fst;
     int snd;
     NextElems(int first, int second): fst(first), snd(second) {};
 };
 
-bool operator==(const NextElems& a, const NextElems& b) {
-    return a.fst == b.fst && a.snd == b.snd;
-}
 
 /**
  * @brief Takes a sorted collection, another collection and two locations in the the secondary collection 
@@ -356,27 +366,31 @@ template <typename T> NextElems add_smallest_elem(vector<T>& sorted, vector<T>& 
 }
 
 /**
- * @brief Takes a collection to overwrite, a collection to copy from, and a starting and ending point 
- * for the collection to copy from. Copies all the elements from the start to the end point
- * in the second collection to the first collection
+ * @brief Takes a collection to overwrite O, a collection to copy from C, and a starting point 
+ * for O. Overwrites all the elements in O starting from the 
+ * initial position with the elements in C
  * 
  * @tparam T 
  * @param src the collection to copy to
  * @param cpy_from the collection to copy from
  * @param start the point from where to stop copying
- * @param end the last position to copy from
  * @return vector<T> the overwritten collection
  */
-template <typename T> vector<T>& overwrite_coll(vector<T>& src, vector<T>& cpy_from, int start) {
-    auto curr = src.begin();
+template <typename T> vector<T>& overwrite_coll(vector<T>& dest, vector<T>& src, int start) {
+    auto curr = dest.begin();
     advance(curr, start);
-    auto cpy_val = cpy_from.begin();
-    while (cpy_val != cpy_from.end()) {
+    auto cpy_val = src.begin();
+
+    /**
+     * @brief Copy elements over from src to dest while there are elements left 
+     */
+
+    while (cpy_val != src.end()) {
         *curr = *cpy_val;
         cpy_val++;
         curr++;
     }
-    return src;
+    return dest;
 }
 
 /**

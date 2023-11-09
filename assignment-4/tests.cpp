@@ -9,6 +9,10 @@
 #include "doctest.h"
 using namespace std;
 
+bool operator==(const NextElems& a, const NextElems& b) {
+    return a.fst == b.fst && a.snd == b.snd;
+}
+
 auto mk_vec(initializer_list<int> nums) {
     return vector<int>(nums);
 }
