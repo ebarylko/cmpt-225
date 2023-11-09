@@ -751,13 +751,20 @@ template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, i
     }
     info.num_comparisons++;
     return coll[child_pos] >= coll[parent_pos] ? 0 : 1;
-    // if (coll[child_pos] >= coll[parent_pos]) {
-    //     info.num_comparisons++;
-    //     return 0;
-    // }
-    // return 1;
 }
 
+/**
+ * @brief Takes a collection, the positions of a parent and child, the number of comparisons 
+ * done so far, and returns true if the parent is bigger than the child. False otherwise.
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param parent_pos the position of the parent
+ * @param child_pos the position of th child
+ * @param info the amount of comparisons done so far
+ * @return true if the parent is bigger than the child
+ * @return false if the above is untrue
+ */
 template <typename T>
 bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos, Sort_stats& info) {
     if (child_pos < coll.size() && coll[parent_pos] > coll[child_pos]) {
@@ -767,6 +774,17 @@ bool bigger_than_child(const vector<T>& coll, int parent_pos, int child_pos, Sor
     return 0;
 }
 
+/**
+ * @brief Takes a collection, a parent in the collection, and the comparisons done so far, 
+ * and returns true the the parent is bigger than both its children. False otherwise.
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param parent_pos the position of the parent
+ * @param info the current amount of comparisons
+ * @return true if the parent is larger than its children
+ * @return false if the above is untrue 
+ */
 template <typename T>
 bool is_bigger_than_children(vector<T>& coll, int parent_pos, Sort_stats& info) {
     return bigger_than_child(coll, parent_pos, 2 * parent_pos + 1, info) ||
@@ -779,9 +797,22 @@ template <typename T> bool not_in_range(const vector<T>& coll, int child_pos) {
     return child_pos >= size;
 }
 
+/**
+ * @brief Takes a collection, a parent P, and the current amount of comparisons, and returns the 
+ * position of the smallest child of P
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param parent_pos the position of the parent
+ * @param info the amount of comparisons done
+ * @return int the location of the smallest child of P
+ */
 template <typename T> int find_smallest_child(const vector<T>& coll, int parent_pos, Sort_stats& info) {
     int child_1 = 2 * parent_pos + 1;
     int child_2 = 2 * parent_pos + 2;
+    /**
+     if the second child is not in range, then the first child is in the range
+     */
     if (not_in_range(coll, child_2)) {
         return child_1;
     }
@@ -801,23 +832,35 @@ class Heap {
      * @param elem_to_move the index of the element to move up
      */
     void bubble_up(int elem_to_move) {
-        int parent_pos = parent_pos(elem_to_move);
+        int parent_loc = parent_pos(elem_to_move);
 
         /**
          * @brief Swapping the element upwards until it is in the correct position
          */
-        while (smaller_than_parent(this->coll, elem_to_move, parent_pos, this->info)) {
-            swap(this->coll, elem_to_move, parent_pos);
-            elem_to_move = parent_pos;
-            parent_pos = parent_pos(elem_to_move);
+        while (smaller_than_parent(this->coll, elem_to_move, parent_loc, this->info)) {
+            swap(this->coll, elem_to_move, parent_loc);
+            elem_to_move = parent_loc;
+            parent_loc = parent_pos(elem_to_move);
         }
     }
 
+    /**
+     * @brief Takes the position of an element and moves it lower down in the heap until it
+     * satisfies the heap property
+     * 
+     * @param elem_pos the position of the element to move
+     */
     void bubble_down(int elem_pos) {
+        /**
+         * Do nothing if there is no element to bubble down
+         */
         if (this->is_empty()) {
             return;
         }
 
+        /**
+         * Move the element down the heap while it is larger than its children
+         */
         while (is_bigger_than_children(coll, elem_pos, this->info)) {
             int child_to_swap = find_smallest_child(coll, elem_pos, this->info);
             swap(coll, elem_pos, child_to_swap); 
