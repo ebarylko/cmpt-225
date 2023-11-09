@@ -811,49 +811,48 @@ TEST_CASE("Heap") {
             }
         }
     }
-    // SUBCASE("insert") {
-        // SUBCASE(
-            // "Inserting an element into an empty heap changes the first element "
-        //     "to be the recently inserted one") {
-        //     GIVEN("An empty heap") {
-        //         Heap<int> heap;
-        //         WHEN("Inserting into the heap") {
-        //             heap.insert(1);
-        //             THEN("The heap will have the inserted item as the first element") {
-        //                   vector<int> expected = mk_vec({1});
-        //                   REQUIRE(expected == heap.items());
-        //             }
-        //         }
-        //     }
-        // }
-        // SUBCASE("Inserting a smaller second element into a heap will cause the heap to swap the elements") {
-        //     GIVEN("A heap with a sole element") {
-        //         Heap<int> heap;
-        //         heap.insert(1);
-        //         WHEN("Inserting an element smaller than the root") {
-        //             heap.insert(0);
-        //             THEN("The heap will swap the elements") {
-        //                 vector<int> expected = mk_vec({0, 1});
-        //                 REQUIRE(expected == heap.items());
-        //             }
-        //         }
-        //     }
+    SUBCASE("insert") {
+        SUBCASE(
+            "Inserting an element into an empty heap changes the first element "
+            "to be the recently inserted one") {
+            GIVEN("An empty heap") {
+                Heap<int> heap;
+                WHEN("Inserting into the heap") {
+                    heap.insert(1);
+                    THEN("The heap will have the inserted item as the first element") {
+                          vector<int> expected = mk_vec({1});
+                          REQUIRE(expected == heap.items());
+                    }
+                }
+            }
+        }
+        SUBCASE("Inserting a smaller second element into a heap will cause the heap to swap the elements") {
+            GIVEN("A heap with a sole element") {
+                Heap<int> heap;
+                heap.insert(1);
+                WHEN("Inserting an element smaller than the root") {
+                    heap.insert(0);
+                    THEN("The heap will swap the elements") {
+                        vector<int> expected = mk_vec({0, 1});
+                        REQUIRE(expected == heap.items());
+                    }
+                }
+            }
+        }
+        SUBCASE("Inserting multiple elements into the heap causes the heap to enforce the heap order") {
+            GIVEN("An empty heap") {
+                Heap<int> heap;
+                WHEN("Adding many elements to the heap") {
+                    heap.insert_n({5, 9, 15, 6, 4, 8, 2, 11, 1, 3});
+                    THEN("The heap obeys the min heap order and has the elements ordered correctly") {
+                        vector<int> expected = mk_vec({1, 2, 4, 5, 3, 15, 8, 11, 9, 6});
+                        REQUIRE(expected == heap.items());
 
-    //     // }
-    //     SUBCASE("Inserting multiple elements into the heap causes the heap to enforce the heap order") {
-    //         GIVEN("An empty heap") {
-    //             Heap<int> heap;
-    //             WHEN("Adding many elements to the heap") {
-    //                 heap.insert_n({5, 9, 15, 6, 4, 8, 2, 11, 1, 3});
-    //                 THEN("The heap obeys the min heap order and has the elements ordered correctly") {
-    //                     vector<int> expected = mk_vec({1, 2, 4, 5, 3, 15, 8, 11, 9, 6});
-    //                     REQUIRE(expected == heap.items());
-
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+                    }
+                }
+            }
+        }
+    }
 SUBCASE("remove_min") {
     SUBCASE("Removing from empty heap") {
         GIVEN("An empty heap") {
