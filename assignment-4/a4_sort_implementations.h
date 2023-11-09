@@ -555,44 +555,50 @@ bool is_pair_within_coll(int curr_pos, int end) {
 }
 
 /**
- * @brief Takes a collection, a distance G, and details about the number of comparisons made so far and 
+ * @brief Takes a collection, a distance G, and the current number of comparisons and 
  * orders every pair of elements seperated by G ascendingly
  * 
  * @tparam T 
  * @param coll the collection being ordered
  * @param gap the distance between the elements being compared
- * @param info the current amount of comparisons done in the algorithm
+ * @param info the amount of comparisons done so far 
  */
 template <typename T> void order_elems_by_gap(vector<T>& coll, int gap, Sort_stats& info) {
     int curr_pos = 0;
+    int gap_elem = curr_pos + gap;
     // hacer que el segun elemento esta con un nombre
-    while (is_pair_within_coll(curr_pos + gap, coll.size())) {
-        if (coll[curr_pos] > coll[curr_pos + gap]) {
+    while (is_pair_within_coll(gap_elem, coll.size())) {
+        if (coll[curr_pos] > coll[gap_elem]) {
             info.num_comparisons++;
-            swap(coll, curr_pos, curr_pos + gap);
+            swap(coll, curr_pos, gap_elem);
         }
         curr_pos++;
+        gap_elem++;
     }
 }
 
 /**
- * @brief Takes a collection and information about the number of comparisons occurring and returns
- * the collection is ascending order
+ * @brief Takes a collection and the current number of comparisons and returns
+ * the collection in ascending order
  * 
  * @tparam T 
  * @param coll the collection to sort
- * @param info details about the type of sort and comparisons done up to now
+ * @param info the amount of comparisons done so far
  */
 template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
     int gap = coll.size() / 2;
 
-    // Leaving since collection is already sorted
+    /**
+    Leaving since collection is already sorted
+     */
     if (gap == 0) {
         return;
     }
 
-    // order the elements by the gap and modify gap for
-    // next iteration
+    /**
+    Order the pairs of elements spaced by the gap and
+    reduce the gap for the next iteration
+     */
     while (gap != 1) {
         order_elems_by_gap(coll, gap, info);
         gap /= 2;
