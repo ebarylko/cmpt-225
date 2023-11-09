@@ -56,8 +56,14 @@ template <typename T> bool is_sorted(vector<T>& coll) {
     return curr == end;
 }
 
-int random_sign(int min) {
-    return min >= 0 ? 1 : rand() % 2 == 0 ? 1 : -1;
+/**
+ * @brief Takes a number and generates 1 or -1 if the number is negative. Generates 1 otherwise.
+ * 
+ * @param num the number given
+ * @return int the sign to be used
+ */
+int random_sign(int num) {
+    return num >= 0 ? 1 : rand() % 2 == 0 ? 1 : -1;
 }
 
 /**
@@ -79,8 +85,8 @@ int rand_num(int min, int max) {
 }
 
 /**
- * @brief Takes a collection of size N, a max and minimum number, and generates 
- * a collection of size N of numbers ranging from the minimum to the maximum 
+ * @brief Takes a collection of size N, a maximum and minimum number, and generates 
+ * a collection of size N of numbers in the range [minimum, maximum]
  * 
  * @param size the size of the collection
  * @param min the smallest possible number
@@ -89,10 +95,13 @@ int rand_num(int min, int max) {
  */
 vector<int> rand_vec(int size, int min, int max) {
     vector<int> rand_nums;
-    // Seeding the random number generator
+    /**
+    Seeding the random number generator
+     */
     srand(time(0));
-    // Adjusting the numbers so they are within 
-    // min and max
+    /**
+     * Adding the random numbers
+     */
     for(int i = 0; i < size; i++) {
         rand_nums.push_back(rand_num(min, max));
     }
@@ -141,6 +150,15 @@ template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
     return min_index;
 }
 
+/**
+ * @brief Takes a collection and two positions in the collectioon, and swaps the elements
+ * at those positions
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param fst the position of the first element
+ * @param snd the position of the second element
+ */
 template <typename T> void swap(vector<T>& coll, int fst, int snd) {
     T tmp = coll[fst];
     coll[fst] = coll[snd];
