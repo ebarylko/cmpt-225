@@ -99,22 +99,43 @@ vector<int> rand_vec(int size, int min, int max) {
     return rand_nums;
 }
 
-template <typename T> auto start_iter(const vector<T>& coll, int start_pos) {
+/**
+ * @brief Takes a collection and a starting position 
+ * and returns an iterator to the element at the starting position
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param start_pos the position to start at
+ * @return auto an iterator to the element at start_pos
+ */
+template <typename T> auto shift_iter(const vector<T>& coll, int start_pos) {
     auto iter = coll.begin();
+    // Shifting iterator to the correct position
     for(int i = 0; i < start_pos; i++) {
         iter++;
     }
     return iter;
 }
 
+/**
+ * @brief Take a collection and a start position S and returns the position of the smallest
+ * element in the collection starting from S 
+ * 
+ * @tparam T 
+ * @param coll the collection to search through
+ * @param start_pos the position to start at
+ * @return int the index of the smallest element in the collection starting from S
+ */
 template <typename T> int min_elem_pos(const vector<T>& coll, int start_pos) {
     T min = coll[start_pos];
     int min_index = start_pos;
     auto start = coll.begin();
-    for(auto curr = start_iter(coll, start_pos + 1); curr != coll.end(); curr++) {
+
+    // Updating the current smallest element if a smaller one is found
+    for(auto curr = shift_iter(coll, start_pos + 1); curr != coll.end(); curr++) {
         if (min > *curr) {
             min = *curr;
-            min_index = distance(start, curr);
+            min_index = curr - start;
         }
     }
     return min_index;
@@ -131,8 +152,16 @@ Sort_stats selection_sort(vector<T> &v) {
     Sort_stats info{"selection sort", v.size(), 0, 0};
 
     clock_t start = clock();
-    // finding the smallest element and moving it to the front in each iteration
+    // finding the smallest element and moving it to the front each time
     for(int pos = 0; pos < v.size(); pos++) {
+
+        /**
+         * @brief 
+        I always set the starting element as my smallest value 
+        and compare the other values only making N - 1 comparisons. 
+        Adjusting for a new starting point, I also subtract my 
+        current position to get the true amount of comparisons.
+         */
         info.num_comparisons += v.size() - 1 - pos;
         int min_index = min_elem_pos(v, pos);
         swap(v, pos, min_index);
@@ -151,9 +180,11 @@ Sort_stats selection_sort(vector<T> &v) {
  * @tparam T 
  * @param coll the collection to look through
  * @param end the last position to look at
- * @param info the information about the operations occuring with bubble sort
+ * @param info the amount of comparisons done so far
  */
 template <typename T> void bubble_swap(vector<T> &coll, int end, Sort_stats& info) {
+    // Moving the largest element in the range from [0, end) all
+    // the way to the end
     for(int pos = 0; pos < end; pos++) {
         if (coll[pos] > coll[pos + 1]) {
             swap(coll, pos, pos + 1);
@@ -168,7 +199,7 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
     clock_t start = clock();
 
     // Move largest element to the end, and then do the same 
-    // on the rest of the collection
+    // for the rest of the collection
     int final_pos = coll.size() - 1;
     while (final_pos > 0) {
         bubble_swap(coll, final_pos, info);
@@ -190,7 +221,7 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
  * @param info the current information about the operations that occurred while sorting
  * @return Sort_stats information about the operations occuring while sorting
  */
-template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int start, int end, Sort_stats& info) {
+template <typename T> Sort_stats order_elem_in_coll(vector<T>& coll, int start, int end, Sort_stats& info) {
     int curr = end;
     // Continue swapping element until there 
     // are no more elements or the element is in its correct spot
@@ -202,9 +233,21 @@ template <typename T> Sort_stats insert_sort_order(vector<T>& coll, int start, i
     return info;
 }
 
-template <typename T> void insert_sort(vector<T>& coll, int start, int end, Sort_stats& info) {
+/**
+ * @brief Takes a collection, an initial and final position, and information about the
+ * number of comparisons so far, and orders the collection in ascending order.
+ * 
+ * @tparam T 
+ * @param coll the collection to order
+ * @param start the first position in the collection
+ * @param end the final position in the collection
+ * @param info the amount of comparisons done so far
+ */
+template <typename T> void insert_sort_impl(vector<T>& coll, int start, int end, Sort_stats& info) {
+    // Applying insertion sort on the collection, incrementing the ending
+    // position each time
     for (int curr_end = start + 1; curr_end <= end; curr_end++) {
-        insert_sort_order(coll, start, curr_end, info);
+        order_elem_in_coll(coll, start, curr_end, info);
     }
 }
 
@@ -216,7 +259,7 @@ template <typename T> Sort_stats insertion_sort(vector<T> &v) {
 
     // Ordering the elements by moving the element
     // at the current position to its correct spot
-    insert_sort(v, 0, v.size() - 1, info);
+    insert_sort_impl(v, 0, v.size() - 1, info);
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 
@@ -443,7 +486,7 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
     }
 
     if (end - start <= 12 && func_const == INSERTION) {
-        insert_sort(coll, start, end, info);
+        insert_sort_impl(coll, start, end, info);
         return;
     }
 
@@ -538,7 +581,7 @@ template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
     }
 
     // calling insertion sort on the final pass
-    insert_sort(coll, 0, coll.size() - 1, info);
+    insert_sort_impl(coll, 0, coll.size() - 1, info);
 }
 
 template <typename T>
