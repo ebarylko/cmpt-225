@@ -303,17 +303,21 @@ template <typename T> vector<T>& overwrite_coll(vector<T>& src, vector<T>& cpy_f
  * @param mid the middle point in between start and end
  * @param end the point in the collection to stop sorting at
  */
-template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int end) {
+template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int end, Sort_stats& info) {
     vector<T> sorted_portion;
     int curr_first = start, curr_snd = mid;
     while (curr_first < mid && curr_snd <= end) {
 
+
+        // Find the next smallest element to add and adjust the next elements to compare
         NextElems next = add_smallest_elem(sorted_portion, coll, curr_first, curr_snd);
         if (curr_first != next.fst) {
             curr_first = next.fst;
         } else {
             curr_snd = next.snd;
         }
+
+        info.num_comparisons += 2;
     }
 
     add_remaining_items(sorted_portion, coll, curr_first, mid - 1);
@@ -321,7 +325,7 @@ template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int 
     return overwrite_coll(coll, sorted_portion, start);
 }
 
-template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid, int final) {
+template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid, int final, Sort_stats& info) {
     if (start == final || start > final) {
         return;
     }
@@ -329,12 +333,12 @@ template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid,
     int lower_end = mid - 1;
     int lower_mid = (lower_end - start + 1) / 2;
     int actual_low_mid = lower_mid + start;
-    merge_sort_order(coll, start, actual_low_mid, lower_end);
+    merge_sort_order(coll, start, actual_low_mid, lower_end, info);
 
     int high_mid = (final - mid + 1) / 2;
     int actual_high_mid = mid + high_mid;
-    merge_sort_order(coll, mid, actual_high_mid, final);
-    merge(coll, start, mid, final);
+    merge_sort_order(coll, mid, actual_high_mid, final, info);
+    merge(coll, start, mid, final, info);
 }
 
 template <typename T> Sort_stats merge_sort(vector<T> &v) {
@@ -345,7 +349,7 @@ template <typename T> Sort_stats merge_sort(vector<T> &v) {
     // at the current position to its correct spot
     int final_pos = v.size() - 1;
     int mid = (final_pos + 1) / 2;
-    merge_sort_order(v, 0, mid, final_pos);
+    merge_sort_order(v, 0, mid, final_pos, info);
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
 

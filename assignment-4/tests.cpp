@@ -334,7 +334,8 @@ TEST_CASE("merge") {
             WHEN("Ordering the collection") {
                 THEN("The collection will remain unchanged") {
                     vector<int> expected{1, 2, 3, 4};
-                    REQUIRE(expected == merge(coll, 0, 2, 3));
+                    Sort_stats info;
+                    REQUIRE(expected == merge(coll, 0, 2, 3, info));
                 }
             }
         }
@@ -345,7 +346,8 @@ TEST_CASE("merge") {
             WHEN("Ordering the collection") {
                 THEN("The collection is in ascending order") {
                     vector<int> expected{1, 2, 4, 5};
-                    REQUIRE(expected == merge(coll, 0, 2, 3));
+                    Sort_stats info;
+                    REQUIRE(expected == merge(coll, 0, 2, 3, info));
                 }
             }
         }
