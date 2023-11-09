@@ -372,8 +372,9 @@ template <typename T> int find_larger_than(const vector<T>& coll, int start, int
     int curr_pos = start;
     while (curr_pos <= pivot_pos && coll[curr_pos] <= pivot) {
         curr_pos++;
+        info.num_comparisons++;
     }
-    info.num_comparisons += pivot_pos - curr_pos + 1;
+    // info.num_comparisons += pivot_pos - curr_pos + 1;
     return curr_pos > pivot_pos ? -1 : curr_pos;
 }
 
@@ -382,8 +383,9 @@ template <typename T> int find_smaller_than(const vector<T>& coll, int start,int
     T pivot = coll[pivot_pos];
     while (curr_pos >= pivot_pos && coll[curr_pos] >= pivot) {
         curr_pos--;
+        info.num_comparisons++;
     }
-    info.num_comparisons += start - curr_pos + 1;
+    // info.num_comparisons += start - curr_pos + 1;
     return curr_pos < pivot_pos ? -1 : curr_pos;
 }
 
