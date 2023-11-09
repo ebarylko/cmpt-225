@@ -386,19 +386,43 @@ template <typename T> vector<T>& merge(vector<T>& coll, int start, int mid, int 
     return overwrite_coll(coll, sorted_portion, start);
 }
 
+/**
+ * @brief Takes a collection, a starting, middle, and end position, and information about 
+ * the current amount of comparisons. Sorts the collection in ascending order
+ * 
+ * @tparam T 
+ * @param coll the collection to order
+ * @param start the position in the collection to start at
+ * @param mid the position in the collection to end at
+ * @param info the amount of comparisons done so far
+ */
 template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid, int final, Sort_stats& info) {
+    
+   /**
+    Do nothing if given invalid positions or a sorted subcollection
+    */
     if (start == final || start > final) {
         return;
     }
 
+    /**
+     Ordering the subcollection from [start, mid)
+     */
     int lower_end = mid - 1;
     int lower_mid = (lower_end - start + 1) / 2;
     int actual_low_mid = lower_mid + start;
     merge_sort_order(coll, start, actual_low_mid, lower_end, info);
 
+    /**
+     Ordering the subcollection from [mid, end]
+     */
     int high_mid = (final - mid + 1) / 2;
     int actual_high_mid = mid + high_mid;
     merge_sort_order(coll, mid, actual_high_mid, final, info);
+
+    /**
+     Ordering the subcollections above
+     */
     merge(coll, start, mid, final, info);
 }
 
@@ -406,8 +430,6 @@ template <typename T> Sort_stats merge_sort(vector<T> &v) {
     Sort_stats info{"merge sort", v.size(), 0, 0};
     clock_t start = clock();
 
-    // Ordering the elements by moving the element
-    // at the current position to its correct spot
     int final_pos = v.size() - 1;
     int mid = (final_pos + 1) / 2;
     merge_sort_order(v, 0, mid, final_pos, info);
@@ -463,10 +485,26 @@ bool overlapping(const SwapLocations& locs) {
     return locs.large > locs.small;
 }
 
+/**
+ * @brief Takes a pair of locations L1, L2, and returns true if L1 and L2 are
+ * sorted ascendingly. False otherwise.
+ * 
+ * @param locs the locations to compare
+ * @return true if L1 and L2 is in ascending order
+ * @return false if the above is untrue
+ */
 bool both_sides_sorted(const SwapLocations& locs) {
     return locs.large == -1 && locs.small == -1;
 }
 
+/**
+ * @brief Takes two locations and returns true if the elements at those locations
+ * can be swapped. False otherwise.
+ * 
+ * @param locs two locations to compare
+ * @return true if the elements at the positions can be swapped
+ * @return false if the above is not true
+ */
 bool can_swap(const SwapLocations& locs) {
     return !both_sides_sorted(locs); 
 }
@@ -480,10 +518,26 @@ bool none_less_than_pivot(int index) {
 }
 
 
+/**
+ * @brief Takes a pair of locations and returns true if the elements at those locations can be
+ * swapped. False otherwise.
+ * 
+ * @param swap_info the pair of locations
+ * @return true if the elems at the positions can be swapped
+ * @return false if the above is untrue
+ */
 bool can_swap_both(const SwapLocations& swap_info) {
     return swap_info.large != -1 && swap_info.small != -1;
 }
 
+/**
+ * @brief Takes a pair of locations with a smaller and larger element 
+ * and returns true if only the smaller element can be swapped. False otherwise
+ * 
+ * @param info the pair of locations
+ * @return true if only the smaller element can be swapped
+ * @return false if the above is untrue
+ */
 bool can_swap_smaller(const SwapLocations& info) {
     return info.small != -1 && info.large == -1;
 }
@@ -497,12 +551,30 @@ template <typename T> Sort_stats& nothing(vector<T>& coll, int pos, Sort_stats& 
 #define INSERTION 0
 
 
+/**
+ * @brief Takes a collection, a starting and ending position, the amount of swaps done so far, and 
+ * an option to apply another sorting algorithm and sorts the collection in ascending order.
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param start the starting point of the collection
+ * @param end the ending point of the collection
+ * @param info the number of swaps done so far
+ * @param func_const an optional function to apply in certain scenarios
+ */
 template <typename T>
 void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func_const = 1) {
+    /**
+      Do nothing if given invalid positions
+     */
     if (start >= end) {
         return;
     }
 
+    /**
+     Apply optional functions if certain conditions 
+     are met
+     */
     if (end - start <= 12 && func_const == INSERTION) {
         insert_sort_impl(coll, start, end, info);
         return;
@@ -511,14 +583,31 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
     int pivot_loc = start + (end - start + 1) / 2;
     SwapLocations swap_info = find_swap_pair(coll, start, end, pivot_loc, info);
     
+
+    /**
+      Continue swapping elements until all elements greater than the pivot are
+      to the right of it and all elements smaller than the pivot are to the left of it
+     */
     while (can_swap(swap_info)) {
         if (can_swap_both(swap_info)) {
             swap(coll, swap_info.large, swap_info.small);
-        } else if (can_swap_smaller(swap_info)) {
+        }
+         /**
+          If only smaller element can be swapped,
+          interchange it with pivot and adjust pivot and smaller element
+          location
+          */
+         else if (can_swap_smaller(swap_info)) {
             swap(coll, swap_info.small, pivot_loc);
             swap_info.large = pivot_loc;
             pivot_loc = swap_info.small;
-        } else {
+        } 
+         /**
+          If only larger element can be swapped,
+          interchange it with pivot and adjust pivot and larger element
+          location
+          */
+        else {
             swap(coll, swap_info.large, pivot_loc);
             swap_info.small = pivot_loc;
             pivot_loc = swap_info.large;
@@ -526,8 +615,12 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
 
         swap_info = find_swap_pair(coll, swap_info.large, swap_info.small, pivot_loc, info);
     }
-        quick_order(coll, start, pivot_loc - 1, info, func_const);
-        quick_order(coll, pivot_loc + 1, end, info, func_const);
+    /**
+     Order the subcollections from [start, pivot) and from
+    [pivot, end]
+     */
+    quick_order(coll, start, pivot_loc - 1, info, func_const);
+    quick_order(coll, pivot_loc + 1, end, info, func_const);
 }
 
 template <typename T> Sort_stats quick_sort(vector<T> &v) {
@@ -604,7 +697,9 @@ template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
         gap /= 2;
     }
 
-    // calling insertion sort on the final pass
+    /**
+      calling insertion sort on the final pass
+     */
     insert_sort_impl(coll, 0, coll.size() - 1, info);
 }
 
