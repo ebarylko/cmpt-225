@@ -630,12 +630,12 @@ TEST_CASE("iquick_sort") {
 }
 
 
-TEST_CASE("parent") {
+TEST_CASE("parent_pos") {
     SUBCASE("The root has no parent") {
         GIVEN("The position of the root") {
             WHEN("Finding the parent of the root") {
                 THEN("No parent is found") {
-                    REQUIRE(-1 == parent(0));
+                    REQUIRE(-1 == parent_pos(0));
                 }
             }
         }
@@ -644,7 +644,7 @@ TEST_CASE("parent") {
         GIVEN("A position of an element which is not the root") {
             WHEN("Finding the parent") {
                 THEN("A valid location is given") {
-                    REQUIRE(0 == parent(2));
+                    REQUIRE(0 == parent_pos(2));
                 }
             }
         }

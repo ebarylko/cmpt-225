@@ -509,14 +509,6 @@ bool can_swap(const SwapLocations& locs) {
     return !both_sides_sorted(locs); 
 }
 
-bool none_greater_than_pivot(int index) {
-    return index == -1;
-}
-
-bool none_less_than_pivot(int index) {
-    return index == -1;
-}
-
 
 /**
  * @brief Takes a pair of locations and returns true if the elements at those locations can be
@@ -720,6 +712,9 @@ template <typename T> Sort_stats iquick_sort(vector<T> &v) {
     Sort_stats info{"iquick sort", v.size(), 0, 0};
     clock_t start = clock();
 
+    /** 
+     * Call quick_order with optional function applied
+    */
     quick_order(v, 0, v.size() - 1, info, 0);
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
@@ -733,30 +728,34 @@ template <typename T> Sort_stats iquick_sort(vector<T> &v) {
  * @param child a position in the heap
  * @return int the position of the parent of child
  */
-int parent(int child) {
+int parent_pos(int child) {
     return child == 0 ? -1 : (child - 1) / 2;
 }
 
 /**
- * @brief Takes a collection and the position of a child and its parent, and returns true if the
- * parent is within the collection and is greater than its child. False otherwise
+ * @brief Takes a collection, the positions of a child and its parent, and the 
+ * current number of comparisons. Returns true if the parent is within the collection and is
+ *  greater than its child. False otherwise
  * 
  * @tparam T 
  * @param coll the collection given
- * @param child_pos the location of the child in the collection
- * @param parent_pos the location of the parent in the collection
+ * @param child_pos the location of the child
+ * @param parent_pos the location of the parent 
+ * @param info the current amount of comparisons
  * @return true if the parent has a valid location and is greater than its child
- * @return false if the condition above goes unsatisfied
+ * @return false if above is untrue
  */
 template <typename T> bool smaller_than_parent(vector<T>& coll, int child_pos, int parent_pos, Sort_stats& info) {
     if (parent_pos == -1) {
         return 0;
     }
-    if (coll[child_pos] >= coll[parent_pos]) {
-        info.num_comparisons++;
-        return 0;
-    }
-    return 1;
+    info.num_comparisons++;
+    return coll[child_pos] >= coll[parent_pos] ? 0 : 1;
+    // if (coll[child_pos] >= coll[parent_pos]) {
+    //     info.num_comparisons++;
+    //     return 0;
+    // }
+    // return 1;
 }
 
 template <typename T>
@@ -802,16 +801,15 @@ class Heap {
      * @param elem_to_move the index of the element to move up
      */
     void bubble_up(int elem_to_move) {
-        int parent_pos = parent(elem_to_move);
+        int parent_pos = parent_pos(elem_to_move);
 
         /**
          * @brief Swapping the element upwards until it is in the correct position
-         * 
          */
         while (smaller_than_parent(this->coll, elem_to_move, parent_pos, this->info)) {
             swap(this->coll, elem_to_move, parent_pos);
             elem_to_move = parent_pos;
-            parent_pos = parent(elem_to_move);
+            parent_pos = parent_pos(elem_to_move);
         }
     }
 
@@ -899,6 +897,9 @@ template <typename T> class Priority_Queue {
     void sort(vector<T>& coll) {
         this->t.insert_n(coll);
         coll.clear();
+        /**
+         * Add the original values back to the collection in ascending order
+         */
         while (!this->t.is_empty()) {
             coll.push_back(this->min());
             this->remove_min();
