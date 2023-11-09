@@ -165,6 +165,15 @@ template <typename T> void swap(vector<T>& coll, int fst, int snd) {
     coll[snd] = tmp;
 }
 
+
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T>
 Sort_stats selection_sort(vector<T> &v) {
     Sort_stats info{"selection sort", v.size(), 0, 0};
@@ -211,6 +220,15 @@ template <typename T> void bubble_swap(vector<T> &coll, int end, Sort_stats& inf
     }
 }
 
+
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param coll the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
     Sort_stats info{"bubble sort", coll.size(), 0, 0};
     
@@ -270,7 +288,14 @@ template <typename T> void insert_sort_impl(vector<T>& coll, int start, int end,
 }
 
 
-
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T> Sort_stats insertion_sort(vector<T> &v) {
     Sort_stats info{"insertion sort", v.size(), 0, 0};
     clock_t start = clock();
@@ -426,6 +451,15 @@ template <typename T> void merge_sort_order(vector<T>& coll, int start, int mid,
     merge(coll, start, mid, final, info);
 }
 
+
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T> Sort_stats merge_sort(vector<T> &v) {
     Sort_stats info{"merge sort", v.size(), 0, 0};
     clock_t start = clock();
@@ -439,6 +473,9 @@ template <typename T> Sort_stats merge_sort(vector<T> &v) {
     return info;
 }
 
+/**
+ * This datatype represents the locationss of two elements to swap
+ */
 struct SwapLocations {
     int small;
     int large;
@@ -450,39 +487,68 @@ bool operator== (const SwapLocations& a, const SwapLocations& b) {
 }
 
 
-template <typename T> int find_larger_than(const vector<T>& coll, int start, int pivot_pos, Sort_stats& info) {
+/**
+ * @brief Takes a collection, a starting and pivot point, and the amount of comparisons done, and 
+ * returns the location of the next element larger than the pivot.
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param start the starting point in the collection
+ * @param pivot_pos the location of the pivot
+ * @param info the amount of comparisons done so far
+ * @return int the position of an element larger than the pivot 
+ */
+template <typename T>
+int find_larger_than(const vector<T>& coll, int start, int pivot_pos,
+                     Sort_stats& info) {
     T pivot = coll[pivot_pos];
     int curr_pos = start;
+
+    /**
+     * @brief Continue looking for larger element until end of collection is reached
+     * or the element is found
+     */
     while (curr_pos <= pivot_pos && coll[curr_pos] <= pivot) {
         curr_pos++;
         info.num_comparisons++;
     }
+
     return curr_pos > pivot_pos ? -1 : curr_pos;
 }
 
+/**
+ * @brief Takes a collection, a starting and pivot point, and the amount of comparisons done, and 
+ * returns the location of the next element smaller than the pivot.
+ * 
+ * @tparam T 
+ * @param coll the collection given
+ * @param start the starting point in the collection
+ * @param pivot_pos the location of the pivot
+ * @param info the amount of comparisons done so far
+ * @return int the position of an element smaller than the pivot 
+ */
 template <typename T> int find_smaller_than(const vector<T>& coll, int start,int pivot_pos, Sort_stats& info) {
     int curr_pos = start;
     T pivot = coll[pivot_pos];
+    /**
+     * @brief Continue looking for smaller element until end of collection is reached
+     * or the element is found
+     */
     while (curr_pos >= pivot_pos && coll[curr_pos] >= pivot) {
         curr_pos--;
         info.num_comparisons++;
     }
+
     return curr_pos < pivot_pos ? -1 : curr_pos;
 }
 
 /**
  * @brief Takes a collection, the first and final indexes of the collection, the value of the pivot,
  *  and returns the indexes of the next items to swap.
- * 
  * @tparam T 
  */
 template <typename T> SwapLocations find_swap_pair(vector<T>& coll, int start, int end, int pivot_pos, Sort_stats& info) {
     return SwapLocations(find_smaller_than(coll, end, pivot_pos, info), find_larger_than(coll, start, pivot_pos, info));
-}
-
-
-bool overlapping(const SwapLocations& locs) {
-    return locs.large > locs.small;
 }
 
 /**
@@ -615,6 +681,14 @@ void quick_order(vector<T>& coll, int start, int end, Sort_stats& info, int func
     quick_order(coll, pivot_loc + 1, end, info, func_const);
 }
 
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T> Sort_stats quick_sort(vector<T> &v) {
     Sort_stats info{"quick sort", v.size(), 0, 0};
     clock_t start = clock();
@@ -695,6 +769,15 @@ template <typename T> void shell_sort_impl(vector<T>& coll, Sort_stats& info) {
     insert_sort_impl(coll, 0, coll.size() - 1, info);
 }
 
+
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T>
 Sort_stats shell_sort(vector<T> &v) {
     Sort_stats info{"shell sort", v.size(), 0, 0};
@@ -708,6 +791,14 @@ Sort_stats shell_sort(vector<T> &v) {
 }
 
 
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T> Sort_stats iquick_sort(vector<T> &v) {
     Sort_stats info{"iquick sort", v.size(), 0, 0};
     clock_t start = clock();
@@ -871,30 +962,63 @@ class Heap {
     public: 
     ~Heap() {};
     
+    /**
+     * @brief Returns the size of the heap
+     * 
+     * @return int the number of elements in the heap
+     */
     int size() const {
         return this->coll.size();
     }
 
+    /**
+     * @brief Returns true if the heap is empty. False otherwise
+     * 
+     * @return true if the heap has no elements 
+     * @return false if the above is untrue
+     */
     bool is_empty() const {
         return !this->size();
     }
 
+    /**
+     * @brief Takes an item and adds it to the heap
+     * 
+     * @param item the item to add
+     */
     void insert(const T& item) {
-        coll.push_back(item);
-        bubble_up(coll.size() - 1);
+        this->coll.push_back(item);
+        bubble_up(this->coll.size() - 1);
     }
 
+    /**
+     * @brief Takes a collection of items and adds each one to the heap
+     * 
+     * @param items the items to add
+     */
     void insert_n(const vector<T>& items) {
         for (T item : items) {
             this->insert(item);
         }
     }
 
+    /**
+     * @brief Returns a copy of the items in the heap
+     *
+     * @return vector<T> the items in the heap
+     */
     vector<T> items() {
         return vector<T>(this->coll);
     }
 
+    /**
+     * @brief Removes the smallest element and rebalances the heap
+     * 
+     */
     void remove_min() {
+        /**
+         * Move the last element to the front of the heap and rebalance it
+         */
         if (!this->is_empty()) {
             swap(this->coll, 0, coll.size() - 1);
             this->coll.pop_back();
@@ -902,10 +1026,20 @@ class Heap {
         }
     }
 
+    /**
+     * @brief Returns the first element in the heap
+     * 
+     * @return T the first element in the heap
+     */
     T min() {
         return this->coll[0];
     }
 
+    /**
+     * @brief returns the info about the operations done while sorting
+     * 
+     * @return Sort_stats& the details about the operations done while sorting
+     */
     Sort_stats& sort_info() {
         this->info.sort_name = "priority queue sort";
         return this->info;
@@ -916,15 +1050,19 @@ class Heap {
 template <typename T> class Priority_Queue {
     Heap<T> t;
     public:
+
     void insert(T& item) {
         t.insert(item);
     }
+
     void remove_min() {
         t.remove_min();
     }
+
     const T min() {
         return t.min();
     }
+
     int size() {
         return t.size();
     }
@@ -940,6 +1078,7 @@ template <typename T> class Priority_Queue {
     void sort(vector<T>& coll) {
         this->t.insert_n(coll);
         coll.clear();
+
         /**
          * Add the original values back to the collection in ascending order
          */
@@ -951,6 +1090,15 @@ template <typename T> class Priority_Queue {
 };
 
 
+
+/**
+ * @brief Takes a collection and sorts it in ascending order. Returns information about
+ * the operations that occured while sorting the collection.
+ * 
+ * @tparam T 
+ * @param v the collection to sort
+ * @return Sort_stats 
+ */
 template <typename T>
 Sort_stats priority_queue_sort(vector<T> &v) {
     Priority_Queue<T> pq;
@@ -958,16 +1106,9 @@ Sort_stats priority_queue_sort(vector<T> &v) {
     info.vector_size = v.size();
 
     clock_t start = clock();
-
     pq.sort(v);
-
     clock_t end = clock();
     info.cpu_running_time_sec = double(end - start) / CLOCKS_PER_SEC;
-    
+
     return info;
 }
-
-//
-// Put the implementations of all the functions listed in a4_base.h here, as
-// well as is_sorted and rand_vec. You can use other helper functions if needed.
-//
