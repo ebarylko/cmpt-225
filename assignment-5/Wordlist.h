@@ -45,6 +45,7 @@ using namespace std;
 
 class Wordlist : public Wordlist_base
 {
+        
     //
     // Use this Node to implement an AVL tree for the word list. You can *add*
     // extra variables/methods/features to this struct if you like, but you must
@@ -57,6 +58,7 @@ class Wordlist : public Wordlist_base
         int count;
         Node *left;
         Node *right;
+        int num_of_words_below;
     };
 
     Node *root = nullptr;
@@ -68,6 +70,29 @@ class Wordlist : public Wordlist_base
     //
     // No variables other than root are permitted!
     //
+   public:
+   Wordlist();
+
+    int words_in_subree(Node* nd) const {
+        if (!nd) {
+            return 0;
+        }
+
+        return nd->num_of_words_below;
+    }
+
+    /**
+     * @brief Returns the number of different words in the list
+     * 
+     * @return int number of different words in the list
+     */
+    int num_different_words() const {
+        if (!root) {
+            return 0;
+        }
+
+        return words_in_subtree(root->left) + word_in_subtree(root->right);
+    }
 
 
 }; // class Wordlist
