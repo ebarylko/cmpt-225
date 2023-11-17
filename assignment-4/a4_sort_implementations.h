@@ -257,7 +257,9 @@ template <typename T> Sort_stats bubble_sort(vector<T> &coll) {
  * @param info the current information about the operations that occurred while sorting
  * @return Sort_stats information about the operations occuring while sorting
  */
-template <typename T> Sort_stats order_elem_in_coll(vector<T>& coll, int start, int end, Sort_stats& info) {
+template <typename T>
+Sort_stats order_elem_in_coll(vector<T>& coll, int start, int end,
+                              Sort_stats& info) {
     int curr = end;
     // Continue swapping element until there 
     // are no more elements or the element is in its correct spot
