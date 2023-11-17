@@ -58,7 +58,9 @@ class Wordlist : public Wordlist_base
         int count;
         Node *left;
         Node *right;
-        int num_of_words_below;
+        int different_words;
+        int all_words;
+        int single_words;
     };
 
     Node *root = nullptr;
@@ -73,28 +75,62 @@ class Wordlist : public Wordlist_base
    public:
    Wordlist() {};
 
-   int words_in_subtree(Node *nd) const {
-     if (!nd) {
-       return 0;
-     }
+//    /**
+//     * @brief Takes a node and returns the number of all the words included in the subtree rooted
+//     * at the node given
+//     * 
+//     * @param nd the node passed
+//     * @return int the number of words in the subtree rooted at the node
+//     */
+//    int words_in_subtree(Node *nd) const {
+//      if (!nd) {
+//        return 0;
+//      }
 
-     return nd->num_of_words_below;
-   }
+//      return nd->num_of_words_below;
+//    }
 
-    /**
-     * @brief Returns the number of different words in the list
-     * 
-     * @return int number of different words in the list
-     */
+
+   /**
+    * @brief Returnss the number of singletons in the Wordlist
+    * 
+    * @return int the number of singletons
+    */
+   int num_singletons() const {
+        if (!root) {
+        return 0;
+        }
+    
+        return root->single_words;
+   };
+
+   /**
+    * @brief Returns the number of different words in the list
+    *
+    * @return int number of different words in the list
+    */
    int num_different_words() const {
      if (!root) {
        return 0;
      }
 
-     return words_in_subtree(root->left) + words_in_subtree(root->right);
+     return root->different_words;
    }
 
-}; // class Wordlist
+   /**
+    * @brief Returns the number of all the words in the list
+    *
+    * @return int the number of words in the list
+    */
+   int total_words() const {
+     if (!root) {
+       return 0;
+     }
+
+     return root->all_words;
+   };
+};
+// class Wordlist
 
 //
 // Make sure to thoroughly test your code as you go!

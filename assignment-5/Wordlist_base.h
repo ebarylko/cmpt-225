@@ -41,7 +41,7 @@ struct Wordlist_base
     // Returns the total number of words in the word list, i.e. the sum of the
     // word counts.
     //
-    // virtual int total_words() const = 0;
+    virtual int total_words() const = 0;
 
     //
     // Returns true if the words in the word list are in ascending sorted order,
@@ -68,7 +68,7 @@ struct Wordlist_base
     //
     // Returns the number of nodes with count 1.
     //
-    // virtual int num_singletons() const = 0;
+    virtual int num_singletons() const = 0;
 
     //
     // Adds w to the word list. If w is already in the word list, then increment
