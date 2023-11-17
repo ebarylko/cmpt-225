@@ -71,29 +71,28 @@ class Wordlist : public Wordlist_base
     // No variables other than root are permitted!
     //
    public:
-   Wordlist();
+   Wordlist() {};
 
-    int words_in_subree(Node* nd) const {
-        if (!nd) {
-            return 0;
-        }
+   int words_in_subtree(Node *nd) const {
+     if (!nd) {
+       return 0;
+     }
 
-        return nd->num_of_words_below;
-    }
+     return nd->num_of_words_below;
+   }
 
     /**
      * @brief Returns the number of different words in the list
      * 
      * @return int number of different words in the list
      */
-    int num_different_words() const {
-        if (!root) {
-            return 0;
-        }
+   int num_different_words() const {
+     if (!root) {
+       return 0;
+     }
 
-        return words_in_subtree(root->left) + word_in_subtree(root->right);
-    }
-
+     return words_in_subtree(root->left) + words_in_subtree(root->right);
+   }
 
 }; // class Wordlist
 
