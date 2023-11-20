@@ -24,6 +24,7 @@ TEST_CASE("Wordlist") {
                     REQUIRE(1 == lst.total_words());
                     REQUIRE(1 == lst.num_different_words());
                     REQUIRE(1 == lst.num_singletons());
+                    REQUIRE(1 == lst.get_count("hello"));
                 }
             }
         }

@@ -22,7 +22,7 @@ struct Wordlist_base
     //
     // Returns the number of times w occurs as a word in the word list.
     //
-    // virtual int get_count(const string &w) const = 0;
+    virtual int get_count(const string &w) const = 0;
 
     //
             // Returns true if w is in the word list, false otherwise.

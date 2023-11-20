@@ -131,20 +131,55 @@ void add_word(const string& word) {
   //   rebalance_tree(child);
   // }
   
+}
+
+/**
+ * @brief Takes a word and returns the node corresponding to the 
+ * word if it is in the list. Returns null otherwise.
+ * 
+ * @param word the word to search for
+ * @return Node* the node corresponding to the word being searched for
+ */
+Node* find_word(const string& word) const {
+  Node* curr = this->root;
+
+// Searching until the word is found or a leaf is encountered
+  while (curr && curr->word != word) {
+    if (curr->word < word) {
+      curr = curr->right;
+
+    } else {
+      curr = curr->left;
+    }
+  }
+
+  return curr; 
 
 }
 
-   /**
-    * @brief Returnss the number of singletons in the Wordlist
-    * 
-    * @return int the number of singletons
-    */
-   int num_singletons() const {
-        if (!root) {
-        return 0;
-        }
-    
-        return root->single_words;
+/**
+ * @brief Takes a word and returns the number of times it 
+ * occurs in the list
+ * 
+ * @param w the word to search for
+ * @return int the number of times the word appears in the list
+ */
+int get_count(const string& w) const {
+  Node* target = find_word(w);
+  return target ? target->count : 0;
+};
+
+/**
+ * @brief Returnss the number of singletons in the Wordlist
+ *
+ * @return int the number of singletons
+ */
+int num_singletons() const {
+  if (!root) {
+    return 0;
+  }
+
+  return root->single_words;
    };
 
    /**
