@@ -29,4 +29,15 @@ TEST_CASE("Wordlist") {
             }
         }
     }
+    SUBCASE("Searching for a word not in the Wordlist") {
+        GIVEN("An empty Wordlist") {
+            Wordlist lst;
+            WHEN("We search for a word") {
+                THEN("There are no occurrences of the word") {
+                    REQUIRE(0 == lst.get_count("hi"));
+                }
+
+            }
+        }
+    }
 }
