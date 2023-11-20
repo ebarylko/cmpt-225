@@ -15,4 +15,17 @@ TEST_CASE("Wordlist") {
             }
         }
     }
+    SUBCASE("Adding a word to an empty Wordlist") {
+        GIVEN("An empty Wordlist") {
+            Wordlist lst;
+            WHEN("We add a word") {
+                lst.add_word("hello");
+                THEN("There should be one word") {
+                    REQUIRE(1 == lst.total_words());
+                    REQUIRE(1 == lst.num_different_words());
+                    REQUIRE(1 == lst.num_singletons());
+                }
+            }
+        }
+    }
 }

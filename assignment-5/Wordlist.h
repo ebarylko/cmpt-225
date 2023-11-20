@@ -58,12 +58,23 @@ class Wordlist : public Wordlist_base
         int count;
         Node *left;
         Node *right;
+        int left_height;
+        int right_height;
+    };
+
+    /**
+     * @brief This represents the root of the tree
+     * and contains information about the 
+     * number of total, unique, and singleton words
+     * 
+     */
+    struct RootNode : Node {
         int different_words;
         int all_words;
         int single_words;
     };
 
-    Node *root = nullptr;
+    RootNode *root = nullptr;
 
     //
     // IMPORTANT: root is the only variable that can be defined in this class.
@@ -75,21 +86,53 @@ class Wordlist : public Wordlist_base
    public:
    Wordlist() {};
 
-//    /**
-//     * @brief Takes a node and returns the number of all the words included in the subtree rooted
-//     * at the node given
-//     * 
-//     * @param nd the node passed
-//     * @return int the number of words in the subtree rooted at the node
-//     */
-//    int words_in_subtree(Node *nd) const {
-//      if (!nd) {
-//        return 0;
-//      }
+/**
+ * @brief Takes a word and creates a root node which
+ * has the same word as the one passed and has no children
+ * 
+ * @param word the word passed
+ * @return RootNode* the root of the tree with the word passed
+ */
+RootNode* mk_root(const string& word) {
+    RootNode* root = new RootNode;
+    root->word = word;
+    root->all_words = root->different_words = root->single_words = 1;
+    root->count = 1;
+    root->left_height = root->right_height = 0;
+    root->left = 0;
+    root->right = 0;
 
-//      return nd->num_of_words_below;
-//    }
+    return root;
+}
 
+/**
+ * @brief Takes a word and adds it to the list. If it is already there,
+ * it increments the number of times it appeared. Otherwise, it adds the
+ * word in in it's correct alphabetical position
+
+ * 
+ * @param word the word to add
+ */
+void add_word(const string& word) {
+  /**
+   * @brief Set root of tree if it is empty
+   * 
+   */
+  if (!root) {
+    root = mk_root(word);
+    return;
+  }
+
+  // Node* target = find_word(word);
+  // if (word_has_been_found(target)) {
+  //   target->count++;
+  // } else {
+  //   Node* child = add_child(target, word);
+  //   rebalance_tree(child);
+  // }
+  
+
+}
 
    /**
     * @brief Returnss the number of singletons in the Wordlist

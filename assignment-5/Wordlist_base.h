@@ -25,7 +25,7 @@ struct Wordlist_base
     // virtual int get_count(const string &w) const = 0;
 
     //
-    // Returns true if w is in the word list, false otherwise.
+            // Returns true if w is in the word list, false otherwise.
     //
     // bool contains(const string &w) const
     // {
@@ -75,7 +75,7 @@ struct Wordlist_base
     // its count. Otherwise add a new Node (with count 1) at the alphabetically
     // correct location for the word.
     
-    // virtual void add_word(const string &w) = 0;
+    virtual void add_word(const string &w) = 0;
 
     //
     // Prints useful statistics about the word list.
