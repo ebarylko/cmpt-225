@@ -40,6 +40,20 @@ TEST_CASE("Wordlist") {
             }
         }
     } 
+    SUBCASE("Adding a word twice") {
+        GIVEN("An empty Wordlist") {
+            Wordlist lst;
+            WHEN("Adding the same word twice") {
+                lst.add_word("1");
+                lst.add_word("1");
+                THEN("There is one unique word with two occurences in the list") {
+                    REQUIRE(1 == lst.num_different_words());
+                    REQUIRE(0 == lst.num_singletons());
+                    REQUIRE(2 == lst.total_words());
+                }
+            }
+        }
+    }
     // SUBCASE("Adding two elements to an empty Wordlist") {
     //     GIVEN("An empty Wordlist") {
     //         Wordlist lst;

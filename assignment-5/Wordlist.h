@@ -128,6 +128,24 @@ Node* mk_child(const string& word) {
 // }
 
 /**
+ * @brief Takes a node and updates the Wordlist with information
+ * about the total number of words and the number of unique words
+ * 
+ * @param node the node given
+ */
+void update_wordlist_info(Node* node) {
+  this->root->all_words++;
+  /**
+   * @brief Reducing the amount of singletons if the word is 
+   * duplicated
+   * 
+   */
+  if (node->count == 2) {
+    this->root->single_words--;
+  }
+}
+
+/**
  * @brief Takes a word and adds it to the list. If it is already there,
  * it increments the number of times it appeared. Otherwise, it adds the
  * word in in it's correct alphabetical position
@@ -146,9 +164,20 @@ void add_word(const string& word) {
   }
 
   Node* target = find_word(word);
+  /**
+   * @brief Adjust the number of occurences for the word if
+   * it is in the list. 
+   * 
+   */
   if (target) {
     target->count++;
-  } else {
+    update_wordlist_info(target);
+  } 
+  /**
+   * @brief Insert the word into its position and rebalance the 
+   * tree if necessary
+   */
+  else {
     // Node* child = add_child(target, word);
     // rebalance_tree(child);
   }
