@@ -39,5 +39,19 @@ TEST_CASE("Wordlist") {
 
             }
         }
-    }
+    } 
+    // SUBCASE("Adding two elements to an empty Wordlist") {
+    //     GIVEN("An empty Wordlist") {
+    //         Wordlist lst;
+    //         WHEN("Adding two words to the list") {
+    //             lst.add_word("hi");
+    //             lst.add_word("bye");
+    //             THEN("Both words will be in the list") {
+    //                 REQUIRE(lst.contains("hi"));
+    //                 REQUIRE(lst.contains("bye"));
+    //                 REQUIRE(2 == lst.num_different_words() == lst.num_singletons() == lst.num_singletons());
+    //             }
+    //         }
+    //     }
+    // }
 }

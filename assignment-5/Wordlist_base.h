@@ -27,10 +27,10 @@ struct Wordlist_base
     //
             // Returns true if w is in the word list, false otherwise.
     //
-    // bool contains(const string &w) const
-    // {
-    //     return get_count(w) > 0;
-    // }
+    bool contains(const string &w) const
+    {
+        return get_count(w) > 0;
+    }
 
     //
     // Returns the number of nodes in the word list.

@@ -94,16 +94,38 @@ class Wordlist : public Wordlist_base
  * @return RootNode* the root of the tree with the word passed
  */
 RootNode* mk_root(const string& word) {
-    RootNode* root = new RootNode;
-    root->word = word;
-    root->all_words = root->different_words = root->single_words = 1;
-    root->count = 1;
-    root->left_height = root->right_height = 0;
-    root->left = 0;
-    root->right = 0;
-
-    return root;
+    return new RootNode{{word, 1, 0, 0, 0, 0}, 1, 1, 1};
 }
+
+/**
+ * @brief Takes a word and returns a new node for the word passed
+ * 
+ * @param word the word given
+ * @return Node* the node containing the word given
+ */
+Node* mk_child(const string& word) {
+  return new Node{word, 1, 0, 0, 0, 0};
+}
+
+/**
+ * @brief Takes a word TARGET and a node SRC and adds TARGET as the right or left
+ * child of SRC depending on whether TARGET comes before or after the word
+ * SRC contains. Returns the node where TARGET is located.
+ * 
+ * @param target the node given
+ * @param word the word to be added as the right or left child of target
+ * @return Node* the node where target is located
+ */
+// Node* add_child(Node* target, const string& word) {
+//   Node* child = mk_node(word);
+//   if (target->word > word) {
+//     target->left = child;
+//   } else {
+//     target->right = child;
+//   }
+
+//   return child;
+// }
 
 /**
  * @brief Takes a word and adds it to the list. If it is already there,
@@ -118,18 +140,18 @@ void add_word(const string& word) {
    * @brief Set root of tree if it is empty
    * 
    */
-  if (!root) {
-    root = mk_root(word);
+  if (!this->root) {
+    this->root = mk_root(word);
     return;
   }
 
-  // Node* target = find_word(word);
-  // if (word_has_been_found(target)) {
-  //   target->count++;
-  // } else {
-  //   Node* child = add_child(target, word);
-  //   rebalance_tree(child);
-  // }
+  Node* target = find_word(word);
+  if (target) {
+    target->count++;
+  } else {
+    // Node* child = add_child(target, word);
+    // rebalance_tree(child);
+  }
   
 }
 
