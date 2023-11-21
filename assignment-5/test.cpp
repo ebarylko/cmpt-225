@@ -2,10 +2,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-TEST_CASE("Wordlist") {
-    SUBCASE("Empty Wordlist has no words") {
-        GIVEN("An empty Wordlist") {
-            Wordlist lst;
+TEST_CASE("WordlistTest") {
+    SUBCASE("Empty WordlistTest has no words") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
             WHEN("We check the number of words") {
                 THEN("There should be none") {
                     REQUIRE(0 == lst.total_words());
@@ -15,9 +15,9 @@ TEST_CASE("Wordlist") {
             }
         }
     }
-    SUBCASE("Adding a word to an empty Wordlist") {
-        GIVEN("An empty Wordlist") {
-            Wordlist lst;
+    SUBCASE("Adding a word to an empty WordlistTest") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
             WHEN("We add a word") {
                 lst.add_word("hello");
                 THEN("There should be one word") {
@@ -29,9 +29,9 @@ TEST_CASE("Wordlist") {
             }
         }
     }
-    SUBCASE("Searching for a word not in the Wordlist") {
-        GIVEN("An empty Wordlist") {
-            Wordlist lst;
+    SUBCASE("Searching for a word not in the WordlistTest") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
             WHEN("We search for a word") {
                 THEN("There are no occurrences of the word") {
                     REQUIRE(0 == lst.get_count("hi"));
@@ -41,8 +41,8 @@ TEST_CASE("Wordlist") {
         }
     } 
     SUBCASE("Adding a word twice") {
-        GIVEN("An empty Wordlist") {
-            Wordlist lst;
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
             WHEN("Adding the same word twice") {
                 lst.add_word("1");
                 lst.add_word("1");
@@ -54,31 +54,33 @@ TEST_CASE("Wordlist") {
             }
         }
     }
-    // CASE("Finding smallest word") {
-    //     GIVEN("A non-empty Wordlist") {
-    //         Wordlist lst;
-    //         lst.add_word("hi");
-    //         lst.add_word("a");
-    //         WHEN("Finding the smallest word") {
-    //             // const string& actual = lst.smallest_word();
-    //             THEN("The smallest word is 'a") {
-    //                 REQUIRE("a" == "b");
+    // SUBCASE("Rebalancing a tree") {
+    //     GIVEN("An empty WordlistTest") {
+    //         WordlistTest lst;
+    //         WHEN("Adding a collection of words") {
+    //             lst.add_word("c");
+    //             lst.add_word("b");
+    //             lst.add_word("a");
+    //             THEN("The WordlistTest will have the following inorder traversal: [a, b, c]") {
+    //                 vector<string>& actual = inorder_traversal(lst);
+    //                 vector<string> expected{"a", "b", "c"};
+    //                 REQUIRE(expected == actual);
     //             }
     //         }
     //     }
     // }
-    // SUBCASE("Adding two elements to an empty Wordlist") {
-    //     GIVEN("An empty Wordlist") {
-    //         Wordlist lst;
-    //         WHEN("Adding two words to the list") {
-    //             lst.add_word("hi");
-    //             lst.add_word("bye");
-    //             THEN("Both words will be in the list") {
-    //                 REQUIRE(lst.contains("hi"));
-    //                 REQUIRE(lst.contains("bye"));
-    //                 REQUIRE(2 == lst.num_different_words() == lst.num_singletons() == lst.num_singletons());
-    //             }
-    //         }
-    //     }
-    // }
+}
+
+TEST_CASE("is_imbalanced_left") {
+    SUBCASE("A node with no children") {
+        GIVEN("A childless node") {
+           WordlistTest lst;
+           lst.add_word("a");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
 }
