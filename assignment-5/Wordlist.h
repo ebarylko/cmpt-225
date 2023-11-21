@@ -259,16 +259,29 @@ Node* find_word(const string& word) const {
   Node* curr = this->root;
   Node* parent = curr;
 
-// Searching until the word is found or a leaf is encountered
+/**
+ * Looks for the position of the node in the tree
+ * Stops when it finds the word or an empty node
+*/
   while (curr && curr->word != word) {
-    if (curr->word < word && curr->right) {
+    switch (curr->word.compare(word)) {
+      
+      case -1: 
+      if (curr->right) {
+        parent = curr;
+      } 
       curr = curr->right;
-      parent = curr;
+      break;
 
-    } else if (curr->left) {
+      case 1:
+      if (curr->left) {
+        parent = curr = curr->left;
+      }
+
       curr = curr->left;
-      parent = curr;
+      break;
     }
+
   }
 
   return parent; 
