@@ -168,20 +168,6 @@ TEST_CASE("find_word") {
         }
 
     }
-    // SUBCASE("Finding a word in a subtree") {
-    //     GIVEN("A Wordlist with a right subtree") {
-    //         WordlistTest lst;
-    //         lst.add_word("c");
-    //         lst.add_word("d");
-    //         WHEN("Searching for 'd'") {
-    //             WordlistTest::Node* actual = lst.find_word("d");
-    //             THEN("The word is found") {
-    //                 REQUIRE("d" == actual->word);
-    //                 REQUIRE(lst.root == actual->parent);
-    //             }
-    //         }
-    //     }
-    // }
     SUBCASE("Finding a word in the right subtree") {
         GIVEN("A Wordlist with a right subtree") {
             WordlistTest lst;
@@ -214,5 +200,25 @@ TEST_CASE("find_word") {
             }
         }
 
+    }
+}
+
+typedef WordlistTest::RotationType Rotation;
+
+TEST_CASE("rotation_type") {
+    SUBCASE("right rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.add_word("d");
+            lst.add_word("c");
+            lst.add_word("b");
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::right;
+                THEN("The rotation needed is a right rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
     }
 }

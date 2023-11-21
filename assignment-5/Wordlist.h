@@ -83,26 +83,10 @@ class WordlistTest : public Wordlist_base {
      * @return true if the node is the left child of its parent
      * @return false if the above is not true
      */
-    bool is_left_child(Node* node) {
-      return node->parent->left == node;
+    bool is_left_child_of(Node*& child, Node*& parent) {
+      return parent->left == child;
     }
 
-    /**
-     * @brief Takes a node and removes it from the tree
-     *
-     * @param node the node to remove
-     */
-    void remove_node(Node* node) {
-      if (!node->parent) {
-        return;
-      }
-
-      if (is_left_child(node)) {
-        node->parent->left = 0;
-      } else {
-        node->parent->right = 0;
-      }
-    };
 
   /**
    * @brief Takes a node ND and returns the smallest node starting from ND and looking down 
@@ -212,7 +196,7 @@ void update_height_of_parent(Node*& parent, Node*& child) {
     int left_height = child->left_height;
 
     int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
-    if (is_left_child(child)) {
+    if (is_left_child_of(child, parent)) {
       parent->left_height = updated_height;
     } else {
       parent->right_height = updated_height;
@@ -223,7 +207,7 @@ void update_height_of_parent(Node*& parent, Node*& child) {
  * Takes a node and returns true if the absolute difference of the heights of its children is
  * less than or equal to one.
 */
-bool height_diff_less_than_2(Node*& node) {
+bool height_diff_less_than_2(Node* node) {
   int height_difference = node->left_height - node->right_height;
   return -1 <= height_difference && height_difference <= 1;
 }
@@ -239,13 +223,34 @@ bool is_imbalanced_on_left(Node* node) const {
   return node->left_height - node->right_height > 1;
 }
 
+
+/**
+ * @brief Takes a node and returns the rotation which must be applied in order to balance the tree
+ * @param node the first unbalanced node
+*/
+RotationType left_rotation_type(const Node* node) {
+  Node* child = node->left;
+  Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
+  return is_left_child_of(taller_grandchild, child) ? RotationType::right : RotationType::left_right ;
+}
+
+/**
+ * @brief Takes a node and returns the rotation which must be applied in order to balance the tree
+ * @param node the first unbalanced node
+*/
+RotationType right_rotation_type(Node*& node) {
+  Node* child = node->right;
+  Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
+  return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::left ;
+}
+
 /**
  * Takes a node and returns the type of rotation which must be performed
  * @param node the node given
 */
-// RotationType rotation_type(Node*& node) {
-//   return is_imbalanced_on_left(node) ? left_rotation_type(node->left) : right_rotation_type(node->right);
-// }
+RotationType rotation_type(Node* node) {
+  return is_imbalanced_on_left(node) ? left_rotation_type(node->left) : right_rotation_type(node->right);
+}
 
 /**
  * @brief Takes a node and rotates the tree so it maintains the height balance property
@@ -490,7 +495,7 @@ int num_singletons() const {
 //      * @return true if the node is the left child of its parent
 //      * @return false if the above is not true
 //      */
-//     bool is_left_child(Node* node) {
+//     bool is_left_child_of(Node* node) {
 //       return node->parent->left == node;
 //     }
 
@@ -504,7 +509,7 @@ int num_singletons() const {
 //         return;
 //       }
 
-//       if (is_left_child(node)) {
+//       if (is_left_child_of(node)) {
 //         node->parent->left = 0;
 //       } else {
 //         node->parent->right = 0;
@@ -615,7 +620,7 @@ int num_singletons() const {
 //  * @param child the child node given
 // */
 // void update_height_of_parent(Node*& parent, Node*& child) { 
-//     if (is_left_child(child)) {
+//     if (is_left_child_of(child)) {
 //       parent->left_height++;
 //     } else {
 //       parent->right_height++;
