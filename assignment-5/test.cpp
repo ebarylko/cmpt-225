@@ -54,6 +54,20 @@ TEST_CASE("Wordlist") {
             }
         }
     }
+    SUBCASE("Adding two unique words") {
+        GIVEN("An empty Wordlist") {
+            Wordlist lst;
+            WHEN("Adding two unique words") {
+                lst.add_word("1");
+                lst.add_word("2");
+                THEN("There ar two unique words in the list") {
+                    REQUIRE(2 == lst.num_different_words());
+                    REQUIRE(2 == lst.num_singletons());
+                    REQUIRE(2 == lst.total_words());
+                }
+            }
+        }
+    }
     // SUBCASE("Finding smallest word") {
     //     GIVEN("A non-empty Wordlist") {
     //         Wordlist lst;

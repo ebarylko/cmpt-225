@@ -184,6 +184,10 @@ Node* add_child(Node*& target, const string& word) {
     target->right = child;
   }
 
+  this->root->all_words++;
+  this->root->different_words++;
+  this->root->single_words++;
+
   return child;
 }
 
@@ -253,18 +257,21 @@ void add_word(const string& word) {
  */
 Node* find_word(const string& word) const {
   Node* curr = this->root;
+  Node* parent = curr;
 
 // Searching until the word is found or a leaf is encountered
   while (curr && curr->word != word) {
     if (curr->word < word && curr->right) {
       curr = curr->right;
+      parent = curr;
 
-    } else {
+    } else if (curr->left) {
       curr = curr->left;
+      parent = curr;
     }
   }
 
-  return curr; 
+  return parent; 
 
 }
 
