@@ -83,4 +83,31 @@ TEST_CASE("is_imbalanced_left") {
            }
         }
     }
+    SUBCASE ("A node with one child") {
+        GIVEN("A node with one child") {
+           WordlistTest lst;
+           lst.add_word("a");
+           lst.add_word("b");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with a left and right children") {
+        GIVEN("A node with a child in the left and right subtree") {
+           WordlistTest lst;
+           lst.add_word("c");
+           lst.add_word("d");
+           lst.add_word("a");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                REQUIRE(1 == lst.root->left_height);
+                REQUIRE(1 == lst.root->right_height);
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
 }
