@@ -210,17 +210,13 @@ void update_wordlist_info(Node* node) {
  * @param child the child node given
 */
 void update_height_of_parent(Node*& parent, Node*& child) { 
-    cout << "Updating the height" << endl;
     int right_height = child->right_height;
     int left_height = child->left_height;
 
     int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
-    cout << "UPDated height: " << updated_height << " for " << child->word << endl;
     if (is_left_child(child)) {
-      cout << "is left child " << endl;
       parent->left_height = updated_height;
     } else {
-      cout << "NOt left child " << endl;
       parent->right_height = updated_height;
     }
  }
@@ -231,7 +227,6 @@ void update_height_of_parent(Node*& parent, Node*& child) {
 */
 bool height_diff_less_than_2(Node*& node) {
   int height_difference = node->left_height - node->right_height;
-  cout << "Height difference " << height_difference <<  " for " << node->word << endl;
   return -1 <= height_difference && height_difference <= 1;
 }
 
@@ -299,8 +294,6 @@ void rebalance_tree(Node*& start) {
    * Find imbalanced node while adjusting the heights of the nodes
   */
   while (height_diff_less_than_2(curr) && is_not_root(curr)) {
-    cout << "height difference less than 2" << endl;
-    cout << "the current node " << curr->word << endl;
     prev = curr;
     curr = curr->parent;
     update_height_of_parent(curr, prev);
@@ -325,7 +318,6 @@ void rebalance_tree(Node*& start) {
  * @param word the word to add
  */
 void add_word(const string& word) {
-  cout << "Adding the word: " << word << endl;
   /**
    * @brief Set root of tree if it is empty
    * 
@@ -336,7 +328,6 @@ void add_word(const string& word) {
   }
 
   Node* target = find_word(word);
-  cout << "target word : " << target->word << endl;
   /**
    * @brief Adjust the number of occurences for the word if
    * it is in the list. 
@@ -352,7 +343,6 @@ void add_word(const string& word) {
    */
   else {
     Node* child = add_child(target, word);
-    cout << "After adding child " << endl;
     rebalance_tree(child);
   }
   
@@ -366,7 +356,6 @@ void add_word(const string& word) {
  * @return Node* the node corresponding to the word being searched for
  */
 Node* find_word(const string& word) const {
-  cout << "Finding the word: " << word << endl;
   Node* curr = this->root;
   Node* parent = curr;
 
@@ -375,7 +364,6 @@ Node* find_word(const string& word) const {
  * Stops when it finds the word or an empty node
 */
   while (curr && curr->word != word) {
-    cout << "The results: " << (int)(word > curr->word) << endl;
     switch ((int)(word > curr->word)) {
       
       case 1: 
