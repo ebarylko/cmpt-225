@@ -84,6 +84,7 @@ class WordlistTest : public Wordlist_base {
      * @return false if the above is not true
      */
     bool is_left_child(Node* node) {
+      cout <<" the word " << node->word << endl;
       return node->parent->left == node;
     }
 
@@ -175,6 +176,8 @@ Node* add_child(Node*& target, const string& word) {
   } else {
     target->right = child;
   }
+  
+  child->parent = target;
 
   this->root->all_words++;
   this->root->different_words++;
@@ -214,8 +217,10 @@ void update_height_of_parent(Node*& parent, Node*& child) {
     int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
     cout << "UPDated height: " << updated_height << " for " << child->word << endl;
     if (is_left_child(child)) {
+      cout << "is left child " << endl;
       parent->left_height = updated_height;
     } else {
+      cout << "NOt left child " << endl;
       parent->right_height = updated_height;
     }
  }
@@ -295,6 +300,7 @@ void rebalance_tree(Node*& start) {
   */
   while (height_diff_less_than_2(curr) && is_not_root(curr)) {
     cout << "height difference less than 2" << endl;
+    cout << "the current node " << curr->word << endl;
     prev = curr;
     curr = curr->parent;
     update_height_of_parent(curr, prev);
