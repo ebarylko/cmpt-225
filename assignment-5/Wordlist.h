@@ -171,6 +171,7 @@ Node* mk_node(const string& word) {
  */
 Node* add_child(Node*& target, const string& word) {
   Node* child = mk_node(word);
+  cout << "The target " << target->word << endl;
   if (target->word > word) {
     target->left = child;
   } else {
@@ -192,7 +193,7 @@ Node* add_child(Node*& target, const string& word) {
  * 
  * @param node the node given
  */
-void update_wordlist_info(Node* node) {
+void update_wordlist_info(Node*& node) {
   this->root->all_words++;
   /**
    * @brief Reducing the amount of singletons if the word is 
@@ -331,7 +332,7 @@ void add_word(const string& word) {
   }
 
   Node* target = find_word(word);
-  cout << "THe target : " << target->word << endl;;
+  cout << "The parent " << target->parent << endl;
   /**
    * @brief Adjust the number of occurences for the word if
    * it is in the list. 
@@ -346,6 +347,8 @@ void add_word(const string& word) {
    * tree if necessary
    */
   else {
+    cout << "Adding a child: " << word << endl;
+    cout << "The target " << target->word << endl;
     Node* child = add_child(target, word);
     rebalance_tree(child);
   }
@@ -368,18 +371,20 @@ Node* find_word(const string& word) const {
  * Stops when it finds the word or an empty node
 */
   while (curr && curr->word != word) {
+  cout << "CURR : " << curr->word << endl;
     switch ((int)(word > curr->word)) {
       
       case 1: 
       if (curr->right) {
-        parent = curr;
+        cout << "Bigger than word" << endl;
+        parent = curr->right;
       } 
       curr = curr->right;
       break;
 
       default:
       if (curr->left) {
-        parent = curr = curr->left;
+        parent = curr->left;
       }
 
       curr = curr->left;
