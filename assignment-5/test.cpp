@@ -110,4 +110,76 @@ TEST_CASE("is_imbalanced_left") {
            }
         }
     }
+    SUBCASE ("A node with a taller left subtree") {
+        GIVEN("A node with a taller left subtree") {
+           WordlistTest lst;
+           lst.add_word("c");
+           lst.add_word("b");
+           lst.add_word("a");
+           WHEN("Calling the function") {
+            THEN("It returns true") {
+                REQUIRE(2 == lst.root->left_height);
+                REQUIRE(0 == lst.root->right_height);
+                REQUIRE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with a taller right subtree") {
+        GIVEN("A node with a taller right subtree") {
+           WordlistTest lst;
+           lst.add_word("c");
+           lst.add_word("d");
+           lst.add_word("e");
+           WHEN("Calling the function") {
+            THEN("It returns true") {
+                REQUIRE(2 == lst.root->right_height);
+                REQUIRE(0 == lst.root->left_height);
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+}
+
+TEST_CASE("find_word") {
+    SUBCASE("Finding a word not in the list") {
+        GIVEN("An empty wordlist") {
+            WordlistTest lst;
+            WHEN("Searching for a word") {
+                WordlistTest::Node* actual = lst.find_word("hi");
+                THEN("No word is found") {
+                    REQUIRE_FALSE(actual);
+                }
+            }
+        }
+
+    }
+    SUBCASE("Finding a word in the list") {
+        GIVEN("A non-empty wordlist") {
+            WordlistTest lst;
+            lst.add_word("a");
+            WHEN("Searching for 'a'") {
+                WordlistTest::Node* actual = lst.find_word("a");
+                THEN("The word is found") {
+                    REQUIRE("a" == actual->word);
+                }
+            }
+        }
+
+    }
+    SUBCASE("Finding a word in the list") {
+        GIVEN("A non-empty wordlist") {
+            WordlistTest lst;
+            lst.add_word("c");
+            lst.add_word("d");
+            WHEN("Searching for 'd'") {
+                WordlistTest::Node* actual = lst.find_word("d");
+                THEN("The word is found") {
+                    REQUIRE("d" == actual->word);
+                }
+            }
+        }
+
+    }
 }

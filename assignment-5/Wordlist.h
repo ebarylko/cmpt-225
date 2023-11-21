@@ -214,6 +214,7 @@ void update_height_of_parent(Node*& parent, Node*& child) {
     int left_height = child->left_height;
 
     int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
+    cout << "Updated height for: " << child->word << " " << updated_height << endl;
     if (is_left_child(child)) {
       parent->left_height = updated_height;
     } else {
@@ -294,8 +295,10 @@ void rebalance_tree(Node*& start) {
    * Find imbalanced node while adjusting the heights of the nodes
   */
   while (height_diff_less_than_2(curr) && is_not_root(curr)) {
+    cout << "The word " << curr->word << endl;
     prev = curr;
     curr = curr->parent;
+    cout << "Parent: " << curr->word << ", child: " << prev->word << endl;
     update_height_of_parent(curr, prev);
   }
 
@@ -328,6 +331,7 @@ void add_word(const string& word) {
   }
 
   Node* target = find_word(word);
+  cout << "THe target : " << target->word << endl;;
   /**
    * @brief Adjust the number of occurences for the word if
    * it is in the list. 
@@ -384,7 +388,10 @@ Node* find_word(const string& word) const {
 
   }
 
-  return parent; 
+  /**
+   * Return the node if it is in the list. Otherwise, return the parent
+  */
+  return curr ? curr : parent; 
 
 }
 
