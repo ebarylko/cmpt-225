@@ -84,7 +84,6 @@ class WordlistTest : public Wordlist_base {
      * @return false if the above is not true
      */
     bool is_left_child(Node* node) {
-      cout <<" the word " << node->word << endl;
       return node->parent->left == node;
     }
 
@@ -116,7 +115,6 @@ class WordlistTest : public Wordlist_base {
     Node* curr = node;
 
     while (!curr && curr->left) {
-      cout << "The word " << curr->word << endl;
       curr = curr->left;
     }
 
@@ -171,7 +169,6 @@ Node* mk_node(const string& word) {
  */
 Node* add_child(Node*& target, const string& word) {
   Node* child = mk_node(word);
-  cout << "The target " << target->word << endl;
   if (target->word > word) {
     target->left = child;
   } else {
@@ -215,7 +212,6 @@ void update_height_of_parent(Node*& parent, Node*& child) {
     int left_height = child->left_height;
 
     int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
-    cout << "Updated height for: " << child->word << " " << updated_height << endl;
     if (is_left_child(child)) {
       parent->left_height = updated_height;
     } else {
@@ -296,10 +292,8 @@ void rebalance_tree(Node*& start) {
    * Find imbalanced node while adjusting the heights of the nodes
   */
   while (height_diff_less_than_2(curr) && is_not_root(curr)) {
-    cout << "The word " << curr->word << endl;
     prev = curr;
     curr = curr->parent;
-    cout << "Parent: " << curr->word << ", child: " << prev->word << endl;
     update_height_of_parent(curr, prev);
   }
 
@@ -332,7 +326,6 @@ void add_word(const string& word) {
   }
 
   Node* target = find_word(word);
-  cout << "The parent " << target->parent << endl;
   /**
    * @brief Adjust the number of occurences for the word if
    * it is in the list. 
@@ -347,8 +340,6 @@ void add_word(const string& word) {
    * tree if necessary
    */
   else {
-    cout << "Adding a child: " << word << endl;
-    cout << "The target " << target->word << endl;
     Node* child = add_child(target, word);
     rebalance_tree(child);
   }
@@ -371,12 +362,10 @@ Node* find_word(const string& word) const {
  * Stops when it finds the word or an empty node
 */
   while (curr && curr->word != word) {
-  cout << "CURR : " << curr->word << endl;
     switch ((int)(word > curr->word)) {
       
       case 1: 
       if (curr->right) {
-        cout << "Bigger than word" << endl;
         parent = curr->right;
       } 
       curr = curr->right;

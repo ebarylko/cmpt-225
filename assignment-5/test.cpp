@@ -143,62 +143,76 @@ TEST_CASE("is_imbalanced_left") {
 }
 
 TEST_CASE("find_word") {
-    // SUBCASE("Finding a word not in the list") {
-    //     GIVEN("An empty wordlist") {
-    //         WordlistTest lst;
-    //         WHEN("Searching for a word") {
-    //             WordlistTest::Node* actual = lst.find_word("hi");
-    //             THEN("No word is found") {
-    //                 REQUIRE_FALSE(actual);
-    //             }
-    //         }
-    //     }
-
-    // }
-    // SUBCASE("Finding a word in the list") {
-    //     GIVEN("A non-empty wordlist") {
-    //         WordlistTest lst;
-    //         lst.add_word("a");
-    //         WHEN("Searching for 'a'") {
-    //             WordlistTest::Node* actual = lst.find_word("a");
-    //             THEN("The word is found") {
-    //                 REQUIRE("a" == actual->word);
-    //             }
-    //         }
-    //     }
-
-    // }
-    SUBCASE("Finding a word in a subtree") {
-        GIVEN("A Wordlist with a right subtree") {
+    SUBCASE("Finding a word not in the list") {
+        GIVEN("An empty wordlist") {
             WordlistTest lst;
-            lst.add_word("c");
-            lst.add_word("d");
-            lst.add_word("a");
-            lst.add_word("b");
-            WHEN("Searching for 'd'") {
-                WordlistTest::Node* actual = lst.find_word("e");
-                THEN("The word is found") {
-                    REQUIRE("d" == actual->word);
-                    REQUIRE(lst.root == actual->parent);
+            WHEN("Searching for a word") {
+                WordlistTest::Node* actual = lst.find_word("hi");
+                THEN("No word is found") {
+                    REQUIRE_FALSE(actual);
                 }
             }
         }
 
     }
-    // SUBCASE("Finding a word in the list") {
+    SUBCASE("Finding a word in the list") {
+        GIVEN("A non-empty wordlist") {
+            WordlistTest lst;
+            lst.add_word("a");
+            WHEN("Searching for 'a'") {
+                WordlistTest::Node* actual = lst.find_word("a");
+                THEN("The word is found") {
+                    REQUIRE("a" == actual->word);
+                }
+            }
+        }
+
+    }
+    // SUBCASE("Finding a word in a subtree") {
     //     GIVEN("A Wordlist with a right subtree") {
     //         WordlistTest lst;
     //         lst.add_word("c");
     //         lst.add_word("d");
-    //         lst.add_word("e");
-    //         WHEN("Searching for 'e'") {
+    //         WHEN("Searching for 'd'") {
     //             WordlistTest::Node* actual = lst.find_word("d");
     //             THEN("The word is found") {
     //                 REQUIRE("d" == actual->word);
-    //                 REQUIRE(lst.root->right->word == actual->parent->word);
+    //                 REQUIRE(lst.root == actual->parent);
     //             }
     //         }
     //     }
-
     // }
+    SUBCASE("Finding a word in the right subtree") {
+        GIVEN("A Wordlist with a right subtree") {
+            WordlistTest lst;
+            lst.add_word("c");
+            lst.add_word("d");
+            lst.add_word("e");
+            WHEN("Searching for 'e'") {
+                WordlistTest::Node* actual = lst.find_word("e");
+                THEN("The word is found") {
+                    REQUIRE("e" == actual->word);
+                    REQUIRE("d" == actual->parent->word);
+                }
+            }
+        }
+
+    }
+    SUBCASE("Finding a word in the left subtree") {
+        GIVEN("A Wordlist with a left subtree") {
+            WordlistTest lst;
+            lst.add_word("u");
+            lst.add_word("f");
+            lst.add_word("c");
+            lst.add_word("d");
+            WHEN("Searching for 'd'") {
+                WordlistTest::Node* actual = lst.find_word("d");
+                THEN("The word is found") {
+                    REQUIRE("d" == actual->word);
+                    REQUIRE("c" == actual->parent->word);
+                }
+            }
+        }
+
+    }
 }
