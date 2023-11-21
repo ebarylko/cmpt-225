@@ -54,6 +54,19 @@ TEST_CASE("Wordlist") {
             }
         }
     }
+    // SUBCASE("Finding smallest word") {
+    //     GIVEN("A non-empty Wordlist") {
+    //         Wordlist lst;
+    //         lst.add_word("hi");
+    //         lst.add_word("a");
+    //         WHEN("Finding the smallest word") {
+    //             // const string& actual = lst.smallest_word();
+    //             THEN("The smallest word is 'a") {
+    //                 REQUIRE("a" == "b");
+    //             }
+    //         }
+    //     }
+    // }
     // SUBCASE("Adding two elements to an empty Wordlist") {
     //     GIVEN("An empty Wordlist") {
     //         Wordlist lst;

@@ -54,10 +54,16 @@ class Wordlist : public Wordlist_base
     //
     struct Node
     {
+        ~Node() {
+          delete this->left;
+          delete this->right;
+        };
+
         string word;
         int count;
         Node *left;
         Node *right;
+        Node* parent;
         int left_height;
         int right_height;
     };
@@ -76,6 +82,56 @@ class Wordlist : public Wordlist_base
 
     RootNode *root = nullptr;
 
+    /**
+     * @brief Takes a node and returns true if it is the
+     * left child of its parent
+     * 
+     * @param node the node given
+     * @return true if the node is the left child of its parent
+     * @return false if the above is not true
+     */
+    bool is_left_child(Node* node) {
+      return node->parent->left == node;
+    }
+
+    /**
+     * @brief Takes a node and removes it from the tree
+     *
+     * @param node the node to remove
+     */
+    void remove_node(Node* node) {
+      if (!node->parent) {
+        return;
+      }
+
+      if (is_left_child(node)) {
+        node->parent->left = 0;
+      } else {
+        node->parent->right = 0;
+      }
+    };
+
+  /**
+   * @brief Takes a node ND and returns the smallest node starting from ND and looking down 
+   * its left subnode. 
+   * 
+   * @param node the node to start at
+   * @return Node* the smallest node found when starting from ND
+   */
+  Node* find_smallest(Node* node) {
+    Node* curr = node;
+
+    while (!curr && curr->left) {
+      cout << "The word " << curr->word << endl;
+      curr = curr->left;
+    }
+
+    return curr;
+  }
+
+
+
+
     //
     // IMPORTANT: root is the only variable that can be defined in this class.
     // It should point to the top node of your AVL tree. When root == nullptr,
@@ -85,6 +141,10 @@ class Wordlist : public Wordlist_base
     //
    public:
    Wordlist() {};
+  ~Wordlist() {
+    delete this->root;
+  }
+
 
 /**
  * @brief Takes a word and creates a root node which
@@ -94,7 +154,7 @@ class Wordlist : public Wordlist_base
  * @return RootNode* the root of the tree with the word passed
  */
 RootNode* mk_root(const string& word) {
-    return new RootNode{{word, 1, 0, 0, 0, 0}, 1, 1, 1};
+    return new RootNode{{word, 1, 0, 0, 0, 0, 0}, 1, 1, 1};
 }
 
 /**
@@ -103,8 +163,8 @@ RootNode* mk_root(const string& word) {
  * @param word the word given
  * @return Node* the node containing the word given
  */
-Node* mk_child(const string& word) {
-  return new Node{word, 1, 0, 0, 0, 0};
+Node* mk_node(const string& word) {
+  return new Node{word, 1, 0, 0, 0, 0, 0};
 }
 
 /**
@@ -116,16 +176,16 @@ Node* mk_child(const string& word) {
  * @param word the word to be added as the right or left child of target
  * @return Node* the node where target is located
  */
-// Node* add_child(Node* target, const string& word) {
-//   Node* child = mk_node(word);
-//   if (target->word > word) {
-//     target->left = child;
-//   } else {
-//     target->right = child;
-//   }
+Node* add_child(Node*& target, const string& word) {
+  Node* child = mk_node(word);
+  if (target->word > word) {
+    target->left = child;
+  } else {
+    target->right = child;
+  }
 
-//   return child;
-// }
+  return child;
+}
 
 /**
  * @brief Takes a node and updates the Wordlist with information
@@ -178,7 +238,7 @@ void add_word(const string& word) {
    * tree if necessary
    */
   else {
-    // Node* child = add_child(target, word);
+    add_child(target, word);
     // rebalance_tree(child);
   }
   
@@ -196,7 +256,7 @@ Node* find_word(const string& word) const {
 
 // Searching until the word is found or a leaf is encountered
   while (curr && curr->word != word) {
-    if (curr->word < word) {
+    if (curr->word < word && curr->right) {
       curr = curr->right;
 
     } else {
