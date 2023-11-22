@@ -300,3 +300,27 @@ TEST_CASE("inorder_traversal") {
 //         }
 //     }
 // }
+TEST_CASE("find_smallest") {
+    SUBCASE("Empty list") {
+        GIVEN("An empty list") {
+            WordlistTest lst;
+            WHEN("Calling the function") {
+                THEN("It returns null") {
+                    REQUIRE_FALSE(lst.find_smallest(lst.root));
+                }
+            }
+        }
+    }
+    SUBCASE("Small list") {
+        GIVEN("A list with two elements") {
+            WordlistTest lst;
+            lst.add_word("hi");
+            lst.add_word("a");
+            WHEN("Calling the function") {
+                THEN("It returns 'a'") {
+                    REQUIRE("a" == lst.find_smallest(lst.root)->word);
+                }
+            }
+        }
+    }
+}
