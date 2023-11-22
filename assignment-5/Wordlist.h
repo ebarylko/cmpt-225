@@ -43,6 +43,7 @@ using namespace std;
 // It is okay to define helper functions defined outside the class.
 //
 
+#include <vector>
 class WordlistTest : public Wordlist_base {
   public:
     struct Node
@@ -97,11 +98,9 @@ class WordlistTest : public Wordlist_base {
    */
   Node* find_smallest(Node* node) {
     Node* curr = node;
-
-    while (!curr && curr->left) {
+    while (curr && curr->left) {
       curr = curr->left;
     }
-
     return curr;
   }
 
@@ -244,12 +243,38 @@ RotationType right_rotation_type(Node* node) {
   return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::left ;
 }
 
+
+
 /**
  * Takes a node and returns the type of rotation which must be performed
  * @param node the node given
 */
 RotationType rotation_type(Node* node) {
   return is_imbalanced_on_left(node) ? left_rotation_type(node) : right_rotation_type(node);
+}
+
+/**
+ * @brief Takes a set of words and a current node in the tree and adds all the
+ * words in the tree to the set using inorder traversal
+ * 
+ * @param words the set of words
+ * @param node the current node in the tree
+ * @return vector<string>& the collection of words in the tree
+ */
+vector<string>& inorder_traversal(vector<string>& words, Node* node) {
+    if (!node) {
+      cout << "INvalid " << endl;
+      return words;
+    }
+
+    vector<string>& new_words = inorder_traversal(words, node->left);
+    new_words.push_back(node->word);
+    return inorder_traversal(new_words, node->right);
+}
+
+vector<string>& words_in_order() {
+  vector<string> words;
+  return inorder_traversal(words, find_smallest(this->root));
 }
 
 /**

@@ -267,3 +267,36 @@ TEST_CASE("rotation_type") {
         }
     }
 }
+
+typedef vector<string> words;
+
+TEST_CASE("inorder_traversal") {
+    SUBCASE("Empty Wordlist") {
+    GIVEN("An empty Wordlist") {
+        WordlistTest lst;
+        WHEN("Collecting the words in alphabetical order") {
+            THEN("The collection is empty") {
+                REQUIRE(lst.words_in_order().empty());
+            }
+        }
+    }
+    }
+}
+
+// TEST_CASE("left-rotation") {
+//     SUBCASE("Rotating an unbalanced tree") {
+//         GIVEN("An unbalanced tree with a larger left subtree") {
+//             WordlistTest lst;
+//             lst.add_word("d");
+//             lst.add_word("b");
+//             lst.add_word("a");
+//             WHEN("Balancing the list") {
+//                 lst.left-rotation(lst->root);
+//                 THEN("The tree is balanced") {
+//                     words expected{"a", "b", "d"};
+//                     REQUIRE(expected == lst.inorder_traversal());
+//                 }
+//             }
+//         }
+//     }
+// }
