@@ -221,4 +221,49 @@ TEST_CASE("rotation_type") {
             }
         }
     }
+    SUBCASE("left rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.add_word("a");
+            lst.add_word("b");
+            lst.add_word("c");
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::left;
+                THEN("The rotation needed is a left rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("left right rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.add_word("c");
+            lst.add_word("a");
+            lst.add_word("b");
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::left_right;
+                THEN("The rotation needed is a left-right rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("right left rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.add_word("a");
+            lst.add_word("d");
+            lst.add_word("b");
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::right_left;
+                THEN("The rotation needed is a right-left rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
 }

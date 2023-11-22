@@ -83,7 +83,7 @@ class WordlistTest : public Wordlist_base {
      * @return true if the node is the left child of its parent
      * @return false if the above is not true
      */
-    bool is_left_child_of(Node*& child, Node*& parent) {
+    bool is_left_child_of(Node* child, Node* parent) {
       return parent->left == child;
     }
 
@@ -151,7 +151,7 @@ Node* mk_node(const string& word) {
  * @param word the word to be added as the right or left child of target
  * @return Node* the node where target is located
  */
-Node* add_child(Node*& target, const string& word) {
+Node* add_child(Node* target, const string& word) {
   Node* child = mk_node(word);
   if (target->word > word) {
     target->left = child;
@@ -174,7 +174,7 @@ Node* add_child(Node*& target, const string& word) {
  * 
  * @param node the node given
  */
-void update_wordlist_info(Node*& node) {
+void update_wordlist_info(Node* node) {
   this->root->all_words++;
   /**
    * @brief Reducing the amount of singletons if the word is 
@@ -191,7 +191,7 @@ void update_wordlist_info(Node*& node) {
  * @param parent the parent node given
  * @param child the child node given
 */
-void update_height_of_parent(Node*& parent, Node*& child) { 
+void update_height_of_parent(Node* parent, Node* child) { 
     int right_height = child->right_height;
     int left_height = child->left_height;
 
@@ -228,7 +228,7 @@ bool is_imbalanced_on_left(Node* node) const {
  * @brief Takes a node and returns the rotation which must be applied in order to balance the tree
  * @param node the first unbalanced node
 */
-RotationType left_rotation_type(const Node* node) {
+RotationType left_rotation_type(Node* node) {
   Node* child = node->left;
   Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
   return is_left_child_of(taller_grandchild, child) ? RotationType::right : RotationType::left_right ;
@@ -238,7 +238,7 @@ RotationType left_rotation_type(const Node* node) {
  * @brief Takes a node and returns the rotation which must be applied in order to balance the tree
  * @param node the first unbalanced node
 */
-RotationType right_rotation_type(Node*& node) {
+RotationType right_rotation_type(Node* node) {
   Node* child = node->right;
   Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
   return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::left ;
@@ -249,7 +249,7 @@ RotationType right_rotation_type(Node*& node) {
  * @param node the node given
 */
 RotationType rotation_type(Node* node) {
-  return is_imbalanced_on_left(node) ? left_rotation_type(node->left) : right_rotation_type(node->right);
+  return is_imbalanced_on_left(node) ? left_rotation_type(node) : right_rotation_type(node);
 }
 
 /**
