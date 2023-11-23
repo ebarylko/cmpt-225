@@ -377,9 +377,7 @@ TEST_CASE("left-rotation") {
     SUBCASE("Rotating an unbalanced tree") {
         GIVEN("An unbalanced tree with a larger left subtree") {
             WordlistTest lst;
-            lst.add_word("d");
-            lst.add_word("b");
-            lst.add_word("a");
+            lst.add_n({"d", "b", "a"});
             WHEN("Balancing the list") {
                 lst.left_rotation(lst.root);
                 THEN("The tree is balanced") {
@@ -393,16 +391,39 @@ TEST_CASE("left-rotation") {
         GIVEN("An unbalanced tree with a larger left subtree") {
             WordlistTest lst;
             lst.add_n({"q", "z", "h", "e", "i", "a"});
-            // lst.add_word("q");
-            // lst.add_word("z");
-            // lst.add_word("h");
-            // lst.add_word("e");
-            // lst.add_word("i");
-            // lst.add_word("a");
             WHEN("Balancing the list") {
                 lst.left_rotation(lst.root);
                 THEN("The tree is balanced") {
                     words expected{"a", "e", "h", "i", "q", "z"};
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("right-rotation") {
+    SUBCASE("Rotating an unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger right subtree") {
+            WordlistTest lst;
+            lst.add_n({"a", "b", "c"});
+            WHEN("Balancing the list") {
+                lst.right_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "b", "c"};
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
+    SUBCASE("Rotating a larger unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger left subtree") {
+            WordlistTest lst;
+            lst.add_n({"c", "b", "r", "q", "s", "t"});
+            WHEN("Balancing the list") {
+                lst.left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"b", "c", "q", "r", "s", "t"};
                     REQUIRE(expected == lst.words_in_order());
                 }
             }
