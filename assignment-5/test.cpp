@@ -2,6 +2,26 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+namespace doctest
+{
+template <typename T>
+struct StringMaker<std::vector<T>>
+{
+    static String convert(const std::vector<T>& in) {
+        std::ostringstream oss;
+
+        oss << "[";
+        // NOLINTNEXTLINE(*-use-auto)
+        for (typename std::vector<T>::const_iterator it = in.begin(); it != in.end();) {
+            oss << *it;
+            if (++it != in.end()) { oss << ", "; }
+        }
+        oss << "]";
+        return oss.str().c_str();
+    }
+};
+}
+
 TEST_CASE("WordlistTest") {
     SUBCASE("Empty WordlistTest has no words") {
         GIVEN("An empty WordlistTest") {
@@ -283,23 +303,23 @@ TEST_CASE("inorder_traversal") {
     }
 }
 
-// TEST_CASE("left-rotation") {
-//     SUBCASE("Rotating an unbalanced tree") {
-//         GIVEN("An unbalanced tree with a larger left subtree") {
-//             WordlistTest lst;
-//             lst.add_word("d");
-//             lst.add_word("b");
-//             lst.add_word("a");
-//             WHEN("Balancing the list") {
-//                 lst.left_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     words expected{"a", "b", "d"};
-//                     REQUIRE(expected == lst.words_in_order());
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("left-rotation") {
+    SUBCASE("Rotating an unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger left subtree") {
+            WordlistTest lst;
+            lst.add_word("d");
+            lst.add_word("b");
+            lst.add_word("a");
+            WHEN("Balancing the list") {
+                lst.left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "b", "d"};
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
+}
 TEST_CASE("find_smallest") {
     SUBCASE("Empty list") {
         GIVEN("An empty list") {
