@@ -206,7 +206,7 @@ TEST_CASE("find_word") {
 typedef WordlistTest::RotationType Rotation;
 
 TEST_CASE("rotation_type") {
-    SUBCASE("right rotation") {
+    SUBCASE("left rotation") {
         GIVEN("An unbalanced tree") {
             WordlistTest lst;
             lst.add_word("d");
@@ -214,14 +214,14 @@ TEST_CASE("rotation_type") {
             lst.add_word("b");
             WHEN("Calling the function") {
                 Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::right;
-                THEN("The rotation needed is a right rotation") {
+                Rotation expected = Rotation::left;
+                THEN("The rotation needed is a left rotation") {
                     REQUIRE(expected == actual);
                 }
             }
         }
     }
-    SUBCASE("left rotation") {
+    SUBCASE("right rotation") {
         GIVEN("An unbalanced tree") {
             WordlistTest lst;
             lst.add_word("a");
@@ -229,7 +229,7 @@ TEST_CASE("rotation_type") {
             lst.add_word("c");
             WHEN("Calling the function") {
                 Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::left;
+                Rotation expected = Rotation::right;
                 THEN("The rotation needed is a left rotation") {
                     REQUIRE(expected == actual);
                 }
@@ -291,10 +291,10 @@ TEST_CASE("inorder_traversal") {
 //             lst.add_word("b");
 //             lst.add_word("a");
 //             WHEN("Balancing the list") {
-//                 lst.left-rotation(lst->root);
+//                 lst.left_rotation(lst.root);
 //                 THEN("The tree is balanced") {
 //                     words expected{"a", "b", "d"};
-//                     REQUIRE(expected == lst.inorder_traversal());
+//                     REQUIRE(expected == lst.words_in_order());
 //                 }
 //             }
 //         }
@@ -319,6 +319,18 @@ TEST_CASE("find_smallest") {
             WHEN("Calling the function") {
                 THEN("It returns 'a'") {
                     REQUIRE("a" == lst.find_smallest(lst.root)->word);
+                }
+            }
+        }
+    }
+    SUBCASE("Tree with a right subtree") {
+        GIVEN("A list with two elements") {
+            WordlistTest lst;
+            lst.add_word("hi");
+            lst.add_word("q");
+            WHEN("Calling the function") {
+                THEN("It returns 'hi'") {
+                    REQUIRE("hi" == lst.find_smallest(lst.root)->word);
                 }
             }
         }

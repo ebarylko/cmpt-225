@@ -185,16 +185,22 @@ void update_wordlist_info(Node* node) {
   }
 }
 
+int largest_child_height(Node* child) {
+    int right_height = child->right_height;
+    int left_height = child->left_height;
+    int updated_height =  left_height > right_height ? left_height : right_height;
+    return updated_height;
+}
+
 /**
  * @brief Takes a parent and a child and updates the heights of the children for the parent
  * @param parent the parent node given
  * @param child the child node given
 */
 void update_height_of_parent(Node* parent, Node* child) { 
-    int right_height = child->right_height;
-    int left_height = child->left_height;
 
-    int updated_height = 1 + ( left_height > right_height ? left_height : right_height );
+    int updated_height = 1 + largest_child_height(child);
+    // int updated_height = child ? 0 : 1 + largest_child_height(child);
     if (is_left_child_of(child, parent)) {
       parent->left_height = updated_height;
     } else {
@@ -219,6 +225,7 @@ enum RotationType{left, right, left_right, right_left};
 * @param node the node given
 */
 bool is_imbalanced_on_left(Node* node) const {
+  cout << "NOde height: " << node->left_height << endl;
   return node->left_height - node->right_height > 1;
 }
 
@@ -230,7 +237,7 @@ bool is_imbalanced_on_left(Node* node) const {
 RotationType left_rotation_type(Node* node) {
   Node* child = node->left;
   Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
-  return is_left_child_of(taller_grandchild, child) ? RotationType::right : RotationType::left_right ;
+  return is_left_child_of(taller_grandchild, child) ? RotationType::left : RotationType::left_right ;
 }
 
 /**
@@ -240,7 +247,7 @@ RotationType left_rotation_type(Node* node) {
 RotationType right_rotation_type(Node* node) {
   Node* child = node->right;
   Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
-  return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::left ;
+  return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::right ;
 }
 
 
@@ -250,6 +257,7 @@ RotationType right_rotation_type(Node* node) {
  * @param node the node given
 */
 RotationType rotation_type(Node* node) {
+  cout << "Imbalance: " << is_imbalanced_on_left(node)  << endl;
   return is_imbalanced_on_left(node) ? left_rotation_type(node) : right_rotation_type(node);
 }
 
@@ -263,7 +271,6 @@ RotationType rotation_type(Node* node) {
  */
 vector<string>& inorder_traversal(vector<string>& words, Node* node) {
     if (!node) {
-      cout << "INvalid " << endl;
       return words;
     }
 
@@ -275,6 +282,31 @@ vector<string>& inorder_traversal(vector<string>& words, Node* node) {
 vector<string>& words_in_order() {
   vector<string> words;
   return inorder_traversal(words, find_smallest(this->root));
+}
+
+/**
+ * @brief Takes an unbalanced node and balances it with a left rotation
+ * 
+ * @param node the node to balance
+ */
+/**
+ * Poner el node en el espacio para el hijo de la derecha del chico
+ * poner el hijo de la derecha del chico como el hijo de la derecha del nieto
+ * actualizar la altura del nodo
+ * actualizar la altura del chico
+ * Si el nodo era el hijo, crear una raiz nueva con la informacion. 
+ * remplazar el nodo mas alto con la raiz nueva.
+ * remplazar el nodo que cambio para que sea un nodo normal
+*/
+void left_rotation(Node* node) {
+  Node* child = node->left;
+  Node* a = child->right;
+
+  child->right = node;
+  node->parent = child;
+  node->left = a;
+  update_height_of_parent(a, node);
+  update_height_of_parent(node, child);
 }
 
 /**
