@@ -389,4 +389,23 @@ TEST_CASE("left-rotation") {
             }
         }
     }
+    SUBCASE("Rotating a larger unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger left subtree") {
+            WordlistTest lst;
+            lst.add_n({"q", "z", "h", "e", "i", "a"});
+            // lst.add_word("q");
+            // lst.add_word("z");
+            // lst.add_word("h");
+            // lst.add_word("e");
+            // lst.add_word("i");
+            // lst.add_word("a");
+            WHEN("Balancing the list") {
+                lst.left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "e", "h", "i", "q", "z"};
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
 }

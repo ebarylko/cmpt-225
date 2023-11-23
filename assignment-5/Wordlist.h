@@ -44,6 +44,8 @@ using namespace std;
 //
 
 #include <vector>
+#include <algorithm>
+#include <functional>
 class WordlistTest : public Wordlist_base {
   public:
     struct Node
@@ -473,6 +475,15 @@ void add_word(const string& word) {
     rebalance_tree(child);
   }
   
+}
+
+/**
+ * @brief Takes a collection of words and adds each one to the list
+ * 
+ * @param words the collection of words to add
+ */
+void add_n(initializer_list<string> words) {
+  for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
 }
 
 /**
