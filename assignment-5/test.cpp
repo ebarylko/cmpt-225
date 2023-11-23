@@ -301,25 +301,21 @@ TEST_CASE("inorder_traversal") {
         }
     }
     }
-}
-
-TEST_CASE("left-rotation") {
-    SUBCASE("Rotating an unbalanced tree") {
-        GIVEN("An unbalanced tree with a larger left subtree") {
+    SUBCASE("Wordlist with one word") {
+        GIVEN("A Wordlist with one word") {
             WordlistTest lst;
-            lst.add_word("d");
-            lst.add_word("b");
             lst.add_word("a");
-            WHEN("Balancing the list") {
-                lst.left_rotation(lst.root);
-                THEN("The tree is balanced") {
-                    words expected{"a", "b", "d"};
-                    REQUIRE(expected == lst.words_in_order());
+            WHEN("Calling the function") {
+                words actual = lst.words_in_order();
+                THEN("The only word in the list is 'a'") {
+                    words expected{"a"};
+                    REQUIRE(expected == actual);
                 }
             }
         }
     }
 }
+
 TEST_CASE("find_smallest") {
     SUBCASE("Empty list") {
         GIVEN("An empty list") {
@@ -351,6 +347,44 @@ TEST_CASE("find_smallest") {
             WHEN("Calling the function") {
                 THEN("It returns 'hi'") {
                     REQUIRE("hi" == lst.find_smallest(lst.root)->word);
+                }
+            }
+        }
+    }
+}
+
+typedef WordlistTest::Node Node;
+
+TEST_CASE("shift_root") {
+    GIVEN("A root node and a normal node") {
+        WordlistTest lst;
+        lst.add_word("hi");
+        lst.add_word("a");
+        WHEN("Changing the root node from 'hi' to 'a") {
+            lst.shift_root(lst.root->left);
+            THEN("The root is 'a' and contains the information of the previous root") {
+                vector<int> list_data{2, 2, 2};
+                words expected{"a"};
+                REQUIRE(list_data == lst.list_info());
+                REQUIRE(expected == lst.words_in_order());
+            }
+        }
+         
+    }
+}
+
+TEST_CASE("left-rotation") {
+    SUBCASE("Rotating an unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger left subtree") {
+            WordlistTest lst;
+            lst.add_word("d");
+            lst.add_word("b");
+            lst.add_word("a");
+            WHEN("Balancing the list") {
+                lst.left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "b", "d"};
+                    REQUIRE(expected == lst.words_in_order());
                 }
             }
         }

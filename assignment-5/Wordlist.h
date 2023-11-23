@@ -98,6 +98,7 @@ class WordlistTest : public Wordlist_base {
    */
   Node* find_smallest(Node* node) {
     Node* curr = node;
+
     while (curr && curr->left) {
       curr = curr->left;
     }
@@ -129,6 +130,28 @@ class WordlistTest : public Wordlist_base {
  */
 RootNode* mk_root(const string& word) {
     return new RootNode{{word, 1, 0, 0, 0, 0, 0}, 1, 1, 1};
+}
+
+/**
+ * @brief Takes a node and returns a root node 
+ * which has the information about the state of the list
+ * and the information unique to the node given
+ * 
+ * @param new_root the node given
+ * @return RootNode* a root node with the information about the state of the list
+ * and the information solely found in the node passed
+ */
+RootNode* mk_root(Node* new_root) {
+  return new RootNode
+  {
+    {
+      new_root->word, new_root->count, new_root->left, new_root->right, new_root->parent,
+       new_root->left_height, new_root->right_height
+    },
+  this->root->different_words, 
+  this->root->single_words, 
+  this->root->all_words 
+  };
 }
 
 /**
@@ -267,22 +290,42 @@ RotationType rotation_type(Node* node) {
  * 
  * @param words the set of words
  * @param node the current node in the tree
- * @return vector<string>& the collection of words in the tree
+ * @return vector<string> the collection of words in the tree
  */
-vector<string>& inorder_traversal(vector<string>& words, Node* node) {
+void inorder_traversal(vector<string>& words, Node* node) {
     if (!node) {
-      return words;
+      return;
     }
-
-    vector<string>& new_words = inorder_traversal(words, node->left);
-    new_words.push_back(node->word);
-    return inorder_traversal(new_words, node->right);
+    inorder_traversal(words, node->left);
+    words.push_back(node->word);
+    return inorder_traversal(words, node->right);
 }
 
-vector<string>& words_in_order() {
+
+vector<string> words_in_order() {
   vector<string> words;
-  return inorder_traversal(words, find_smallest(this->root));
+  inorder_traversal(words, this->root);
+  return words;
 }
+
+/**
+ * @brief Takes a node and changes it to a root node, adding to it the 
+ * information about the state of the list from the original root
+ * 
+ * @param new_parent the node to convert
+ */
+void shift_root(Node* new_parent) {
+  RootNode* updated_root = mk_root(new_parent);
+  new_parent->right = new_parent->left = new_parent->parent = 0;
+  this->root = updated_root;
+  delete new_parent;
+}
+
+vector<int> list_info() {
+  vector<int> info{this->num_different_words(), this->num_singletons(), this->total_words()};
+  return info;
+}
+
 
 /**
  * @brief Takes an unbalanced node and balances it with a left rotation
@@ -299,12 +342,25 @@ vector<string>& words_in_order() {
  * remplazar el nodo que cambio para que sea un nodo normal
 */
 void left_rotation(Node* node) {
+  /**
+   * @brief Separating the nodes to be moved around
+   * 
+   */
   Node* child = node->left;
   Node* a = child->right;
-  
+
+  /**
+   * @brief Moving the nodes to their correct position
+   * 
+   */
   child->right = node;
   node->parent = child;
   node->left = a;
+
+  if (is_root(node)) {
+    shift_root(child);
+  }
+
   update_height_of_parent(node, a);
   update_height_of_parent(child, node);
 }
@@ -339,8 +395,19 @@ void left_rotation(Node* node) {
  * @brief Takes a node and returns true if it is not the root. False otherwise
  * @param node the node given to check
 */
-bool is_not_root(Node*& node) {
+bool is_not_root(Node* node) {
   return node != this->root;
+}
+
+/**
+ * @brief Takes a node and returns true if it is the root. False otherwise
+ * 
+ * @param node the node given
+ * @return true if the node is the root
+ * @return false otherwise.
+ */
+bool is_root(Node* node) {
+  return !is_not_root(node);
 }
 
 /**
