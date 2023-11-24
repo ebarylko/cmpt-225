@@ -373,13 +373,6 @@ vector<int> list_info() {
  * @param node the node to balance
  */
 /**
- * Poner el node en el espacio para el hijo de la derecha del chico
- * poner el hijo de la derecha del chico como el hijo de la derecha del nieto
- * actualizar la altura del nodo
- * actualizar la altura del chico
- * Si el nodo era el hijo, crear una raiz nueva con la informacion. 
- * remplazar el nodo mas alto con la raiz nueva.
- * remplazar el nodo que cambio para que sea un nodo normal
 */
 void left_rotation(Node* node) {
   /**
@@ -402,11 +395,13 @@ void left_rotation(Node* node) {
    * Porque funciono?
    * 
    */
+
   /**
    * Updating the heights of the shifted nodes.
   */
-  update_height_of_parent(node, a);
-  update_height_of_parent(child, node);
+  update_left_height_of_parent(node, a);
+  update_right_height_of_parent(child, node);
+
 
   if (is_root(node)) {
     shift_root(child);
@@ -438,8 +433,6 @@ void right_rotation(Node* node) {
 
   update_right_height_of_parent(node, left_grandchild);
   update_left_height_of_parent(child, node);
-  // update_height_of_parent(node, left_grandchild);
-  // update_height_of_parent(child, node);
 
   /**
    * @brief Changing the root the original one was moved
@@ -478,12 +471,8 @@ void right_left_rotation(Node* node) {
   node->right = left_grandchild;
   child->parent = left_grandchild;
 
-  // node->left_height = 0;
-  update_height_of_parent(child, child->left);
-  update_height_of_parent(left_grandchild, node);
-  // left_grandchild->right_height = 1;
-  // left_grandchild->left_height = 0;
-
+  update_left_height_of_parent(child, child->left);
+  update_right_height_of_parent(left_grandchild, child);
 
   right_rotation(node);
 }

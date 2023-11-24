@@ -518,31 +518,34 @@ TEST_CASE("right-rotation") {
     }
 }
  
-// TEST_CASE("right_left_rotation") {
-//     SUBCASE("Rotating a small tree") {
-//         GIVEN("A tree which can be balanced by a right left rotation") {
-//             WordlistTest lst;
-//             lst.add_n({"a", "d", "c"});
-//             WHEN("Balancing the tree") {
-//                 lst.right_left_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     words expected{"a", "c", "d"};
-//                     REQUIRE(expected == lst.words_in_order());
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("Rotating a small tree") {
-//         GIVEN("A tree which can be balanced by a right left rotation") {
-//             WordlistTest lst;
-//             lst.add_n({"e", "b", "a", "h", "f", "m", "l", "o"});
-//             WHEN("Balancing the tree") {
-//                 lst.right_left_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
-//                     REQUIRE(expected_words == lst.words_in_order());
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("right_left_rotation") {
+    SUBCASE("Rotating a small tree") {
+        GIVEN("A tree which can be balanced by a right left rotation") {
+            WordlistTest lst;
+            lst.add_n({"a", "d", "c"});
+            WHEN("Balancing the tree") {
+                lst.right_left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "c", "d"};
+                    REQUIRE(expected == lst.words_in_order());
+                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                }
+            }
+        }
+    }
+    // SUBCASE("Rotating a larger tree") {
+    //     GIVEN("A tree which can be balanced by a right left rotation") {
+    //         WordlistTest lst;
+    //         lst.add_n({"e", "b", "a", "h", "f", "m", "l", "o"});
+    //         WHEN("Balancing the tree") {
+    //             lst.right_left_rotation(lst.root);
+    //             THEN("The tree is balanced") {
+    //                 words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
+    //                 REQUIRE(expected_words == lst.words_in_order());
+    //             }
+    //         }
+    //     }
+    // }
+}
