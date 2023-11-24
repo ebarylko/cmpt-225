@@ -229,14 +229,21 @@ int largest_child_height(Node* child) {
 */
 void update_height_of_parent(Node* parent, Node* child) { 
     int updated_height = 1 + largest_child_height(child);
-    cout << "The height " << updated_height <<  " , " << parent->word << endl;
-    cout << "The child: " << child << endl;
     if (is_left_child_of(child, parent)) {
       parent->left_height = updated_height;
     } else {
       parent->right_height = updated_height;
     }
-    cout << "Current height of: " << parent->word << ", " << parent->left_height << ", " << parent->right_height << endl;
+ }
+
+void update_right_height_of_parent(Node* parent, Node* child) { 
+    int updated_height = 1 + largest_child_height(child);
+      parent->right_height = updated_height;
+ }
+
+void update_left_height_of_parent(Node* parent, Node* child) { 
+    int updated_height = 1 + largest_child_height(child);
+      parent->left_height = updated_height;
  }
 
 /**
@@ -351,7 +358,6 @@ void shift_root(Node* new_parent) {
   RootNode* updated_root = mk_root(new_parent);
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
-  cout << "info: " << updated_root->right_height << ", " << updated_root->left_height << endl;
   delete new_parent;
 }
 
@@ -430,6 +436,11 @@ void right_rotation(Node* node) {
   node->parent = child;
   node->right = left_grandchild;
 
+  update_right_height_of_parent(node, left_grandchild);
+  update_left_height_of_parent(child, node);
+  // update_height_of_parent(node, left_grandchild);
+  // update_height_of_parent(child, node);
+
   /**
    * @brief Changing the root the original one was moved
    * 
@@ -438,8 +449,6 @@ void right_rotation(Node* node) {
     shift_root(child);
   }
 
-  update_height_of_parent(node, left_grandchild);
-  update_height_of_parent(child, node);
 }
 
 

@@ -483,34 +483,40 @@ TEST_CASE("left-rotation") {
     }
 }
 
-// TEST_CASE("right-rotation") {
-//     SUBCASE("Rotating an unbalanced tree") {
-//         GIVEN("An unbalanced tree with a larger right subtree") {
-//             WordlistTest lst;
-//             lst.add_n({"a", "b", "c"});
-//             WHEN("Balancing the list") {
-//                 lst.right_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     words expected{"a", "b", "c"};
-//                     REQUIRE(expected == lst.words_in_order());
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("Rotating a larger unbalanced tree") {
-//         GIVEN("An unbalanced tree with a larger left subtree") {
-//             WordlistTest lst;
-//             lst.add_n({"c", "b", "r", "q", "s", "t"});
-//             WHEN("Balancing the list") {
-//                 lst.left_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     words expected{"b", "c", "q", "r", "s", "t"};
-//                     REQUIRE(expected == lst.words_in_order());
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("right-rotation") {
+    SUBCASE("Rotating an unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger right subtree") {
+            WordlistTest lst;
+            lst.add_n({"a", "b", "c"});
+            WHEN("Balancing the list") {
+                lst.right_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "b", "c"};
+                    REQUIRE(expected == lst.words_in_order());
+                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                }
+            }
+        }
+    }
+    SUBCASE("Rotating a larger unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger right subtree") {
+            WordlistTest lst;
+            lst.add_n({"c", "b", "r", "q", "s", "t"});
+            WHEN("Balancing the list") {
+                lst.right_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"b", "c", "q", "r", "s", "t"};
+                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
+}
  
 // TEST_CASE("right_left_rotation") {
 //     SUBCASE("Rotating a small tree") {
