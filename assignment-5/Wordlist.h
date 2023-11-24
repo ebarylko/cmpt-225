@@ -228,11 +228,10 @@ int largest_child_height(Node* child) {
  * @param child the child node given
 */
 void update_height_of_parent(Node* parent, Node* child) { 
-    int updated_height = 1 + largest_child_height(child);
     if (is_left_child_of(child, parent)) {
-      parent->left_height = updated_height;
+      update_left_height_of_parent(parent, child);
     } else {
-      parent->right_height = updated_height;
+      update_right_height_of_parent(parent, child);
     }
  }
 
@@ -464,15 +463,18 @@ void right_left_rotation(Node* node) {
    * 
    */
 
-// reorganizing the nodes when rotating
+/**
+ * @brief reorganizing the nodes before applying a right rotation
+ * 
+ */
   left_grandchild->parent = node;
   left_grandchild->right = child;
   child->left = 0;
   node->right = left_grandchild;
   child->parent = left_grandchild;
 
-  update_left_height_of_parent(child, child->left);
-  update_right_height_of_parent(left_grandchild, child);
+  update_height_of_parent(child, child->left);
+  update_height_of_parent(left_grandchild, child);
 
   right_rotation(node);
 }
@@ -524,6 +526,21 @@ bool is_root(Node* node) {
 }
 
 /**
+ * @brief Takes a starting node and moves up the tree looking for an unbalanced 
+ * node. Returns the node if one is found, and null otherwise
+ * 
+ * @param start the node to start from
+ * @return Node* the unbalanced node
+ */
+Node* find_unbalanced_node(Node* start) {
+  Node* curr = start;
+  while (height_diff_less_than_2(curr) && is_not_root(curr)) {
+    curr = curr->parent;
+  }
+  return height_diff_less_than_2(curr) ? 0 : curr;
+}
+
+/**
  * @brief Takes a node ND and moves upward from ND, rebalancing the tree if needed
  * @param start the node to start at
 */
@@ -531,18 +548,20 @@ void rebalance_tree(Node*& start) {
   Node* curr = start;
   Node* prev;
   /**
-   * Find imbalanced node while adjusting the heights of the nodes
+   * Adjusting the heights of the nodes
   */
-  while (height_diff_less_than_2(curr) && is_not_root(curr)) {
+  while (is_not_root(curr)) {
     prev = curr;
     curr = curr->parent;
     update_height_of_parent(curr, prev);
   }
 
+  Node* target = find_unbalanced_node(start);
+
   /**
    * Do nothing if tree is balanced
   */
-  if (height_diff_less_than_2(curr)) {
+  if (!target) {
     return;
   }
 
