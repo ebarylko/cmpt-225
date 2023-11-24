@@ -46,6 +46,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <utility>
 class WordlistTest : public Wordlist_base {
   public:
     struct Node
@@ -228,11 +229,14 @@ int largest_child_height(Node* child) {
 */
 void update_height_of_parent(Node* parent, Node* child) { 
     int updated_height = 1 + largest_child_height(child);
+    cout << "The height " << updated_height <<  " , " << parent->word << endl;
+    cout << "The child: " << child << endl;
     if (is_left_child_of(child, parent)) {
       parent->left_height = updated_height;
     } else {
       parent->right_height = updated_height;
     }
+    cout << "Current height of: " << parent->word << ", " << parent->left_height << ", " << parent->right_height << endl;
  }
 
 /**
@@ -310,6 +314,33 @@ vector<string> words_in_order() {
   return words;
 }
 
+typedef pair<int, int> subtree_heights;
+typedef vector<subtree_heights> heights;
+
+/**
+ * @brief Takes a collection and a node and returns 
+ * a collection with the heights of all the nodes in the tree
+ * visited using inorder traversal
+ * 
+ * @param heights the collection of heights
+ * @param node the node given
+ */
+void inorder_height_traversal(heights& heights, Node* node) {
+    if (!node) {
+      return;
+    }
+
+    inorder_height_traversal(heights, node->left);
+    heights.push_back(pair<int, int>{node->left_height, node->right_height});
+    return inorder_height_traversal(heights, node->right);
+}
+
+heights all_heights() {
+  heights heights;
+  inorder_height_traversal(heights, this->root);
+  return heights;
+}
+
 /**
  * @brief Takes a node and changes it to a root node, adding to it the 
  * information about the state of the list from the original root
@@ -320,6 +351,7 @@ void shift_root(Node* new_parent) {
   RootNode* updated_root = mk_root(new_parent);
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
+  cout << "info: " << updated_root->right_height << ", " << updated_root->left_height << endl;
   delete new_parent;
 }
 
@@ -359,12 +391,21 @@ void left_rotation(Node* node) {
   node->parent = child;
   node->left = a;
 
+  /**
+   * @brief Antes borraba el hijo antes de usarlo otra vez.
+   * Porque funciono?
+   * 
+   */
+  /**
+   * Updating the heights of the shifted nodes.
+  */
+  update_height_of_parent(node, a);
+  update_height_of_parent(child, node);
+
   if (is_root(node)) {
     shift_root(child);
   }
 
-  update_height_of_parent(node, a);
-  update_height_of_parent(child, node);
 }
 
 /**
