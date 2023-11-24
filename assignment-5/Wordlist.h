@@ -401,9 +401,47 @@ void right_rotation(Node* node) {
   update_height_of_parent(child, node);
 }
 
+
 /**
- * @brief Takes a node and rotates the tree so it maintains the height balance property
-*/
+ * @brief Takes an unbalanced node 
+ * and applies a right left rotation to balance the tree 
+ * 
+ * @param node the node given
+ */
+void right_left_rotation(Node* node) {
+  /**
+   * @brief Separating the nodes to be moved around
+   * 
+   */
+  Node* child = node->right;
+  Node* left_grandchild = child->left;
+
+  /**
+   * @brief Arranging the nodes for a right rotation
+   * 
+   */
+
+// reorganizing the nodes when rotating
+  left_grandchild->parent = node;
+  left_grandchild->right = child;
+  child->left = 0;
+  node->right = left_grandchild;
+  child->parent = left_grandchild;
+
+  // node->left_height = 0;
+  update_height_of_parent(child, child->left);
+  update_height_of_parent(left_grandchild, node);
+  // left_grandchild->right_height = 1;
+  // left_grandchild->left_height = 0;
+
+
+  right_rotation(node);
+}
+
+/**
+ * @brief 
+ * 
+ */
 // bool trinode_rotation(Node*& node) {
 //   switch (rotation_type(node)) {
 
