@@ -70,6 +70,21 @@ struct StringMaker<heights>
 };
 }
 
+
+
+/**
+ * @brief Takes a collection of expected heights and creates a collection of 
+ * heights of the nodes visited using inorder traversal
+ * 
+ * @param all_heights the expected heights
+ * @return heights the collection of heights corresponding to the nodes
+ * in alphabetical order
+ */
+heights mk_heights(initializer_list<pair<int,int>> all_heights) {
+    heights tree_heights{all_heights};
+    return tree_heights;
+}
+
 TEST_CASE("WordlistTest") {
     SUBCASE("Empty WordlistTest has no words") {
         GIVEN("An empty WordlistTest") {
@@ -93,6 +108,9 @@ TEST_CASE("WordlistTest") {
                     REQUIRE(1 == lst.num_different_words());
                     REQUIRE(1 == lst.num_singletons());
                     REQUIRE(1 == lst.get_count("hello"));
+                    heights expected_heights = mk_heights({make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
                 }
             }
         }
@@ -118,6 +136,9 @@ TEST_CASE("WordlistTest") {
                     REQUIRE(1 == lst.num_different_words());
                     REQUIRE(0 == lst.num_singletons());
                     REQUIRE(2 == lst.total_words());
+                    heights expected_heights = mk_heights({make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
                 }
             }
         }
@@ -130,9 +151,12 @@ TEST_CASE("WordlistTest") {
     //             lst.add_word("b");
     //             lst.add_word("a");
     //             THEN("The WordlistTest will have the following inorder traversal: [a, b, c]") {
-    //                 vector<string>& actual = inorder_traversal(lst);
+    //                 vector<string> actual = lst.words_in_order();
     //                 vector<string> expected{"a", "b", "c"};
     //                 REQUIRE(expected == actual);
+    //                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+    //                 heights actual_heights = lst.all_heights();
+    //                 REQUIRE(expected_heights == actual_heights);
     //             }
     //         }
     //     }
@@ -421,20 +445,6 @@ TEST_CASE("shift_root") {
     }
 }
 
-
-/**
- * @brief Takes a collection of expected heights and creates a collection of 
- * heights of the nodes visited using inorder traversal
- * 
- * @param all_heights the expected heights
- * @return heights the collection of heights corresponding to the nodes
- * in alphabetical order
- */
-heights mk_heights(initializer_list<pair<int,int>> all_heights) {
-    heights tree_heights{all_heights};
-    return tree_heights;
-}
-
 TEST_CASE("left-rotation") {
     SUBCASE("Rotating an unbalanced tree") {
         GIVEN("An unbalanced tree with a larger left subtree") {
@@ -455,19 +465,22 @@ TEST_CASE("left-rotation") {
             }
         }
     }
-    // SUBCASE("Rotating a larger unbalanced tree") {
-    //     GIVEN("An unbalanced tree with a larger left subtree") {
-    //         WordlistTest lst;
-    //         lst.add_n({"q", "z", "h", "e", "i", "a"});
-    //         WHEN("Balancing the list") {
-    //             lst.left_rotation(lst.root);
-    //             THEN("The tree is balanced") {
-    //                 words expected{"a", "e", "h", "i", "q", "z"};
-    //                 REQUIRE(expected == lst.words_in_order());
-    //             }
-    //         }
-    //     }
-    // }
+    SUBCASE("Rotating a larger unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger left subtree") {
+            WordlistTest lst;
+            lst.add_n({"q", "z", "h", "e", "i", "a"});
+            WHEN("Balancing the list") {
+                lst.left_rotation(lst.root);
+                THEN("The tree is balanced") {
+                    words expected{"a", "e", "h", "i", "q", "z"};
+                    REQUIRE(expected == lst.words_in_order());
+                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                }
+            }
+        }
+    }
 }
 
 // TEST_CASE("right-rotation") {
