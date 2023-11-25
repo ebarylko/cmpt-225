@@ -542,6 +542,23 @@ TEST_CASE("left_right_rotation") {
             }
         }
     }
+    SUBCASE("A larger tree") {
+        GIVEN("A larger unbalanced tree") {
+            WordlistTest lst;
+            lst.unbalanced_add_n({"q", "r", "h", "a", "b"});
+            WHEN("Balancing the tree") {
+                lst.left_right_rotation(lst.root->left);
+                THEN("The tree is balanced") {
+                    words expected_words{"a", "b", "h", "q", "r"};
+                    REQUIRE(expected_words == lst.words_in_order());
+                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0, 0)});
+                    heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+
+                }
+            }
+        }
+    }
 }
 
 TEST_CASE("rebalance_tree") {

@@ -549,10 +549,27 @@ void right_left_rotation(Node* node) {
   right_rotation(node);
 }
 
+/**
+ * @brief Takes an unbalanced node and applies a left right rotation on it so 
+ * the tree is balanced afterwards
+ * 
+ * @param node the unbalanced node given
+ */
 void left_right_rotation(Node* node) {
-  
-  cout << "the count " << node->count << endl;
-  cout << "The node " << node->word << endl;
+  Node* child = node->left;
+  Node* grand_child = child->right;
+  child->right = 0;
+
+  /**
+   * @brief Creating an unbalanced subtree which needs a left rotation
+   * 
+   */
+  connect_child_to_parent(node, grand_child);
+  connect_child_to_parent(grand_child, child);
+
+  update_right_height_of_parent(child, child->right);
+  update_left_height_of_parent(grand_child, child);
+  left_rotation(node);
 }
 
 /**
