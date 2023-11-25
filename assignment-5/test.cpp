@@ -242,9 +242,6 @@ TEST_CASE("is_imbalanced_left") {
         GIVEN("A node with a taller right subtree") {
            WordlistTest lst;
            lst.unbalanced_add_n({"c", "d", "e"});
-        //    lst.add_word("c");
-        //    lst.add_word("d");
-        //    lst.add_word("e");
            WHEN("Calling the function") {
             THEN("It returns true") {
                 heights actual_heights = lst.all_heights();
@@ -256,6 +253,8 @@ TEST_CASE("is_imbalanced_left") {
         }
     }
 }
+
+typedef vector<string> words;
 
 TEST_CASE("find_word") {
     SUBCASE("Finding a word not in the list") {
@@ -286,14 +285,14 @@ TEST_CASE("find_word") {
     SUBCASE("Finding a word in the right subtree") {
         GIVEN("A Wordlist with a right subtree") {
             WordlistTest lst;
-            lst.add_word("c");
-            lst.add_word("d");
-            lst.add_word("e");
+            lst.add_n({"c", "d", "e"});
             WHEN("Searching for 'e'") {
                 WordlistTest::Node* actual = lst.find_word("e");
                 THEN("The word is found") {
+                    words expected_words{"c", "d", "e"};
+                    words actual_words = lst.words_in_order();
                     REQUIRE("e" == actual->word);
-                    REQUIRE("d" == actual->parent->word);
+                    REQUIRE(expected_words == actual_words);
                 }
             }
         }
@@ -302,10 +301,7 @@ TEST_CASE("find_word") {
     SUBCASE("Finding a word in the left subtree") {
         GIVEN("A Wordlist with a left subtree") {
             WordlistTest lst;
-            lst.add_word("u");
-            lst.add_word("f");
-            lst.add_word("c");
-            lst.add_word("d");
+            lst.add_n({"u", "f", "c", "d"});
             WHEN("Searching for 'd'") {
                 WordlistTest::Node* actual = lst.find_word("d");
                 THEN("The word is found") {
@@ -383,7 +379,6 @@ TEST_CASE("rotation_type") {
     }
 }
 
-// typedef vector<string> words;
 
 // TEST_CASE("inorder_traversal") {
 //     SUBCASE("Empty Wordlist") {

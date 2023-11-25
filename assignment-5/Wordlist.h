@@ -353,11 +353,12 @@ heights all_heights() {
  * 
  * @param new_parent the node to convert
  */
-void shift_root(Node* new_parent) {
+Node* shift_root(Node* new_parent) {
   RootNode* updated_root = mk_root(new_parent);
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
   delete new_parent;
+  return updated_root;
 }
 
 vector<int> list_info() {
@@ -389,11 +390,6 @@ void left_rotation(Node* node) {
   node->parent = child;
   node->left = a;
 
-  /**
-   * @brief Antes borraba el hijo antes de usarlo otra vez.
-   * Porque funciono?
-   * 
-   */
 
   /**
    * Updating the heights of the shifted nodes.
@@ -402,8 +398,15 @@ void left_rotation(Node* node) {
   update_right_height_of_parent(child, node);
 
 
+  /**
+   * @brief Changing the root if it was moved in the rotation. 
+   * Connecting the nodes to the new root
+   * 
+   */
   if (is_root(node)) {
-    shift_root(child);
+    child = shift_root(child);
+    node->parent = child;
+    child->left->parent = child;
   }
 
 }
@@ -430,15 +433,22 @@ void right_rotation(Node* node) {
   node->parent = child;
   node->right = left_grandchild;
 
+  /**
+   * @brief Updating the heights of the changed nodes
+   * 
+   */
   update_right_height_of_parent(node, left_grandchild);
   update_left_height_of_parent(child, node);
 
   /**
-   * @brief Changing the root the original one was moved
+   * @brief Changing the root if the original one was moved
+   * and reconnecting the nodes 
    * 
    */
   if (is_root(node)) {
-    shift_root(child);
+    child = shift_root(child);
+    node->parent = child;
+    child->right->parent = child;
   }
 }
 
