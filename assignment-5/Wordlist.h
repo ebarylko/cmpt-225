@@ -487,10 +487,12 @@ void right_rotation(Node* node) {
    * @brief Moving the nodes to their correct position
    * 
    */
+
+  child->left = node;
   /**
-   *  Revisar porque la child->left falla pero connect_child funciona
-  */
-  // child->left = node;
+   * @brief Revisar porque un error pasa cuando usas child->parent y no conectas el padre al hijo 
+   * 
+   */
   connect_child_to_parent(node->parent, child);
   // child->parent = node->parent;
   node->parent = child;

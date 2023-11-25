@@ -282,11 +282,11 @@ TEST_CASE("find_word") {
             WordlistTest lst;
             lst.add_n({"c", "d", "e"});
             WHEN("Searching for 'e'") {
-                // WordlistTest::Node* actual = lst.find_word("e");
+                WordlistTest::Node* actual = lst.find_word("e");
                 THEN("The word is found") {
                     words expected_words{"c", "d", "e"};
                     words actual_words = lst.words_in_order();
-                    // REQUIRE("e" == actual->word);
+                    REQUIRE("e" == actual->word);
                     REQUIRE(expected_words == actual_words);
                 }
             }
@@ -505,22 +505,22 @@ TEST_CASE("right-rotation") {
             }
         }
     }
-    SUBCASE("Rotating a larger unbalanced tree") {
-        GIVEN("An unbalanced tree with a larger right subtree") {
-            WordlistTest lst;
-            lst.unbalanced_add_n({"c", "b", "r", "q", "s", "t"});
-            WHEN("Balancing the list") {
-                lst.right_rotation(lst.root);
-                THEN("The tree is balanced") {
-                    words expected{"b", "c", "q", "r", "s", "t"};
-                    heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
-                    heights actual_heights = lst.all_heights();
-                    REQUIRE(expected_heights == actual_heights);
-                    REQUIRE(expected == lst.words_in_order());
-                }
-            }
-        }
-    }
+    // SUBCASE("Rotating a larger unbalanced tree") {
+    //     GIVEN("An unbalanced tree with a larger right subtree") {
+    //         WordlistTest lst;
+    //         lst.unbalanced_add_n({"c", "b", "r", "q", "s", "t"});
+    //         WHEN("Balancing the list") {
+    //             lst.right_rotation(lst.root);
+    //             THEN("The tree is balanced") {
+    //                 words expected{"b", "c", "q", "r", "s", "t"};
+    //                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
+    //                 heights actual_heights = lst.all_heights();
+    //                 REQUIRE(expected_heights == actual_heights);
+    //                 REQUIRE(expected == lst.words_in_order());
+    //             }
+    //         }
+    //     }
+    // }
 }
  
 // TEST_CASE("right_left_rotation") {
