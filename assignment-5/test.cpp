@@ -173,225 +173,225 @@ TEST_CASE("WordlistTest") {
     }
 }
 
-// TEST_CASE("is_imbalanced_left") {
-//     SUBCASE("A node with no children") {
-//         GIVEN("A childless node") {
-//            WordlistTest lst;
-//            lst.add_word("a");
-//            WHEN("Calling the function") {
-//             THEN("It returns false") {
-//                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
-//             }
-//            }
-//         }
-//     }
-//     SUBCASE ("A node with one child") {
-//         GIVEN("A node with one child") {
-//            WordlistTest lst;
-//            lst.add_word("a");
-//            lst.add_word("b");
-//            WHEN("Calling the function") {
-//             THEN("It returns false") {
-//                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
-//             }
-//            }
-//         }
-//     }
-//     SUBCASE ("A node with a left and right children") {
-//         GIVEN("A node with a child in the left and right subtree") {
-//            WordlistTest lst;
-//            lst.add_n({"c", "d", "a"});
-//         //    lst.unbalanced_word_insertion("c");
-//         //    lst.unbalanced_word_insertion("d");
-//         //    lst.unbalanced_word_insertion("a");
-//         //    lst.add_word("c");
-//         //    lst.add_word("d");
-//         //    lst.add_word("a");
-//            WHEN("Calling the function") {
-//             THEN("It returns false") {
-//                 heights actual_heights = lst.all_heights();
-//                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-//                 REQUIRE(expected_heights == actual_heights);
-//                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
-//             }
-//            }
-//         }
-//     }
-//     SUBCASE ("A node with a taller left subtree") {
-//         GIVEN("A node with a taller left subtree") {
-//            WordlistTest lst;
-//            lst.unbalanced_word_insertion("c");
-//            lst.unbalanced_word_insertion("b");
-//            lst.unbalanced_word_insertion("a");
-//            WHEN("Calling the function") {
-//             THEN("It returns true") {
-//                 heights actual_heights = lst.all_heights();
-//                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 0)});
-//                 REQUIRE(expected_heights == actual_heights);
-//                 REQUIRE(lst.is_imbalanced_on_left(lst.root));
-//             }
-//            }
-//         }
-//     }
-//     SUBCASE ("A node with a taller right subtree") {
-//         GIVEN("A node with a taller right subtree") {
-//            WordlistTest lst;
-//            lst.unbalanced_add_n({"c", "d", "e"});
-//            WHEN("Calling the function") {
-//             THEN("It returns true") {
-//                 heights actual_heights = lst.all_heights();
-//                 heights expected_heights = mk_heights({make_pair(0, 2), make_pair(0, 1), make_pair(0, 0)});
-//                 REQUIRE(expected_heights == actual_heights);
-//                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
-//             }
-//            }
-//         }
-//     }
-// }
+TEST_CASE("is_imbalanced_left") {
+    SUBCASE("A node with no children") {
+        GIVEN("A childless node") {
+           WordlistTest lst;
+           lst.add_word("a");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with one child") {
+        GIVEN("A node with one child") {
+           WordlistTest lst;
+           lst.add_word("a");
+           lst.add_word("b");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with a left and right children") {
+        GIVEN("A node with a child in the left and right subtree") {
+           WordlistTest lst;
+           lst.add_n({"c", "d", "a"});
+        //    lst.unbalanced_word_insertion("c");
+        //    lst.unbalanced_word_insertion("d");
+        //    lst.unbalanced_word_insertion("a");
+        //    lst.add_word("c");
+        //    lst.add_word("d");
+        //    lst.add_word("a");
+           WHEN("Calling the function") {
+            THEN("It returns false") {
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                REQUIRE(expected_heights == actual_heights);
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with a taller left subtree") {
+        GIVEN("A node with a taller left subtree") {
+           WordlistTest lst;
+           lst.unbalanced_word_insertion("c");
+           lst.unbalanced_word_insertion("b");
+           lst.unbalanced_word_insertion("a");
+           WHEN("Calling the function") {
+            THEN("It returns true") {
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 0)});
+                REQUIRE(expected_heights == actual_heights);
+                REQUIRE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+    SUBCASE ("A node with a taller right subtree") {
+        GIVEN("A node with a taller right subtree") {
+           WordlistTest lst;
+           lst.unbalanced_add_n({"c", "d", "e"});
+           WHEN("Calling the function") {
+            THEN("It returns true") {
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 2), make_pair(0, 1), make_pair(0, 0)});
+                REQUIRE(expected_heights == actual_heights);
+                REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
+            }
+           }
+        }
+    }
+}
 
-// typedef vector<string> words;
+typedef vector<string> words;
 
-// TEST_CASE("find_word") {
-//     SUBCASE("Finding a word not in the list") {
-//         GIVEN("An empty wordlist") {
-//             WordlistTest lst;
-//             WHEN("Searching for a word") {
-//                 WordlistTest::Node* actual = lst.find_word("hi");
-//                 THEN("No word is found") {
-//                     REQUIRE_FALSE(actual);
-//                 }
-//             }
-//         }
+TEST_CASE("find_word") {
+    SUBCASE("Finding a word not in the list") {
+        GIVEN("An empty wordlist") {
+            WordlistTest lst;
+            WHEN("Searching for a word") {
+                WordlistTest::Node* actual = lst.find_word("hi");
+                THEN("No word is found") {
+                    REQUIRE_FALSE(actual);
+                }
+            }
+        }
 
-//     }
-//     SUBCASE("Finding a word in the list") {
-//         GIVEN("A non-empty wordlist") {
-//             WordlistTest lst;
-//             lst.add_word("a");
-//             WHEN("Searching for 'a'") {
-//                 WordlistTest::Node* actual = lst.find_word("a");
-//                 THEN("The word is found") {
-//                     REQUIRE("a" == actual->word);
-//                 }
-//             }
-//         }
+    }
+    SUBCASE("Finding a word in the list") {
+        GIVEN("A non-empty wordlist") {
+            WordlistTest lst;
+            lst.add_word("a");
+            WHEN("Searching for 'a'") {
+                WordlistTest::Node* actual = lst.find_word("a");
+                THEN("The word is found") {
+                    REQUIRE("a" == actual->word);
+                }
+            }
+        }
 
-//     }
-//     SUBCASE("Finding a word in the right subtree") {
-//         GIVEN("A Wordlist with a right subtree") {
-//             WordlistTest lst;
-//             lst.add_n({"c", "d", "e"});
-//             WHEN("Searching for 'e'") {
-//                 WordlistTest::Node* actual = lst.find_word("e");
-//                 THEN("The word is found") {
-//                     words expected_words{"c", "d", "e"};
-//                     words actual_words = lst.words_in_order();
-//                     REQUIRE("e" == actual->word);
-//                     REQUIRE(expected_words == actual_words);
-//                 }
-//             }
-//         }
+    }
+    SUBCASE("Finding a word in the right subtree") {
+        GIVEN("A Wordlist with a right subtree") {
+            WordlistTest lst;
+            lst.add_n({"c", "d", "e"});
+            WHEN("Searching for 'e'") {
+                // WordlistTest::Node* actual = lst.find_word("e");
+                THEN("The word is found") {
+                    words expected_words{"c", "d", "e"};
+                    words actual_words = lst.words_in_order();
+                    // REQUIRE("e" == actual->word);
+                    REQUIRE(expected_words == actual_words);
+                }
+            }
+        }
 
-//     }
-//     SUBCASE("Finding a word in the left subtree") {
-//         GIVEN("A Wordlist with a left subtree") {
-//             WordlistTest lst;
-//             lst.add_n({"u", "f", "c", "d"});
-//             WHEN("Searching for 'd'") {
-//                 WordlistTest::Node* actual = lst.find_word("d");
-//                 THEN("The word is found") {
-//                     REQUIRE("d" == actual->word);
-//                     REQUIRE("c" == actual->parent->word);
-//                 }
-//             }
-//         }
+    }
+    SUBCASE("Finding a word in the left subtree") {
+        GIVEN("A Wordlist with a left subtree") {
+            WordlistTest lst;
+            lst.add_n({"u", "f", "c", "d"});
+            WHEN("Searching for 'd'") {
+                WordlistTest::Node* actual = lst.find_word("d");
+                THEN("The word is found") {
+                    REQUIRE("d" == actual->word);
+                    REQUIRE("c" == actual->parent->word);
+                }
+            }
+        }
 
-//     }
-// }
+    }
+}
 
-// typedef WordlistTest::RotationType Rotation;
+typedef WordlistTest::RotationType Rotation;
 
-// TEST_CASE("rotation_type") {
-//     SUBCASE("left rotation") {
-//         GIVEN("An unbalanced tree") {
-//             WordlistTest lst;
-//             lst.unbalanced_add_n({"d", "c", "b"});
-//             WHEN("Calling the function") {
-//                 Rotation actual = lst.rotation_type(lst.root);
-//                 Rotation expected = Rotation::left;
-//                 THEN("The rotation needed is a left rotation") {
-//                     REQUIRE(expected == actual);
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("right rotation") {
-//         GIVEN("An unbalanced tree") {
-//             WordlistTest lst;
-//             lst.unbalanced_add_n({"a", "b", "c"});
-//             WHEN("Calling the function") {
-//                 Rotation actual = lst.rotation_type(lst.root);
-//                 Rotation expected = Rotation::right;
-//                 THEN("The rotation needed is a left rotation") {
-//                     REQUIRE(expected == actual);
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("left right rotation") {
-//         GIVEN("An unbalanced tree") {
-//             WordlistTest lst;
-//             lst.unbalanced_add_n({"c", "a", "b"});
-//             WHEN("Calling the function") {
-//                 Rotation actual = lst.rotation_type(lst.root);
-//                 Rotation expected = Rotation::left_right;
-//                 THEN("The rotation needed is a left-right rotation") {
-//                     REQUIRE(expected == actual);
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("right left rotation") {
-//         GIVEN("An unbalanced tree") {
-//             WordlistTest lst;
-//             lst.unbalanced_add_n({"a", "d", "b"});
-//             WHEN("Calling the function") {
-//                 Rotation actual = lst.rotation_type(lst.root);
-//                 Rotation expected = Rotation::right_left;
-//                 THEN("The rotation needed is a right-left rotation") {
-//                     REQUIRE(expected == actual);
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("rotation_type") {
+    SUBCASE("left rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.unbalanced_add_n({"d", "c", "b"});
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::left;
+                THEN("The rotation needed is a left rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("right rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.unbalanced_add_n({"a", "b", "c"});
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::right;
+                THEN("The rotation needed is a left rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("left right rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.unbalanced_add_n({"c", "a", "b"});
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::left_right;
+                THEN("The rotation needed is a left-right rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("right left rotation") {
+        GIVEN("An unbalanced tree") {
+            WordlistTest lst;
+            lst.unbalanced_add_n({"a", "d", "b"});
+            WHEN("Calling the function") {
+                Rotation actual = lst.rotation_type(lst.root);
+                Rotation expected = Rotation::right_left;
+                THEN("The rotation needed is a right-left rotation") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+}
 
 
-// TEST_CASE("inorder_traversal") {
-//     SUBCASE("Empty Wordlist") {
-//     GIVEN("An empty Wordlist") {
-//         WordlistTest lst;
-//         WHEN("Collecting the words in alphabetical order") {
-//             THEN("The collection is empty") {
-//                 REQUIRE(lst.words_in_order().empty());
-//             }
-//         }
-//     }
-//     }
-//     SUBCASE("Wordlist with one word") {
-//         GIVEN("A Wordlist with one word") {
-//             WordlistTest lst;
-//             lst.add_word("a");
-//             WHEN("Calling the function") {
-//                 words actual = lst.words_in_order();
-//                 THEN("The only word in the list is 'a'") {
-//                     words expected{"a"};
-//                     REQUIRE(expected == actual);
-//                 }
-//             }
-//         }
-//     }
-// }
+TEST_CASE("inorder_traversal") {
+    SUBCASE("Empty Wordlist") {
+    GIVEN("An empty Wordlist") {
+        WordlistTest lst;
+        WHEN("Collecting the words in alphabetical order") {
+            THEN("The collection is empty") {
+                REQUIRE(lst.words_in_order().empty());
+            }
+        }
+    }
+    }
+    SUBCASE("Wordlist with one word") {
+        GIVEN("A Wordlist with one word") {
+            WordlistTest lst;
+            lst.add_word("a");
+            WHEN("Calling the function") {
+                words actual = lst.words_in_order();
+                THEN("The only word in the list is 'a'") {
+                    words expected{"a"};
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+}
 
 // // TEST_CASE("find_smallest") {
 // //     SUBCASE("Empty list") {
@@ -430,25 +430,25 @@ TEST_CASE("WordlistTest") {
 // //     }
 // // }
 
-// typedef WordlistTest::Node Node;
+typedef WordlistTest::Node Node;
 
-// TEST_CASE("shift_root") {
-//     GIVEN("A root node and a normal node") {
-//         WordlistTest lst;
-//         lst.add_word("hi");
-//         lst.add_word("a");
-//         WHEN("Changing the root node from 'hi' to 'a") {
-//             lst.shift_root(lst.root->left);
-//             THEN("The root is 'a' and contains the information of the previous root") {
-//                 vector<int> list_data{2, 2, 2};
-//                 words expected{"a"};
-//                 REQUIRE(list_data == lst.list_info());
-//                 REQUIRE(expected == lst.words_in_order());
-//             }
-//         }
+TEST_CASE("shift_root") {
+    GIVEN("A root node and a normal node") {
+        WordlistTest lst;
+        lst.add_word("hi");
+        lst.add_word("a");
+        WHEN("Changing the root node from 'hi' to 'a") {
+            lst.shift_root(lst.root->left);
+            THEN("The root is 'a' and contains the information of the previous root") {
+                vector<int> list_data{2, 2, 2};
+                words expected{"a"};
+                REQUIRE(list_data == lst.list_info());
+                REQUIRE(expected == lst.words_in_order());
+            }
+        }
          
-//     }
-// }
+    }
+}
 
 // TEST_CASE("left-rotation") {
 //     SUBCASE("Rotating an unbalanced tree") {

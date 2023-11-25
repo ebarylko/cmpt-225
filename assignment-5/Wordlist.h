@@ -370,6 +370,11 @@ void connect_child_to_parent(Node* parent, Node* child) {
     return;
   }
 
+
+  if (!child) {
+    return;
+  }
+
   /**
    * @brief Connecting the child and parent nodes together
    *
@@ -403,6 +408,7 @@ Node* shift_root(Node* new_parent) {
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
 
+  connect_child_to_parent(updated_root->parent, updated_root);
   connect_child_to_parent(updated_root, updated_root->right);
   connect_child_to_parent(updated_root, updated_root->left);
 
