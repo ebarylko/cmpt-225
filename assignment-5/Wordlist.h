@@ -99,14 +99,14 @@ class WordlistTest : public Wordlist_base {
    * @param node the node to start at
    * @return Node* the smallest node found when starting from ND
    */
-  Node* find_smallest(Node* node) {
-    Node* curr = node;
+  // Node* find_smallest(Node* node) {
+  //   Node* curr = node;
 
-    while (curr && curr->left) {
-      curr = curr->left;
-    }
-    return curr;
-  }
+  //   while (curr && curr->left) {
+  //     curr = curr->left;
+  //   }
+  //   return curr;
+  // }
 
 
 
@@ -347,6 +347,24 @@ heights all_heights() {
   return heights;
 }
 
+void connect_child_to(Node* child, Node* parent) {
+  if (child) {
+    child->parent = parent;
+  }
+}
+
+/**
+ * @brief Takes a parent and a child and connects the child to its parent
+ * 
+ * @param parent the parent given
+ * @param child the child given
+ */
+void connect_child_to_parent(RootNode* parent, Node* child) {
+  Node* target_child = is_left_child_of(child, parent) ? parent->left : parent->right;
+  connect_child_to(target_child, parent);
+}
+
+
 /**
  * @brief Takes a node and changes it to a root node, adding to it the 
  * information about the state of the list from the original root
@@ -354,9 +372,18 @@ heights all_heights() {
  * @param new_parent the node to convert
  */
 Node* shift_root(Node* new_parent) {
+  /**
+   * @brief Creating the new root and connecting it 
+   * to its children
+   * 
+   */
   RootNode* updated_root = mk_root(new_parent);
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
+
+  connect_child_to_parent(updated_root, updated_root->right);
+  connect_child_to_parent(updated_root, updated_root->left);
+
   delete new_parent;
   return updated_root;
 }
@@ -405,8 +432,8 @@ void left_rotation(Node* node) {
    */
   if (is_root(node)) {
     child = shift_root(child);
-    node->parent = child;
-    child->left->parent = child;
+    // node->parent = child;
+    // child->left->parent = child;
   }
 
 }
@@ -447,8 +474,8 @@ void right_rotation(Node* node) {
    */
   if (is_root(node)) {
     child = shift_root(child);
-    node->parent = child;
-    child->right->parent = child;
+    // node->parent = child;
+    // child->right->parent = child;
   }
 }
 
