@@ -409,6 +409,8 @@ Node* shift_root(Node* new_parent) {
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
 
+  // revisar: sacar la conexion entre el padre del nodo y el hijo y explorar el 
+  // error
   connect_child_to_parent(updated_root->parent, updated_root);
   connect_child_to_parent(updated_root, updated_root->right);
   connect_child_to_parent(updated_root, updated_root->left);
@@ -479,15 +481,22 @@ void right_rotation(Node* node) {
    */
   Node* child = node->right;
   Node* left_grandchild = child->left;
+  cout << "The last node " << child->right->word << endl;
 
   /**
    * @brief Moving the nodes to their correct position
    * 
    */
-  child->left = node;
-  child->parent = node->parent;
+  /**
+   *  Revisar porque la child->left falla pero connect_child funciona
+  */
+  // child->left = node;
+  connect_child_to_parent(node->parent, child);
+  // child->parent = node->parent;
   node->parent = child;
   node->right = left_grandchild;
+
+  cout << "The node  and child: " << node->word << ", " << child->word << endl;
 
   /**
    * @brief Updating the heights of the changed nodes
@@ -495,7 +504,7 @@ void right_rotation(Node* node) {
    */
   update_right_height_of_parent(node, left_grandchild);
   update_left_height_of_parent(child, node);
-
+  update_height_to_root_from(child);
   /**
    * @brief Changing the root if the original one was moved
    * and reconnecting the nodes 
@@ -507,6 +516,11 @@ void right_rotation(Node* node) {
 }
 
 
+/**
+ * @brief Takes a node N and updates the heights of all the nodes in the path from N to the root
+ * 
+ * @param child the node to start from
+ */
 void update_height_to_root_from(Node* child) {
   Node* parent = child->parent;
   while (parent) {
@@ -539,15 +553,15 @@ void right_left_rotation(Node* node) {
  * @brief reorganizing the nodes before applying a right rotation
  * 
  */
-  left_grandchild->parent = node;
+  connect_child_to_parent(node, left_grandchild);
   left_grandchild->right = child;
   child->left = 0;
-  node->right = left_grandchild;
   child->parent = left_grandchild;
 
   update_height_of_parent(child, child->left);
   // update_height_of_parent(left_grandchild, child);
-  update_height_to_root_from(child);
+  update_height_of_parent(left_grandchild, child);
+  // update_height_to_root_from(child);
 
   right_rotation(node);
 }
