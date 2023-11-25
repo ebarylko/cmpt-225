@@ -191,13 +191,18 @@ TEST_CASE("is_imbalanced_left") {
     SUBCASE ("A node with a left and right children") {
         GIVEN("A node with a child in the left and right subtree") {
            WordlistTest lst;
-           lst.add_word("c");
-           lst.add_word("d");
-           lst.add_word("a");
+           lst.add_n({"c", "d", "a"});
+        //    lst.unbalanced_word_insertion("c");
+        //    lst.unbalanced_word_insertion("d");
+        //    lst.unbalanced_word_insertion("a");
+        //    lst.add_word("c");
+        //    lst.add_word("d");
+        //    lst.add_word("a");
            WHEN("Calling the function") {
             THEN("It returns false") {
-                REQUIRE(1 == lst.root->left_height);
-                REQUIRE(1 == lst.root->right_height);
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                REQUIRE(expected_heights == actual_heights);
                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
             }
            }
@@ -206,13 +211,14 @@ TEST_CASE("is_imbalanced_left") {
     SUBCASE ("A node with a taller left subtree") {
         GIVEN("A node with a taller left subtree") {
            WordlistTest lst;
-           lst.add_word("c");
-           lst.add_word("b");
-           lst.add_word("a");
+           lst.unbalanced_word_insertion("c");
+           lst.unbalanced_word_insertion("b");
+           lst.unbalanced_word_insertion("a");
            WHEN("Calling the function") {
             THEN("It returns true") {
-                REQUIRE(1 == lst.root->left_height);
-                REQUIRE(1 == lst.root->right_height);
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 0)});
+                REQUIRE(expected_heights == actual_heights);
                 REQUIRE(lst.is_imbalanced_on_left(lst.root));
             }
            }

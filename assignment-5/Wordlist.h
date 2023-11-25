@@ -674,6 +674,44 @@ void add_word(const string& word) {
   
 }
 
+void balanced_word_insertion(const string& word) {
+  add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
+}
+
+void unbalanced_word_insertion(const string& word) {
+  add_word_using_f(word, bind(&WordlistTest::unbalanced_insertion, this, placeholders::_1));
+}
+
+void add_word_using_f(const string& word, function<void(Node*)> f) {
+  /**
+   * @brief Set root of tree if it is empty
+   * 
+   */
+  if (!this->root) {
+    this->root = mk_root(word);
+    return;
+  }
+
+  Node* target = find_word(word);
+  /**
+   * @brief Adjust the number of occurences for the word if
+   * it is in the list. 
+   * 
+   */
+  if (target->word == word) {
+    target->count++;
+    update_wordlist_info(target);
+  } 
+  /**
+   * @brief Insert the word into its position and rebalance the 
+   * tree if necessary
+   */
+  else {
+    Node* child = add_child(target, word);
+    f(child);
+  }
+  
+}
 /**
  * @brief Takes a collection of words and adds each one to the list
  * 
@@ -682,6 +720,8 @@ void add_word(const string& word) {
 void add_n(initializer_list<string> words) {
   for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
 }
+
+
 
 /**
  * @brief Takes a word and returns the node corresponding to the 
