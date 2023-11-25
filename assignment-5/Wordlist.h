@@ -487,11 +487,15 @@ void right_left_rotation(Node* node) {
   right_rotation(node);
 }
 
+void left_right_rotation(Node* node) {
+  cout << "the count " << node->count << endl;
+}
+
 /**
  * @brief 
  * 
  */
-bool trinode_rotation(Node*& node) {
+void trinode_rotation(Node*& node) {
   switch (rotation_type(node)) {
 
     case left: 
@@ -503,13 +507,11 @@ bool trinode_rotation(Node*& node) {
     right_rotation(node);
     break;
 
-    // case LEFT-RIGHT:
-    // left_rotation(node);
-    // right_rotation(node);
+    case left_right:
+    left_right_rotation(node);
     
     case right_left: 
-    right_rotation(node);
-    left_rotation(node);
+    right_left_rotation(node);
   }
   
 }
@@ -552,7 +554,73 @@ Node* find_unbalanced_node(Node* start) {
  * @brief Takes a node ND and moves upward from ND, rebalancing the tree if needed
  * @param start the node to start at
 */
-void rebalance_tree(Node*& start) {
+// void rebalance_tree(Node*& start) {
+//   Node* curr = start;
+//   Node* prev;
+//   /**
+//    * Adjusting the heights of the nodes
+//   */
+//   while (is_not_root(curr)) {
+//     prev = curr;
+//     curr = curr->parent;
+//     update_height_of_parent(curr, prev);
+//   }
+
+//   Node* target = find_unbalanced_node(start);
+
+//   /**
+//    * Do nothing if tree is balanced
+//   */
+//   if (!target) {
+//     return;
+//   }
+
+//   trinode_rotation(target);
+// }
+
+/**
+ * @brief Takes a node N and rotates the tree if any node above N is unbalanced.
+ * Does nothing otherwise
+ * 
+ * @param node 
+ */
+void rotate_tree(Node* node) {
+  /**
+   * @brief Finding the unbalanced node
+   */
+  Node* target = find_unbalanced_node(node);
+
+  /**
+   * Do nothing if tree is balanced
+  */
+  if (!target) {
+    return;
+  }
+
+  /**
+   * @brief  Rotate the tree so it becomes balanced
+   */
+  trinode_rotation(target);
+}
+
+/**
+ * @brief Takes a node and does nothing 
+ * 
+ * @param node the node given
+ */
+void no_effect(Node* node) {
+  node->count += 0;
+}
+
+void rebalance_tree(Node* node) {
+  update_tree(node, bind(&WordlistTest::rotate_tree, this, placeholders::_1));
+}
+
+void unbalanced_insertion(Node* node) {
+  update_tree(node, bind(&WordlistTest::no_effect, this, placeholders::_1));
+}
+
+void update_tree(Node* start, function<void(Node*)> f) {
   Node* curr = start;
   Node* prev;
   /**
@@ -564,16 +632,7 @@ void rebalance_tree(Node*& start) {
     update_height_of_parent(curr, prev);
   }
 
-  Node* target = find_unbalanced_node(start);
-
-  /**
-   * Do nothing if tree is balanced
-  */
-  if (!target) {
-    return;
-  }
-
-  trinode_rotation(curr);
+  f(start);
 }
 
 /**
