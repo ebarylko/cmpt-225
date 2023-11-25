@@ -612,10 +612,21 @@ void no_effect(Node* node) {
   node->count += 0;
 }
 
+/**
+ * @brief Takes a node and rebalances the tree after adding the node
+ * 
+ * @param node the node to add
+ */
 void rebalance_tree(Node* node) {
   update_tree(node, bind(&WordlistTest::rotate_tree, this, placeholders::_1));
 }
 
+/**
+ * @brief Takes a node and adds it to the tree without rebalancing
+ * the tree afterwards
+ * 
+ * @param node the node to add
+ */
 void unbalanced_insertion(Node* node) {
   update_tree(node, bind(&WordlistTest::no_effect, this, placeholders::_1));
 }
@@ -739,8 +750,14 @@ void add_n(initializer_list<string> words) {
   for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
 }
 
+/**
+ * @brief Takes a collection of words and adds each one to the list
+ * without rebalancing the list afterwards
+ * 
+ * @param words the list of words to add
+ */
 void unbalanced_add_n(initializer_list<string> words) {
-  for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
+  for_each(words.begin(), words.end(), bind(&WordlistTest::unbalanced_word_insertion, this, placeholders::_1));
 }
 
 

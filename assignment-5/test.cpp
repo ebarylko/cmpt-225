@@ -241,13 +241,15 @@ TEST_CASE("is_imbalanced_left") {
     SUBCASE ("A node with a taller right subtree") {
         GIVEN("A node with a taller right subtree") {
            WordlistTest lst;
-           lst.add_word("c");
-           lst.add_word("d");
-           lst.add_word("e");
+           lst.unbalanced_add_n({"c", "d", "e"});
+        //    lst.add_word("c");
+        //    lst.add_word("d");
+        //    lst.add_word("e");
            WHEN("Calling the function") {
             THEN("It returns true") {
-                REQUIRE(2 == lst.root->right_height);
-                REQUIRE(0 == lst.root->left_height);
+                heights actual_heights = lst.all_heights();
+                heights expected_heights = mk_heights({make_pair(0, 2), make_pair(0, 1), make_pair(0, 0)});
+                REQUIRE(expected_heights == actual_heights);
                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
             }
            }
