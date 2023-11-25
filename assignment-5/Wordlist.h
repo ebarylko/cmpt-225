@@ -869,6 +869,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
    */
   else {
     Node* child = add_child(target, word);
+    update_most_frequent_word(child, this->root);
     f(child);
   }
 }

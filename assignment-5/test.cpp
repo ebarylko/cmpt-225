@@ -130,9 +130,12 @@ TEST_CASE("WordlistTest") {
                     REQUIRE(1 == lst.num_different_words());
                     REQUIRE(0 == lst.num_singletons());
                     REQUIRE(2 == lst.total_words());
+
                     heights expected_heights = mk_heights({make_pair(0, 0)});
                     heights actual_heights = lst.all_heights();
                     REQUIRE(expected_heights == actual_heights);
+                    string expected_most_frequent("1 2");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
                 }
             }
         }
@@ -148,9 +151,13 @@ TEST_CASE("WordlistTest") {
                     vector<string> actual = lst.words_in_order();
                     vector<string> expected{"a", "b", "c"};
                     REQUIRE(expected == actual);
+
                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
                     heights actual_heights = lst.all_heights();
                     REQUIRE(expected_heights == actual_heights);
+
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
                 }
             }
         }
@@ -166,9 +173,13 @@ TEST_CASE("WordlistTest") {
                     vector<string> actual = lst.words_in_order();
                     vector<string> expected{"a", "b", "c", "q", "r"};
                     REQUIRE(expected == actual);
+
                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0,0)});
                     heights actual_heights = lst.all_heights();
                     REQUIRE(expected_heights == actual_heights);
+
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
                 }
             }
         }
