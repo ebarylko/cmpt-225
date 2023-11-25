@@ -309,271 +309,271 @@ TEST_CASE("find_word") {
     }
 }
 
-typedef WordlistTest::RotationType Rotation;
+// typedef WordlistTest::RotationType Rotation;
 
-TEST_CASE("rotation_type") {
-    SUBCASE("left rotation") {
-        GIVEN("An unbalanced tree") {
-            WordlistTest lst;
-            lst.unbalanced_add_n({"d", "c", "b"});
-            WHEN("Calling the function") {
-                Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::left;
-                THEN("The rotation needed is a left rotation") {
-                    REQUIRE(expected == actual);
-                }
-            }
-        }
-    }
-    SUBCASE("right rotation") {
-        GIVEN("An unbalanced tree") {
-            WordlistTest lst;
-            lst.unbalanced_add_n({"a", "b", "c"});
-            WHEN("Calling the function") {
-                Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::right;
-                THEN("The rotation needed is a left rotation") {
-                    REQUIRE(expected == actual);
-                }
-            }
-        }
-    }
-    SUBCASE("left right rotation") {
-        GIVEN("An unbalanced tree") {
-            WordlistTest lst;
-            lst.unbalanced_add_n({"c", "a", "b"});
-            WHEN("Calling the function") {
-                Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::left_right;
-                THEN("The rotation needed is a left-right rotation") {
-                    REQUIRE(expected == actual);
-                }
-            }
-        }
-    }
-    SUBCASE("right left rotation") {
-        GIVEN("An unbalanced tree") {
-            WordlistTest lst;
-            lst.unbalanced_add_n({"a", "d", "b"});
-            WHEN("Calling the function") {
-                Rotation actual = lst.rotation_type(lst.root);
-                Rotation expected = Rotation::right_left;
-                THEN("The rotation needed is a right-left rotation") {
-                    REQUIRE(expected == actual);
-                }
-            }
-        }
-    }
-}
-
-
-TEST_CASE("inorder_traversal") {
-    SUBCASE("Empty Wordlist") {
-    GIVEN("An empty Wordlist") {
-        WordlistTest lst;
-        WHEN("Collecting the words in alphabetical order") {
-            THEN("The collection is empty") {
-                REQUIRE(lst.words_in_order().empty());
-            }
-        }
-    }
-    }
-    SUBCASE("Wordlist with one word") {
-        GIVEN("A Wordlist with one word") {
-            WordlistTest lst;
-            lst.add_word("a");
-            WHEN("Calling the function") {
-                words actual = lst.words_in_order();
-                THEN("The only word in the list is 'a'") {
-                    words expected{"a"};
-                    REQUIRE(expected == actual);
-                }
-            }
-        }
-    }
-}
-
-// // TEST_CASE("find_smallest") {
-// //     SUBCASE("Empty list") {
-// //         GIVEN("An empty list") {
-// //             WordlistTest lst;
-// //             WHEN("Calling the function") {
-// //                 THEN("It returns null") {
-// //                     REQUIRE_FALSE(lst.find_smallest(lst.root));
-// //                 }
-// //             }
-// //         }
-// //     }
-// //     SUBCASE("Small list") {
-// //         GIVEN("A list with two elements") {
-// //             WordlistTest lst;
-// //             lst.add_word("hi");
-// //             lst.add_word("a");
-// //             WHEN("Calling the function") {
-// //                 THEN("It returns 'a'") {
-// //                     REQUIRE("a" == lst.find_smallest(lst.root)->word);
-// //                 }
-// //             }
-// //         }
-// //     }
-// //     SUBCASE("Tree with a right subtree") {
-// //         GIVEN("A list with two elements") {
-// //             WordlistTest lst;
-// //             lst.add_word("hi");
-// //             lst.add_word("q");
-// //             WHEN("Calling the function") {
-// //                 THEN("It returns 'hi'") {
-// //                     REQUIRE("hi" == lst.find_smallest(lst.root)->word);
-// //                 }
-// //             }
-// //         }
-// //     }
-// // }
-
-typedef WordlistTest::Node Node;
-
-TEST_CASE("shift_root") {
-    GIVEN("A root node and a normal node") {
-        WordlistTest lst;
-        lst.add_word("hi");
-        lst.add_word("a");
-        WHEN("Changing the root node from 'hi' to 'a") {
-            lst.shift_root(lst.root->left);
-            THEN("The root is 'a' and contains the information of the previous root") {
-                vector<int> list_data{2, 2, 2};
-                words expected{"a"};
-                REQUIRE(list_data == lst.list_info());
-                REQUIRE(expected == lst.words_in_order());
-            }
-        }
-         
-    }
-}
-
-// TEST_CASE("left-rotation") {
-//     SUBCASE("Rotating an unbalanced tree") {
-//         GIVEN("An unbalanced tree with a larger left subtree") {
+// TEST_CASE("rotation_type") {
+//     SUBCASE("left rotation") {
+//         GIVEN("An unbalanced tree") {
 //             WordlistTest lst;
-//             lst.unbalanced_add_n({"d", "b", "a"});
-//             heights old_heights = lst.all_heights();
-//             heights expected_old_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 0)});
-//             REQUIRE(expected_old_heights == old_heights);
-//             WHEN("Balancing the list") {
-//                 lst.left_rotation(lst.root);
-//                 THEN("The tree is balanced") {
-//                     heights actual_heights = lst.all_heights();
-//                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-//                     words expected{"a", "b", "d"};
-//                     REQUIRE(expected == lst.words_in_order());
-//                     REQUIRE(expected_heights == actual_heights);
+//             lst.unbalanced_add_n({"d", "c", "b"});
+//             WHEN("Calling the function") {
+//                 Rotation actual = lst.rotation_type(lst.root);
+//                 Rotation expected = Rotation::left;
+//                 THEN("The rotation needed is a left rotation") {
+//                     REQUIRE(expected == actual);
 //                 }
 //             }
 //         }
 //     }
-//     // SUBCASE("Rotating a larger unbalanced tree") {
-//     //     GIVEN("An unbalanced tree with a larger left subtree") {
-//     //         WordlistTest lst;
-//     //         lst.add_n({"q", "z", "h", "e", "i", "a"});
-//     //         WHEN("Balancing the list") {
-//     //             lst.left_rotation(lst.root);
-//     //             THEN("The tree is balanced") {
-//     //                 words expected{"a", "e", "h", "i", "q", "z"};
-//     //                 REQUIRE(expected == lst.words_in_order());
-//     //                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-//     //                 heights actual_heights = lst.all_heights();
-//     //                 REQUIRE(expected_heights == actual_heights);
-//     //             }
-//     //         }
-//     //     }
-//     // }
+//     SUBCASE("right rotation") {
+//         GIVEN("An unbalanced tree") {
+//             WordlistTest lst;
+//             lst.unbalanced_add_n({"a", "b", "c"});
+//             WHEN("Calling the function") {
+//                 Rotation actual = lst.rotation_type(lst.root);
+//                 Rotation expected = Rotation::right;
+//                 THEN("The rotation needed is a left rotation") {
+//                     REQUIRE(expected == actual);
+//                 }
+//             }
+//         }
+//     }
+//     SUBCASE("left right rotation") {
+//         GIVEN("An unbalanced tree") {
+//             WordlistTest lst;
+//             lst.unbalanced_add_n({"c", "a", "b"});
+//             WHEN("Calling the function") {
+//                 Rotation actual = lst.rotation_type(lst.root);
+//                 Rotation expected = Rotation::left_right;
+//                 THEN("The rotation needed is a left-right rotation") {
+//                     REQUIRE(expected == actual);
+//                 }
+//             }
+//         }
+//     }
+//     SUBCASE("right left rotation") {
+//         GIVEN("An unbalanced tree") {
+//             WordlistTest lst;
+//             lst.unbalanced_add_n({"a", "d", "b"});
+//             WHEN("Calling the function") {
+//                 Rotation actual = lst.rotation_type(lst.root);
+//                 Rotation expected = Rotation::right_left;
+//                 THEN("The rotation needed is a right-left rotation") {
+//                     REQUIRE(expected == actual);
+//                 }
+//             }
+//         }
+//     }
 // }
 
-// // TEST_CASE("right-rotation") {
+
+// TEST_CASE("inorder_traversal") {
+//     SUBCASE("Empty Wordlist") {
+//     GIVEN("An empty Wordlist") {
+//         WordlistTest lst;
+//         WHEN("Collecting the words in alphabetical order") {
+//             THEN("The collection is empty") {
+//                 REQUIRE(lst.words_in_order().empty());
+//             }
+//         }
+//     }
+//     }
+//     SUBCASE("Wordlist with one word") {
+//         GIVEN("A Wordlist with one word") {
+//             WordlistTest lst;
+//             lst.add_word("a");
+//             WHEN("Calling the function") {
+//                 words actual = lst.words_in_order();
+//                 THEN("The only word in the list is 'a'") {
+//                     words expected{"a"};
+//                     REQUIRE(expected == actual);
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// // // TEST_CASE("find_smallest") {
+// // //     SUBCASE("Empty list") {
+// // //         GIVEN("An empty list") {
+// // //             WordlistTest lst;
+// // //             WHEN("Calling the function") {
+// // //                 THEN("It returns null") {
+// // //                     REQUIRE_FALSE(lst.find_smallest(lst.root));
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // //     SUBCASE("Small list") {
+// // //         GIVEN("A list with two elements") {
+// // //             WordlistTest lst;
+// // //             lst.add_word("hi");
+// // //             lst.add_word("a");
+// // //             WHEN("Calling the function") {
+// // //                 THEN("It returns 'a'") {
+// // //                     REQUIRE("a" == lst.find_smallest(lst.root)->word);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // //     SUBCASE("Tree with a right subtree") {
+// // //         GIVEN("A list with two elements") {
+// // //             WordlistTest lst;
+// // //             lst.add_word("hi");
+// // //             lst.add_word("q");
+// // //             WHEN("Calling the function") {
+// // //                 THEN("It returns 'hi'") {
+// // //                     REQUIRE("hi" == lst.find_smallest(lst.root)->word);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // // }
+
+// typedef WordlistTest::Node Node;
+
+// TEST_CASE("shift_root") {
+//     GIVEN("A root node and a normal node") {
+//         WordlistTest lst;
+//         lst.add_word("hi");
+//         lst.add_word("a");
+//         WHEN("Changing the root node from 'hi' to 'a") {
+//             lst.shift_root(lst.root->left);
+//             THEN("The root is 'a' and contains the information of the previous root") {
+//                 vector<int> list_data{2, 2, 2};
+//                 words expected{"a"};
+//                 REQUIRE(list_data == lst.list_info());
+//                 REQUIRE(expected == lst.words_in_order());
+//             }
+//         }
+         
+//     }
+// }
+
+// // TEST_CASE("left-rotation") {
 // //     SUBCASE("Rotating an unbalanced tree") {
-// //         GIVEN("An unbalanced tree with a larger right subtree") {
+// //         GIVEN("An unbalanced tree with a larger left subtree") {
 // //             WordlistTest lst;
-// //             lst.add_n({"a", "b", "c"});
+// //             lst.unbalanced_add_n({"d", "b", "a"});
+// //             heights old_heights = lst.all_heights();
+// //             heights expected_old_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 0)});
+// //             REQUIRE(expected_old_heights == old_heights);
 // //             WHEN("Balancing the list") {
-// //                 lst.right_rotation(lst.root);
+// //                 lst.left_rotation(lst.root);
 // //                 THEN("The tree is balanced") {
-// //                     words expected{"a", "b", "c"};
-// //                     REQUIRE(expected == lst.words_in_order());
+// //                     heights actual_heights = lst.all_heights();
 // //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-// //                     heights actual_heights = lst.all_heights();
-// //                     REQUIRE(expected_heights == actual_heights);
-// //                 }
-// //             }
-// //         }
-// //     }
-// //     SUBCASE("Rotating a larger unbalanced tree") {
-// //         GIVEN("An unbalanced tree with a larger right subtree") {
-// //             WordlistTest lst;
-// //             lst.add_n({"c", "b", "r", "q", "s", "t"});
-// //             WHEN("Balancing the list") {
-// //                 lst.right_rotation(lst.root);
-// //                 THEN("The tree is balanced") {
-// //                     words expected{"b", "c", "q", "r", "s", "t"};
-// //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
-// //                     heights actual_heights = lst.all_heights();
-// //                     REQUIRE(expected_heights == actual_heights);
+// //                     words expected{"a", "b", "d"};
 // //                     REQUIRE(expected == lst.words_in_order());
-// //                 }
-// //             }
-// //         }
-// //     }
-// // }
- 
-// // TEST_CASE("right_left_rotation") {
-// //     SUBCASE("Rotating a small tree") {
-// //         GIVEN("A tree which can be balanced by a right left rotation") {
-// //             WordlistTest lst;
-// //             lst.add_n({"a", "d", "c"});
-// //             WHEN("Balancing the tree") {
-// //                 lst.right_left_rotation(lst.root);
-// //                 THEN("The tree is balanced") {
-// //                     words expected{"a", "c", "d"};
-// //                     REQUIRE(expected == lst.words_in_order());
-// //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-// //                     heights actual_heights = lst.all_heights();
 // //                     REQUIRE(expected_heights == actual_heights);
 // //                 }
 // //             }
 // //         }
 // //     }
-// //     SUBCASE("Rotating a larger tree") {
-// //         GIVEN("A tree which can be balanced by a right left rotation") {
-// //             WordlistTest lst;
-// //             lst.add_n({"e", "b", "a", "h", "f", "l", "o", "m"});
-// //             heights expected_old_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 4), make_pair(0, 0), make_pair(1, 3), make_pair(0, 2), make_pair(0, 0), make_pair(1, 0)});
-// //             heights actual_old_heights = lst.all_heights();
-// //             REQUIRE(expected_old_heights == actual_old_heights);
-// //             WHEN("Balancing the tree") {
-// //                 lst.right_left_rotation(lst.root->right->right);
-// //                 THEN("The tree is balanced") {
-// //                     words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
-// //                     REQUIRE(expected_words == lst.words_in_order());
-// //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 3), make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-// //                     heights actual_heights = lst.all_heights();
-// //                     REQUIRE(expected_heights == actual_heights);
-// //                 }
-// //             }
-// //         }
-// //     }
+// //     // SUBCASE("Rotating a larger unbalanced tree") {
+// //     //     GIVEN("An unbalanced tree with a larger left subtree") {
+// //     //         WordlistTest lst;
+// //     //         lst.add_n({"q", "z", "h", "e", "i", "a"});
+// //     //         WHEN("Balancing the list") {
+// //     //             lst.left_rotation(lst.root);
+// //     //             THEN("The tree is balanced") {
+// //     //                 words expected{"a", "e", "h", "i", "q", "z"};
+// //     //                 REQUIRE(expected == lst.words_in_order());
+// //     //                 heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+// //     //                 heights actual_heights = lst.all_heights();
+// //     //                 REQUIRE(expected_heights == actual_heights);
+// //     //             }
+// //     //         }
+// //     //     }
+// //     // }
 // // }
 
-// // TEST_CASE("rebalance_tree") {
-// //     SUBCASE("Rebalance large tree") {
-// //         GIVEN("A unbalanced tree") {
-// //             WordlistTest lst;
-// //             lst.add_n({"e", "h", "f", "l", "o", "m"});
-// //             WHEN("Rebalancing the tree from the last node added") {
-// //                 THEN("The tree will be balanced") {
-// //                     lst.rebalance_tree(lst.root->right->right->right->left);
-// //                     heights expected_old_heights = mk_heights({make_pair(0, 4), make_pair(0, 0), make_pair(1, 3), make_pair(0, 2), make_pair(0, 0), make_pair(1, 0)});
-// //                     heights actual_old_heights = lst.all_heights();
-// //                     REQUIRE(expected_old_heights == actual_old_heights);
-// //                 }
-// //             }
-// //         }
-// //     }
-// // }
+// // // TEST_CASE("right-rotation") {
+// // //     SUBCASE("Rotating an unbalanced tree") {
+// // //         GIVEN("An unbalanced tree with a larger right subtree") {
+// // //             WordlistTest lst;
+// // //             lst.add_n({"a", "b", "c"});
+// // //             WHEN("Balancing the list") {
+// // //                 lst.right_rotation(lst.root);
+// // //                 THEN("The tree is balanced") {
+// // //                     words expected{"a", "b", "c"};
+// // //                     REQUIRE(expected == lst.words_in_order());
+// // //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+// // //                     heights actual_heights = lst.all_heights();
+// // //                     REQUIRE(expected_heights == actual_heights);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // //     SUBCASE("Rotating a larger unbalanced tree") {
+// // //         GIVEN("An unbalanced tree with a larger right subtree") {
+// // //             WordlistTest lst;
+// // //             lst.add_n({"c", "b", "r", "q", "s", "t"});
+// // //             WHEN("Balancing the list") {
+// // //                 lst.right_rotation(lst.root);
+// // //                 THEN("The tree is balanced") {
+// // //                     words expected{"b", "c", "q", "r", "s", "t"};
+// // //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
+// // //                     heights actual_heights = lst.all_heights();
+// // //                     REQUIRE(expected_heights == actual_heights);
+// // //                     REQUIRE(expected == lst.words_in_order());
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // // }
+ 
+// // // TEST_CASE("right_left_rotation") {
+// // //     SUBCASE("Rotating a small tree") {
+// // //         GIVEN("A tree which can be balanced by a right left rotation") {
+// // //             WordlistTest lst;
+// // //             lst.add_n({"a", "d", "c"});
+// // //             WHEN("Balancing the tree") {
+// // //                 lst.right_left_rotation(lst.root);
+// // //                 THEN("The tree is balanced") {
+// // //                     words expected{"a", "c", "d"};
+// // //                     REQUIRE(expected == lst.words_in_order());
+// // //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+// // //                     heights actual_heights = lst.all_heights();
+// // //                     REQUIRE(expected_heights == actual_heights);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // //     SUBCASE("Rotating a larger tree") {
+// // //         GIVEN("A tree which can be balanced by a right left rotation") {
+// // //             WordlistTest lst;
+// // //             lst.add_n({"e", "b", "a", "h", "f", "l", "o", "m"});
+// // //             heights expected_old_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 4), make_pair(0, 0), make_pair(1, 3), make_pair(0, 2), make_pair(0, 0), make_pair(1, 0)});
+// // //             heights actual_old_heights = lst.all_heights();
+// // //             REQUIRE(expected_old_heights == actual_old_heights);
+// // //             WHEN("Balancing the tree") {
+// // //                 lst.right_left_rotation(lst.root->right->right);
+// // //                 THEN("The tree is balanced") {
+// // //                     words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
+// // //                     REQUIRE(expected_words == lst.words_in_order());
+// // //                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 3), make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+// // //                     heights actual_heights = lst.all_heights();
+// // //                     REQUIRE(expected_heights == actual_heights);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // // }
+
+// // // TEST_CASE("rebalance_tree") {
+// // //     SUBCASE("Rebalance large tree") {
+// // //         GIVEN("A unbalanced tree") {
+// // //             WordlistTest lst;
+// // //             lst.add_n({"e", "h", "f", "l", "o", "m"});
+// // //             WHEN("Rebalancing the tree from the last node added") {
+// // //                 THEN("The tree will be balanced") {
+// // //                     lst.rebalance_tree(lst.root->right->right->right->left);
+// // //                     heights expected_old_heights = mk_heights({make_pair(0, 4), make_pair(0, 0), make_pair(1, 3), make_pair(0, 2), make_pair(0, 0), make_pair(1, 0)});
+// // //                     heights actual_old_heights = lst.all_heights();
+// // //                     REQUIRE(expected_old_heights == actual_old_heights);
+// // //                 }
+// // //             }
+// // //         }
+// // //     }
+// // // }

@@ -380,6 +380,7 @@ void connect_child_to_parent(Node* parent, Node* child) {
    *
    */
   child->parent = parent;
+  cout << "The child " << child->word << endl;
   switch ((int)(parent->word > child->word)) {
     case 1: 
     parent->left = child;
@@ -408,9 +409,12 @@ Node* shift_root(Node* new_parent) {
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
 
+  cout << "Shifting the root for " << new_parent->word << endl;
+  cout << "Error happens before " << endl;
   connect_child_to_parent(updated_root->parent, updated_root);
   connect_child_to_parent(updated_root, updated_root->right);
   connect_child_to_parent(updated_root, updated_root->left);
+  cout << "Error happens after " << endl;
 
   delete new_parent;
   return updated_root;
@@ -443,10 +447,6 @@ void left_rotation(Node* node) {
    * 
    */
   child->right = node;
-  // child->parent = node->parent;
-
-  // connect_child_to_parent
-  // child->parent->left = child;
   connect_child_to_parent(node->parent, child);
   node->parent = child;
   node->left = a;
@@ -481,6 +481,7 @@ void right_rotation(Node* node) {
    * @brief Separating the nodes to be moved around
    * 
    */
+  cout << "Doing a right rotation for " << node->word << endl;
   Node* child = node->right;
   Node* left_grandchild = child->left;
 
@@ -506,8 +507,6 @@ void right_rotation(Node* node) {
    */
   if (is_root(node)) {
     child = shift_root(child);
-    // node->parent = child;
-    // child->right->parent = child;
   }
 }
 
