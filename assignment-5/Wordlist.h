@@ -350,6 +350,7 @@ heights all_heights() {
 void connect_child_to(Node* child, Node* parent) {
   if (child) {
     child->parent = parent;
+    
   }
 }
 
@@ -359,9 +360,30 @@ void connect_child_to(Node* child, Node* parent) {
  * @param parent the parent given
  * @param child the child given
  */
-void connect_child_to_parent(RootNode* parent, Node* child) {
-  Node* target_child = is_left_child_of(child, parent) ? parent->left : parent->right;
-  connect_child_to(target_child, parent);
+void connect_child_to_parent(Node* parent, Node* child) {
+  /**
+   * @brief Checking if the child is the root
+   * 
+   */
+  if (!parent) {
+    child->parent = 0;
+    return;
+  }
+
+  /**
+   * @brief Connecting the child and parent nodes together
+   *
+   */
+  child->parent = parent;
+  switch ((int)(parent->word > child->word)) {
+    case 1: 
+    parent->left = child;
+    break;
+
+    default: 
+    parent->right = child;
+  }
+
 }
 
 
@@ -402,6 +424,7 @@ vector<int> list_info() {
 /**
 */
 void left_rotation(Node* node) {
+  cout << "Doing a left rotation for " << node->word << endl;
   /**
    * @brief Separating the nodes to be moved around
    * 
@@ -414,6 +437,11 @@ void left_rotation(Node* node) {
    * 
    */
   child->right = node;
+  // child->parent = node->parent;
+
+  // connect_child_to_parent
+  // child->parent->left = child;
+  connect_child_to_parent(node->parent, child);
   node->parent = child;
   node->left = a;
 
@@ -423,7 +451,7 @@ void left_rotation(Node* node) {
   */
   update_left_height_of_parent(node, a);
   update_right_height_of_parent(child, node);
-
+  update_height_to_root_from(node);
 
   /**
    * @brief Changing the root if it was moved in the rotation. 
@@ -432,8 +460,6 @@ void left_rotation(Node* node) {
    */
   if (is_root(node)) {
     child = shift_root(child);
-    // node->parent = child;
-    // child->left->parent = child;
   }
 
 }
@@ -480,8 +506,10 @@ void right_rotation(Node* node) {
 }
 
 
-void update_height_to_root_from_right(Node* parent, Node* child) {
+void update_height_to_root_from(Node* child) {
+  Node* parent = child->parent;
   while (parent) {
+    cout << "The parent and child: " << parent->word << ", " << child->word << endl;
     update_height_of_parent(parent, child);
     parent = parent->parent;
     child = child->parent;
@@ -519,7 +547,7 @@ void right_left_rotation(Node* node) {
 
   update_height_of_parent(child, child->left);
   // update_height_of_parent(left_grandchild, child);
-  update_height_to_root_from_right(left_grandchild, child);
+  update_height_to_root_from(child);
 
   right_rotation(node);
 }
@@ -636,6 +664,7 @@ void rotate_tree(Node* node) {
     return;
   }
 
+  cout << "The unbalanced node " << target->word << endl;
   /**
    * @brief  Rotate the tree so it becomes balanced
    */
@@ -719,6 +748,7 @@ void add_word(const string& word) {
    * tree if necessary
    */
   else {
+    cout << "The target " << target->word << endl;
     Node* child = add_child(target, word);
     rebalance_tree(child);
   }
