@@ -411,13 +411,15 @@ typedef WordlistTest::Node Node;
 TEST_CASE("shift_root") {
     GIVEN("A root node and a normal node") {
         WordlistTest lst;
-        lst.add_word("hi");
-        lst.add_word("a");
-        WHEN("Changing the root node from 'hi' to 'a") {
-            lst.shift_root(lst.root->left);
-            THEN("The root is 'a' and contains the information of the previous root") {
-                vector<int> list_data{2, 2, 2};
-                words expected{"a"};
+        lst.unbalanced_add_n({"hi" ,"b", "a"});
+        // lst.add_word("hi");
+        // lst.add_word("a");
+        WHEN("Changing the root node from 'hi' to 'b") {
+            lst.left_rotation(lst.root);
+            // lst.shift_root(lst.root->left);
+            THEN("The root is 'b' and contains the information of the previous root") {
+                vector<int> list_data{3, 3, 3};
+                words expected{"a", "b", "hi"};
                 REQUIRE(list_data == lst.list_info());
                 REQUIRE(expected == lst.words_in_order());
             }
