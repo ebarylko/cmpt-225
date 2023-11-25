@@ -528,20 +528,14 @@ void right_left_rotation(Node* node) {
    */
   Node* child = node->right;
   Node* left_grandchild = child->left;
+  child->left = 0;
 
   /**
    * @brief Arranging the nodes for a right rotation
    * 
    */
-
-/**
- * @brief reorganizing the nodes before applying a right rotation
- * 
- */
   connect_child_to_parent(node, left_grandchild);
-  left_grandchild->right = child;
-  child->left = 0;
-  child->parent = left_grandchild;
+  connect_child_to_parent(left_grandchild, child);
 
   update_height_of_parent(child, child->left);
   update_height_of_parent(left_grandchild, child);
@@ -573,7 +567,9 @@ void left_right_rotation(Node* node) {
 }
 
 /**
- * @brief 
+ * @brief Takes an unbalanced node and applies one of the four following rotations
+ * on it depending on the type of imbalance: 
+ * left rotation, right rotation, left right rotation, right left rotation
  * 
  */
 void trinode_rotation(Node*& node) {
