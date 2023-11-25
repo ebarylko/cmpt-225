@@ -440,9 +440,16 @@ void right_rotation(Node* node) {
   if (is_root(node)) {
     shift_root(child);
   }
-
 }
 
+
+void update_height_to_root_from_right(Node* parent, Node* child) {
+  while (parent) {
+    update_height_of_parent(parent, child);
+    parent = parent->parent;
+    child = child->parent;
+  }
+}
 
 /**
  * @brief Takes an unbalanced node 
@@ -474,7 +481,8 @@ void right_left_rotation(Node* node) {
   child->parent = left_grandchild;
 
   update_height_of_parent(child, child->left);
-  update_height_of_parent(left_grandchild, child);
+  // update_height_of_parent(left_grandchild, child);
+  update_height_to_root_from_right(left_grandchild, child);
 
   right_rotation(node);
 }
@@ -483,28 +491,28 @@ void right_left_rotation(Node* node) {
  * @brief 
  * 
  */
-// bool trinode_rotation(Node*& node) {
-//   switch (rotation_type(node)) {
+bool trinode_rotation(Node*& node) {
+  switch (rotation_type(node)) {
 
-//     case LEFT: 
-//     left_rotation(node);
+    case left: 
+    left_rotation(node);
 
-//     break;
+    break;
 
-//     case RIGHT:
-//     right_rotation(node);
-//     break;
+    case right:
+    right_rotation(node);
+    break;
 
-//     case LEFT-RIGHT:
-//     left_rotation(node);
-//     right_rotation(node);
+    // case LEFT-RIGHT:
+    // left_rotation(node);
+    // right_rotation(node);
     
-//     case RIGHT-LEFT: 
-//     right_rotation(node);
-//     left_rotation(node);
-//   }
+    case right_left: 
+    right_rotation(node);
+    left_rotation(node);
+  }
   
-// }
+}
 
 /**
  * @brief Takes a node and returns true if it is not the root. False otherwise
@@ -565,7 +573,7 @@ void rebalance_tree(Node*& start) {
     return;
   }
 
-  // trinode_rotation(curr);
+  trinode_rotation(curr);
 }
 
 /**
