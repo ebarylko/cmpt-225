@@ -370,6 +370,7 @@ void connect_child_to_parent(Node* parent, Node* child) {
     return;
   }
 
+  
 
   if (!child) {
     return;
@@ -380,7 +381,6 @@ void connect_child_to_parent(Node* parent, Node* child) {
    *
    */
   child->parent = parent;
-  cout << "The child " << child->word << endl;
   switch ((int)(parent->word > child->word)) {
     case 1: 
     parent->left = child;
@@ -409,12 +409,9 @@ Node* shift_root(Node* new_parent) {
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
 
-  cout << "Shifting the root for " << new_parent->word << endl;
-  cout << "Error happens before " << endl;
   connect_child_to_parent(updated_root->parent, updated_root);
   connect_child_to_parent(updated_root, updated_root->right);
   connect_child_to_parent(updated_root, updated_root->left);
-  cout << "Error happens after " << endl;
 
   delete new_parent;
   return updated_root;
@@ -434,7 +431,6 @@ vector<int> list_info() {
 /**
 */
 void left_rotation(Node* node) {
-  cout << "Doing a left rotation for " << node->word << endl;
   /**
    * @brief Separating the nodes to be moved around
    * 
@@ -464,10 +460,10 @@ void left_rotation(Node* node) {
    * Connecting the nodes to the new root
    * 
    */
+
   if (is_root(node)) {
     child = shift_root(child);
   }
-
 }
 
 /**
@@ -481,7 +477,6 @@ void right_rotation(Node* node) {
    * @brief Separating the nodes to be moved around
    * 
    */
-  cout << "Doing a right rotation for " << node->word << endl;
   Node* child = node->right;
   Node* left_grandchild = child->left;
 
@@ -490,6 +485,7 @@ void right_rotation(Node* node) {
    * 
    */
   child->left = node;
+  child->parent = node->parent;
   node->parent = child;
   node->right = left_grandchild;
 
@@ -514,7 +510,6 @@ void right_rotation(Node* node) {
 void update_height_to_root_from(Node* child) {
   Node* parent = child->parent;
   while (parent) {
-    cout << "The parent and child: " << parent->word << ", " << child->word << endl;
     update_height_of_parent(parent, child);
     parent = parent->parent;
     child = child->parent;
@@ -669,7 +664,6 @@ void rotate_tree(Node* node) {
     return;
   }
 
-  cout << "The unbalanced node " << target->word << endl;
   /**
    * @brief  Rotate the tree so it becomes balanced
    */
@@ -737,7 +731,6 @@ void add_word(const string& word) {
     return;
   }
 
-  cout << "This is the root " << this->root->word << endl;
   Node* target = find_word(word);
   /**
    * @brief Adjust the number of occurences for the word if
@@ -753,7 +746,6 @@ void add_word(const string& word) {
    * tree if necessary
    */
   else {
-    cout << "The target " << target->word << endl;
     Node* child = add_child(target, word);
     rebalance_tree(child);
   }
