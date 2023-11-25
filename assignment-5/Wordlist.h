@@ -202,6 +202,26 @@ int compare_word_counts(Node* node, RootNode* rt) {
 
 }
 
+void update_most_frequent_word(Node* node, RootNode* rt) {
+  /**
+   * @brief Changing the most frequent word if 
+   * another word appears more often or if a another
+   * word with the same frequency of appearances is alphabetically smaller
+   * 
+   */
+  switch (compare_word_counts(node, rt)) {
+    case -1: 
+    break;
+
+    case 0: 
+    rt->most_frequent = rt->word > node->word ? node : rt;
+    break;
+
+    default: 
+    rt->most_frequent = node;
+  }
+}
+
 /**
  * @brief Takes a node and updates the Wordlist with information
  * about the total number of words and the number of unique words
@@ -219,28 +239,7 @@ void update_wordlist_info(Node* node) {
     this->root->single_words--;
   }
 
-
-
-
-  /**
-   * @brief Changing the most frequent word if 
-   * another word appears more often or if a another
-   * word with the same frequency of appearances is alphabetically smaller
-   * 
-   */
-  switch (compare_word_counts(node, this->root)) {
-    case -1: 
-    break;
-
-    case 0: 
-    this->root->most_frequent = this->root->word > node->word ? node : this->root;
-    break;
-
-    default: 
-    this->root->most_frequent = node;
-  }
-
-
+  update_most_frequent_word(node, this->root);
 }
 
 int largest_child_height(Node* child) {

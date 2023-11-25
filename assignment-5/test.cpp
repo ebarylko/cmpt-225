@@ -414,13 +414,35 @@ TEST_CASE("shift_root") {
 }
 
 TEST_CASE("word_counts") {
-    SUBCASE("Difference of occurences is negative") {
-        GIVEN("A Wordlist with two words") {
+    SUBCASE("Difference of occurences is positive") {
+        GIVEN("A Wordlist with duplicate words") {
             WordlistTest lst;
             lst.add_n({"b", "a", "a"});
             WHEN("Calling the function") {
-                THEN("It returns -1") {
+                THEN("It returns 1") {
                     REQUIRE(1 == lst.compare_word_counts(lst.root->left, lst.root));
+                }
+            }
+        }
+    }
+    SUBCASE("Difference of occurences is 0") {
+        GIVEN("A wordlist with unique words") {
+            WordlistTest lst;
+            lst.add_n({"b", "a"});
+            WHEN("Calling the function") {
+                THEN("It returns 0") {
+                    REQUIRE(0 == lst.compare_word_counts(lst.root->left, lst.root));
+                }
+            }
+        }
+    }
+    SUBCASE("Difference of occurences is negative") {
+        GIVEN("A wordlist with duplicate words") {
+            WordlistTest lst;
+            lst.add_n({"b", "b", "a"});
+            WHEN("Calling the function") {
+                THEN("It returns -1") {
+                    REQUIRE(-1 == lst.compare_word_counts(lst.root->left, lst.root));
                 }
             }
         }
