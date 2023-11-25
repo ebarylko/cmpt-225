@@ -92,21 +92,6 @@ class WordlistTest : public Wordlist_base {
     }
 
 
-  /**
-   * @brief Takes a node ND and returns the smallest node starting from ND and looking down 
-   * its left subnode. 
-   * 
-   * @param node the node to start at
-   * @return Node* the smallest node found when starting from ND
-   */
-  // Node* find_smallest(Node* node) {
-  //   Node* curr = node;
-
-  //   while (curr && curr->left) {
-  //     curr = curr->left;
-  //   }
-  //   return curr;
-  // }
 
 
 
@@ -481,7 +466,6 @@ void right_rotation(Node* node) {
    */
   Node* child = node->right;
   Node* left_grandchild = child->left;
-  cout << "The last node " << child->right->word << endl;
 
   /**
    * @brief Moving the nodes to their correct position
@@ -498,7 +482,6 @@ void right_rotation(Node* node) {
   node->parent = child;
   node->right = left_grandchild;
 
-  cout << "The node  and child: " << node->word << ", " << child->word << endl;
 
   /**
    * @brief Updating the heights of the changed nodes
@@ -561,14 +544,13 @@ void right_left_rotation(Node* node) {
   child->parent = left_grandchild;
 
   update_height_of_parent(child, child->left);
-  // update_height_of_parent(left_grandchild, child);
   update_height_of_parent(left_grandchild, child);
-  // update_height_to_root_from(child);
 
   right_rotation(node);
 }
 
 void left_right_rotation(Node* node) {
+  
   cout << "the count " << node->count << endl;
   cout << "The node " << node->word << endl;
 }
