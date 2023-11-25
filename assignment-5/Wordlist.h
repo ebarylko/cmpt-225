@@ -760,7 +760,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
  * @param words the collection of words to add
  */
 void add_n(initializer_list<string> words) {
-  for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
+  for_each(words.begin(), words.end(), bind(&WordlistTest::balanced_word_insertion, this, placeholders::_1));
 }
 
 /**
