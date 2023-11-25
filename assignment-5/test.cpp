@@ -5,18 +5,18 @@
 
 typedef WordlistTest::heights heights;
 typedef WordlistTest::subtree_heights node_heights;
-
-ostream& operator<<(ostream& os, const node_heights& heights) {
+template <typename T1, typename T2> 
+ostream& operator<<(ostream& os, const pair<T1, T2>& heights) {
     os << "[" << heights.first << ", " << heights.second << "]";
     return os;
 }
 
-ostream& operator<<(ostream& os, const heights& all_heights) {
-    for_each(all_heights.begin(), all_heights.end(), [&os](const node_heights& heights) {
-        os << heights;
-    });
-    return os;
-}
+// ostream& operator<<(ostream& os, const heights& all_heights) {
+//     for_each(all_heights.begin(), all_heights.end(), [&os](const node_heights& heights) {
+//         os << heights;
+//     });
+//     return os;
+// }
 
 namespace doctest
 {
@@ -33,41 +33,55 @@ namespace doctest
 // };
 
 
-template <typename T>
-struct StringMaker<std::vector<T>>
+template <>
+struct StringMaker<vector<string>>
 {
-    static String convert(const std::vector<T>& in) {
-        std::ostringstream oss;
+    static String convert(const vector<string>& in) {
+        ostringstream oss;
 
         oss << "[";
-        // NOLINTNEXTLINE(*-use-auto)
-        for (typename std::vector<T>::const_iterator it = in.begin(); it != in.end();) {
+        for (auto it = in.cbegin(); it != in.cend();) {
             oss << *it;
-            if (++it != in.end()) { oss << ", "; }
+            if (++it != in.cend()) { oss << ", "; }
         }
         oss << "]";
         return oss.str().c_str();
     }
 };
-
-// preguntar papa porque esto no esta funcionando
 
 template <>
-struct StringMaker<heights>
+struct StringMaker<vector<pair<int, int>>>
 {
+    static String convert(const vector<pair<int, int>>& in) {
+        ostringstream oss;
 
-    static String convert(const heights& in) {
-        std::ostringstream oss;
         oss << "[";
-        // NOLINTNEXTLINE(*-use-auto)
-        for (auto it = in.begin(); it != in.end();) {
-            oss << "[" << (*it).first << ", " << it->second << "]";
-            if (++it != in.end()) { oss << ", "; }
+        for (auto it = in.cbegin(); it != in.cend();) {
+            oss << "(" << it->first << ", " << it->second << ")";
+            if (++it != in.cend()) { oss << ", "; }
         }
         oss << "]";
         return oss.str().c_str();
     }
 };
+// preguntar papa porque esto no esta funcionando
+
+// template <>
+// struct StringMaker<heights>
+// {
+
+//     static String convert(const heights& in) {
+//         std::ostringstream oss;
+//         oss << "[";
+//         // NOLINTNEXTLINE(*-use-auto)
+//         for (auto it = in.begin(); it != in.end();) {
+//             oss << "[" << (*it).first << ", " << it->second << "]";
+//             if (++it != in.end()) { oss << ", "; }
+//         }
+//         oss << "]";
+//         return oss.str().c_str();
+//     }
+// };
 }
 
 

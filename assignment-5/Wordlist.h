@@ -674,14 +674,32 @@ void add_word(const string& word) {
   
 }
 
+/**
+ * @brief Takes a word and balances the list after adding it
+ * 
+ * @param word the word to add
+ */
 void balanced_word_insertion(const string& word) {
   add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
 }
 
+/**
+ * @brief Takes a word and adds it to the list
+ * without balancing the list after
+ * 
+ * @param word the word to add
+ */
 void unbalanced_word_insertion(const string& word) {
   add_word_using_f(word, bind(&WordlistTest::unbalanced_insertion, this, placeholders::_1));
 }
 
+/**
+ * @brief Takes a word and a function and applies the function to the 
+ * word after adding it to the list
+ * 
+ * @param word the word to add
+ * @param f the function to apply
+ */
 void add_word_using_f(const string& word, function<void(Node*)> f) {
   /**
    * @brief Set root of tree if it is empty
@@ -710,8 +728,8 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
     Node* child = add_child(target, word);
     f(child);
   }
-  
 }
+
 /**
  * @brief Takes a collection of words and adds each one to the list
  * 
@@ -721,6 +739,9 @@ void add_n(initializer_list<string> words) {
   for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
 }
 
+void unbalanced_add_n(initializer_list<string> words) {
+  for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
+}
 
 
 /**
