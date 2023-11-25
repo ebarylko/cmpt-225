@@ -202,12 +202,18 @@ int compare_word_counts(Node* node, RootNode* rt) {
 
 }
 
+/**
+ * @brief Takes a node N and the root and updates the most frequent word in the list
+ * if N appears the most often
+ * 
+ * @param node the node being checked
+ * @param rt the root 
+ */
 void update_most_frequent_word(Node* node, RootNode* rt) {
   /**
    * @brief Changing the most frequent word if 
    * another word appears more often or if a another
    * word with the same frequency of appearances is alphabetically smaller
-   * 
    */
   switch (compare_word_counts(node, rt)) {
     case -1: 
@@ -804,6 +810,7 @@ void add_word(const string& word) {
    */
   else {
     Node* child = add_child(target, word);
+    update_most_frequent_word(child, this->root);
     rebalance_tree(child);
   }
   

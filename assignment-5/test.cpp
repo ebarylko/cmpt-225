@@ -86,6 +86,7 @@ TEST_CASE("WordlistTest") {
                     REQUIRE(0 == lst.total_words());
                     REQUIRE(0 == lst.num_different_words());
                     REQUIRE(0 == lst.num_singletons());
+                    REQUIRE(lst.words_in_order().empty());
                 }
             }
         }
@@ -103,6 +104,7 @@ TEST_CASE("WordlistTest") {
                     heights expected_heights = mk_heights({make_pair(0, 0)});
                     heights actual_heights = lst.all_heights();
                     REQUIRE(expected_heights == actual_heights);
+                    REQUIRE("hello 1" == lst.most_frequent());
                 }
             }
         }
@@ -448,6 +450,8 @@ TEST_CASE("word_counts") {
         }
     }
 }
+
+
 
 TEST_CASE("find_most_frequent") {
     SUBCASE("List with one word") {
