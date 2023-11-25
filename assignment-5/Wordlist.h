@@ -499,6 +499,7 @@ void right_left_rotation(Node* node) {
 
 void left_right_rotation(Node* node) {
   cout << "the count " << node->count << endl;
+  cout << "The node " << node->word << endl;
 }
 
 /**
@@ -519,6 +520,7 @@ void trinode_rotation(Node*& node) {
 
     case left_right:
     left_right_rotation(node);
+    break;
     
     case right_left: 
     right_left_rotation(node);
@@ -674,6 +676,7 @@ void add_word(const string& word) {
     return;
   }
 
+  cout << "This is the root " << this->root->word << endl;
   Node* target = find_word(word);
   /**
    * @brief Adjust the number of occurences for the word if
