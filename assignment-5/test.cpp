@@ -413,6 +413,50 @@ TEST_CASE("shift_root") {
     }
 }
 
+TEST_CASE("word_counts") {
+    SUBCASE("Difference of occurences is negative") {
+        GIVEN("A Wordlist with two words") {
+            WordlistTest lst;
+            lst.add_n({"b", "a", "a"});
+            WHEN("Calling the function") {
+                THEN("It returns -1") {
+                    REQUIRE(1 == lst.compare_word_counts(lst.root->left, lst.root));
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("find_most_frequent") {
+    SUBCASE("List with one word") {
+        GIVEN("An Wordlist with one word") {
+            WordlistTest lst;
+            lst.balanced_word_insertion("a");
+            WHEN("Searching for the most frequent word") {
+                string actual = lst.most_frequent();
+                string expected = "a 1";
+                THEN("'a' is the most frequent word") {
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("List with duplicates") {
+        GIVEN("A small list") {
+            WordlistTest lst;
+            lst.add_n({"b", "a", "a"});
+            WHEN("Calling the function") {
+                string actual = lst.most_frequent();
+                string expected = "a 2";
+                THEN("It returns 'a 2' ") {
+                    REQUIRE(expected == actual);
+                }
+            }
+
+        }
+    }
+}
+
 TEST_CASE("left-rotation") {
     SUBCASE("Rotating an unbalanced tree") {
         GIVEN("An unbalanced tree with a larger left subtree") {

@@ -75,6 +75,7 @@ class WordlistTest : public Wordlist_base {
         int different_words;
         int all_words;
         int single_words;
+        Node* most_frequent;
     };
 
     RootNode *root = nullptr;
@@ -117,7 +118,9 @@ class WordlistTest : public Wordlist_base {
  * @return RootNode* the root of the tree with the word passed
  */
 RootNode* mk_root(const string& word) {
-    return new RootNode{{word, 1, 0, 0, 0, 0, 0}, 1, 1, 1};
+    RootNode* rt = new RootNode{{word, 1, 0, 0, 0, 0, 0}, 1, 1, 1, 0};
+    rt->most_frequent = rt;
+    return rt;
 }
 
 /**
@@ -138,7 +141,8 @@ RootNode* mk_root(Node* new_root) {
     },
   this->root->different_words, 
   this->root->single_words, 
-  this->root->all_words 
+  this->root->all_words,
+  this->root->most_frequent
   };
 }
 
@@ -175,7 +179,27 @@ Node* add_child(Node* target, const string& word) {
   this->root->different_words++;
   this->root->single_words++;
 
+
   return child;
+}
+
+
+/**
+ * @brief Takes two nodes n1 and n2 and compares the difference of their occurences in the list.
+ * Returns -1 if the difference is negative, 0 if it is 0, and 1 if it is positive.
+ * 
+ * @param node the first node 
+ * @param rt the second node
+ * @return int a value which indicates if the difference of the occurences of both nodes
+ * is negative, 0, or positive
+ */
+int compare_word_counts(Node* node, RootNode* rt) {
+ int difference = node->count - rt->count;
+ if (difference < 0)  {
+  return -1;
+ }
+ return difference == 0 ? 0 : 1;
+
 }
 
 /**
@@ -194,6 +218,29 @@ void update_wordlist_info(Node* node) {
   if (node->count == 2) {
     this->root->single_words--;
   }
+
+
+
+
+  /**
+   * @brief Changing the most frequent word if 
+   * another word appears more often or if a another
+   * word with the same frequency of appearances is alphabetically smaller
+   * 
+   */
+  switch (compare_word_counts(node, this->root)) {
+    case -1: 
+    break;
+
+    case 0: 
+    this->root->most_frequent = this->root->word > node->word ? node : this->root;
+    break;
+
+    default: 
+    this->root->most_frequent = node;
+  }
+
+
 }
 
 int largest_child_height(Node* child) {
@@ -808,6 +855,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   if (target->word == word) {
     target->count++;
     update_wordlist_info(target);
+
   } 
   /**
    * @brief Insert the word into its position and rebalance the 
@@ -906,6 +954,16 @@ int num_singletons() const {
 
   return root->single_words;
    };
+
+/**
+ * @brief Returns the most frequent word in the list along with its number of occurences
+ * 
+ * @return string the most frequent word in the list
+ */
+string most_frequent() const {
+  Node* most_frequent = this->root->most_frequent;
+  return most_frequent->word + " " +  to_string(most_frequent->count);
+}
 
    /**
     * @brief Returns the number of different words in the list

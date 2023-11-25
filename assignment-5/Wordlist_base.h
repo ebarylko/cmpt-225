@@ -63,7 +63,7 @@ struct Wordlist_base
     //
     // Assumes the list is not empty.
     //
-    // virtual string most_frequent() const = 0;
+    virtual string most_frequent() const = 0;
 
     //
     // Returns the number of nodes with count 1.
