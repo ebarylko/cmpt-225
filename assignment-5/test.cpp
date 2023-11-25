@@ -412,11 +412,8 @@ TEST_CASE("shift_root") {
     GIVEN("A root node and a normal node") {
         WordlistTest lst;
         lst.unbalanced_add_n({"hi" ,"b", "a"});
-        // lst.add_word("hi");
-        // lst.add_word("a");
         WHEN("Changing the root node from 'hi' to 'b") {
             lst.left_rotation(lst.root);
-            // lst.shift_root(lst.root->left);
             THEN("The root is 'b' and contains the information of the previous root") {
                 vector<int> list_data{3, 3, 3};
                 words expected{"a", "b", "hi"};
@@ -480,10 +477,51 @@ TEST_CASE("find_most_frequent") {
             }
         }
     }
-    SUBCASE("List with duplicates") {
+    SUBCASE("List with one duplicated word") {
         GIVEN("A small list") {
             WordlistTest lst;
             lst.add_n({"b", "a", "a"});
+            WHEN("Calling the function") {
+                string actual = lst.most_frequent();
+                string expected = "a 2";
+                THEN("It returns 'a 2' ") {
+                    REQUIRE(expected == actual);
+                }
+            }
+
+        }
+    }
+    SUBCASE("Added word is unique") {
+        GIVEN("A list with duplicated word") {
+            WordlistTest lst;
+            lst.add_n({"b", "b", "c"});
+            WHEN("Calling the function") {
+                string expected_most_frequent("b 2");
+                string actual = lst.most_frequent();
+                THEN("It returns 'b 2") {
+                    REQUIRE(expected_most_frequent == actual);
+                }
+            }
+        }
+    }
+    SUBCASE("Most frequent word is lexicographically smaller") {
+        GIVEN("A list with duplicated words") {
+            WordlistTest lst;
+            lst.add_n({"a", "a", "b", "b"});
+            WHEN("Calling the function") {
+                string actual = lst.most_frequent();
+                string expected = "a 2";
+                THEN("It returns 'a 2' ") {
+                    REQUIRE(expected == actual);
+                }
+            }
+
+        }
+    }
+    SUBCASE("Most frequent word is lexicographically bigger") {
+        GIVEN("A list with duplicated words") {
+            WordlistTest lst;
+            lst.add_n({"b", "b", "a", "a"});
             WHEN("Calling the function") {
                 string actual = lst.most_frequent();
                 string expected = "a 2";
@@ -509,9 +547,13 @@ TEST_CASE("left-rotation") {
                 THEN("The tree is balanced") {
                     heights actual_heights = lst.all_heights();
                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    REQUIRE(expected_heights == actual_heights);
+
                     words expected{"a", "b", "d"};
                     REQUIRE(expected == lst.words_in_order());
-                    REQUIRE(expected_heights == actual_heights);
+
+                    string most_frequent_word("a 1");
+                    REQUIRE(most_frequent_word == lst.most_frequent());
                 }
             }
         }
@@ -525,9 +567,13 @@ TEST_CASE("left-rotation") {
                 THEN("The tree is balanced") {
                     words expected{"a", "e", "h", "i", "q", "z"};
                     REQUIRE(expected == lst.words_in_order());
+
                     heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
                     heights actual_heights = lst.all_heights();
                     REQUIRE(expected_heights == actual_heights);
+
+                    string most_frequent_word("a 1");
+                    REQUIRE(most_frequent_word == lst.most_frequent());
                 }
             }
         }

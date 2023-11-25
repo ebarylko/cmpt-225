@@ -80,16 +80,16 @@ struct Wordlist_base
     //
     // Prints useful statistics about the word list.
     //
-    // void print_stats() const
-    // {
-    //     cout << "Number of different words: " << num_different_words() << endl;
-    //     cout << "    Total number of words: " << total_words() << endl;
-    //     cout << "       Most frequent word: " << most_frequent() << endl;
-    //     cout << "     Number of singletons: " << num_singletons()
-    //          << setprecision(0) << fixed
-    //          << " (" << 100.0 * num_singletons() / num_different_words() << "%)"
-    //          << endl;
-    // }
+    void print_stats() const
+    {
+        cout << "Number of different words: " << num_different_words() << endl;
+        cout << "    Total number of words: " << total_words() << endl;
+        cout << "       Most frequent word: " << most_frequent() << endl;
+        cout << "     Number of singletons: " << num_singletons()
+             << setprecision(0) << fixed
+             << " (" << 100.0 * num_singletons() / num_different_words() << "%)"
+             << endl;
+    }
 
     //
     // Prints the words in the word list in alphabetical order by word, along
