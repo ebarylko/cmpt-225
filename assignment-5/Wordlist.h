@@ -196,7 +196,7 @@ bool has_right_subtree(Node* node) {
 Node* find_smallest(Node* start) {
   Node* smallest = start;
 
-  while (smallest->left) {
+  while (smallest && smallest->left) {
     smallest = smallest->left;
   }
 
@@ -238,6 +238,11 @@ Node* next_node(Node* curr) {
     return find_left_child_parent(curr);
 }
 
+/**
+ * @brief Takes a list and returns the inorder traversal of the list
+ * 
+ * @return vector<WordInfo> the inorder traversal of the list
+ */
 vector<WordInfo> inorder_traverse() {
   WordQueue q;
   Node* curr = find_smallest(this->root);
