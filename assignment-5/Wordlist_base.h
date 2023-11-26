@@ -104,22 +104,7 @@ struct Wordlist_base
     //   6. {"test?", 1}
     //   7. {"this", 1}
     //
-    // virtual void print_words() const = 0;
+    virtual void print_words() const = 0;
 
-/**
- * @brief Algorithm for inorder traversal
- * make a stack for this
- * 
- * 1: find the smallest node in the list
- * 2: add it to the stack
- * 3: See if there is a right subtree
- * 4: repeat steps 1-3 until there is no right subtree
- * 5: Check the parent of the current node
- * 6: if the node is the left child of the current node, add the parent to the stack. Repeat steps 1-3 on the right subtree of the parent
- * 7: if the node is the right child of the current node, move up in the tree until you reach a node which is the left child of the parent.
- * 8: finish if there is no node that is the left child of the parent
- * 
- * 
- */
 
 }; // struct Wordlist_base

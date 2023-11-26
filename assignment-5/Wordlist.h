@@ -72,8 +72,7 @@ class WordlistTest : public Wordlist_base {
 
   typedef pair<string, int> WordInfo;
 
-  struct WordQueue
-  {
+  struct WordQueue {
     WordQueue() : start(0), end(0), size(0){};
 
     ~WordQueue() {
@@ -169,8 +168,7 @@ class WordlistTest : public Wordlist_base {
      * 
      * @return vector<WordInfo> the words in the list in alphabetical order
      */
-    vector<WordInfo> all_words()
-    {
+    vector<WordInfo> all_words() {
       vector<WordInfo> words;
       while (this->is_not_empty())
       {
@@ -181,6 +179,26 @@ class WordlistTest : public Wordlist_base {
 
       return words;
     }
+
+    /**
+     * @brief Prints all the words in the queue
+     * 
+     */
+    void print_words() {
+      int line_num = 1;
+      string word_start = ". { ";
+      while (this->is_not_empty())
+      {
+        WordNode *curr_word = this->peek();
+        string word = "\" " + curr_word->word + "\"";
+        string end = ", " + to_string(line_num) + "}";
+        string line = word_start + word + end;
+        cout << line << endl;
+
+        line_num += 1;
+        this->rest();
+      }
+    }
   };
 
 /**
@@ -190,7 +208,7 @@ class WordlistTest : public Wordlist_base {
  * @return true if the node has a right subtree
  * @return false otherwise
  */
-bool has_right_subtree(Node* node) {
+bool has_right_subtree(Node* node) const {
   return node->right;
 }
 
@@ -201,7 +219,7 @@ bool has_right_subtree(Node* node) {
  * @param start the node to start from 
  * @return Node* the smallest node in the left subtree
  */
-Node* find_smallest(Node* start) {
+Node* find_smallest(Node* start) const {
   Node* smallest = start;
 
   while (smallest && smallest->left) {
@@ -218,7 +236,7 @@ Node* find_smallest(Node* start) {
  * @param node the node to start from
  * @return Node* the parent of the discovered node
  */
-Node* find_left_child_parent(Node* node) {
+Node* find_left_child_parent(Node* node) const {
   Node* curr = node;
 
   while (curr->parent && !is_left_child_of(curr, curr->parent)) {
@@ -234,7 +252,7 @@ Node* find_left_child_parent(Node* node) {
  * @param curr the current node
  * @return Node* the next node in an inorder traversal sequence
  */
-Node* next_node(Node* curr) {
+Node* next_node(Node* curr) const {
     if (has_right_subtree(curr)) {
       return find_smallest(curr->right);
     }
@@ -263,6 +281,25 @@ vector<WordInfo> inorder_traverse() {
   return q.all_words();
 }
 
+/**
+ * @brief Takes all the words in the list and prints them in alphabetical order
+ * with their associated occurences
+ * 
+ */
+void print_words() const{
+    WordQueue q;
+
+    Node *curr = find_smallest(this->root);
+
+    while (curr) {
+      q.add_word(curr);
+      curr = next_node(curr);
+    }
+
+    q.print_words();
+
+}
+
     /**
      * @brief This represents the root of the tree
      * and contains information about the 
@@ -286,7 +323,7 @@ vector<WordInfo> inorder_traverse() {
      * @return true if the node is the left child of its parent
      * @return false if the above is not true
      */
-    bool is_left_child_of(Node* child, Node* parent) {
+    bool is_left_child_of(Node* child, Node* parent) const {
       return parent->left == child;
     }
 
