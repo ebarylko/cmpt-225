@@ -706,3 +706,29 @@ TEST_CASE("rebalance_tree") {
         }
     }
 }
+
+typedef WordlistTest::WordQueue WordQueue;
+
+TEST_CASE("WordQueue") {
+    SUBCASE("An empty WordQueue") {
+        GIVEN("An empty WordQueue") {
+            THEN("It is empty") {
+                WordQueue q;
+                REQUIRE(q.is_empty());
+            }
+        }
+    }
+}
+
+// TEST_CASE("inorder_traversal_iterative") {
+//        SUBCASE("Empty list") {
+//         GIVEN("An empty list") {
+//             WordlistTest lst;
+//             WHEN("Doing an inorder traversal of the list") {
+//                 THEN("The resulting collection is empty") {
+//                     REQUIRE(lst.inorder_traverse().empty());
+//                 }
+//             }
+//         }
+//        }
+// }

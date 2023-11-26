@@ -65,6 +65,184 @@ class WordlistTest : public Wordlist_base {
         int right_height;
     };
 
+
+
+  typedef pair<string, int> WordInfo;
+
+  struct WordQueue
+  {
+    WordQueue() : start(0), end(0), size(0){};
+
+    ~WordQueue() {
+      while (this->is_not_empty()) {
+        this->rest();
+      }
+    }
+
+    struct WordNode {
+      WordNode(string word, int occurences) : word(word), count(occurences), next(0) {};
+      string word;
+      int count;
+      WordNode* next;
+    };
+
+    WordNode *start;
+    WordNode *end;
+    int size;
+
+    /**
+     * @brief Takes a word and adds it to the queue
+     *
+     * @param node the word to add
+     */
+    void add_word(Node *node)
+    {
+      WordNode* nd = new WordNode(node->word, node->count);
+      if (this->is_empty())
+      {
+        this->start = this->end = nd;
+      }
+
+      this->end->next = nd;
+      this->end = nd;
+      this->size++;
+    }
+
+    /**
+     * @brief Returns true if the queue is empty. False otherwise
+     *
+     * @return true if the queue is empty
+     * @return false otherwise
+     */
+    bool is_empty()
+    {
+      return this->size == 0;
+    }
+
+    /**
+     * @brief Returns true if the queue is not empty. False otherwise
+     *
+     * @return true if the queue is not empty
+     * @return false otherwise
+     */
+    bool is_not_empty()
+    {
+      return !this->is_empty();
+    }
+
+    /**
+     * @brief Returns the first element of the queue
+     *
+     * @return WordNode* the first element
+     */
+    WordNode *peek()
+    {
+      return this->start;
+    }
+
+    /**
+     * @brief Returns everything in the queue after the first element
+     *
+     */
+    void rest()
+    {
+      WordNode *removed = this->start;
+      this->start = removed->next;
+
+      removed->next = 0;
+      delete removed;
+      this->size--;
+    }
+
+    vector<WordInfo> all_words()
+    {
+      vector<WordInfo> words;
+      while (this->is_not_empty())
+      {
+        WordNode* word = this->peek();
+        words.push_back(WordInfo(word->word, word->count));
+        this->rest();
+      }
+
+      return words;
+    }
+  };
+
+/**
+ * @brief Takes a node and returns true if it has a right subtree
+ * 
+ * @param node the node given
+ * @return true if the node has a right subtree
+ * @return false otherwise
+ */
+bool has_right_subtree(Node* node) {
+  return node->right;
+}
+
+/**
+ * @brief Takes a node and returns the smallest node in the 
+ * left subtree
+ * 
+ * @param start the node to start from 
+ * @return Node* the smallest node in the left subtree
+ */
+Node* find_smallest(Node* start) {
+  Node* smallest = start;
+
+  while (smallest->left) {
+    smallest = smallest->left;
+  }
+
+  return smallest;
+}
+
+/**
+ * @brief Takes a node and moves upwards until it finds a node which is a left child.
+ * Returns the parent of the discovered node if it exists, null otherwise.
+ * 
+ * @param node the node to start from
+ * @return Node* the parent of the discovered node
+ */
+Node* find_left_child_parent(Node* node) {
+  Node* curr = node;
+
+  while (curr->parent && !is_left_child_of(curr, curr->parent)) {
+    curr = curr->parent;
+  }
+
+  return curr->parent;
+}
+
+/**
+ * @brief Takes a node and finds the next node in an inorder traversal
+ * 
+ * @param curr the current node
+ * @return Node* the next node in an inorder traversal sequence
+ */
+Node* next_node(Node* curr) {
+    if (has_right_subtree(curr)) {
+      return find_smallest(curr->right);
+    }
+
+    if (!curr->parent || is_left_child_of(curr, curr->parent)) {
+      return curr->parent;
+    }
+
+    return find_left_child_parent(curr);
+}
+
+vector<WordInfo> inorder_traverse() {
+  WordQueue q;
+  Node* curr = find_smallest(this->root);
+
+  while (curr) {
+    q.add_word(curr);
+    curr = next_node(curr);
+  }
+
+  return q.all_words();
+}
+
     /**
      * @brief This represents the root of the tree
      * and contains information about the 
