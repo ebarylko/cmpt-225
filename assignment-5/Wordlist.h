@@ -47,6 +47,9 @@ using namespace std;
 #include <algorithm>
 #include <functional>
 #include <utility>
+
+
+
 class WordlistTest : public Wordlist_base {
   public:
     struct Node
@@ -128,6 +131,10 @@ class WordlistTest : public Wordlist_base {
     bool is_not_empty()
     {
       return !this->is_empty();
+    }
+
+    int num_of_elements() const {
+      return this->size;
     }
 
     /**

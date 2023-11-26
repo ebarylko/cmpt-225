@@ -60,6 +60,22 @@ struct StringMaker<vector<pair<int, int>>>
         return oss.str().c_str();
     }
 };
+
+template <>
+struct StringMaker<vector<pair<string, int>>>
+{
+    static String convert(const vector<pair<string, int>>& in) {
+        ostringstream oss;
+
+        oss << "[";
+        for (auto it = in.cbegin(); it != in.cend();) {
+            oss << "(" << it->first << ", " << it->second << ")";
+            if (++it != in.cend()) { oss << ", "; }
+        }
+        oss << "]";
+        return oss.str().c_str();
+    }
+};
 }
 
 
@@ -708,13 +724,30 @@ TEST_CASE("rebalance_tree") {
 }
 
 typedef WordlistTest::WordQueue WordQueue;
+typedef WordlistTest::WordInfo WordInfo;
 
 TEST_CASE("WordQueue") {
-    SUBCASE("An empty WordQueue") {
+    // SUBCASE("An empty WordQueue") {
+    //     GIVEN("An empty WordQueue") {
+    //         THEN("It is empty") {
+    //             WordQueue q;
+    //             REQUIRE(q.is_empty());
+    //         }
+    //     }
+    // }
+    SUBCASE("A WordQueue with one word") {
         GIVEN("An empty WordQueue") {
-            THEN("It is empty") {
-                WordQueue q;
-                REQUIRE(q.is_empty());
+            WordQueue q;
+            WordlistTest lst;
+            lst.add_word("hi");
+            WHEN("Adding a word") {
+                q.add_word(lst.root);
+                THEN("The WordQueue only has the word 'hi'") {
+                    // REQUIRE(1 == q.size());
+                    REQUIRE(1 == q.num_of_elements());
+                    vector<WordInfo> expected{make_pair("hi", 1)};
+                    REQUIRE(expected == q.all_words());
+                }
             }
         }
     }
