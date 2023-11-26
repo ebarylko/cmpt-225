@@ -281,6 +281,14 @@ vector<WordInfo> inorder_traverse() {
   return q.all_words();
 }
 
+typedef tuple<int, int, string, int, float> ListData;
+
+ListData data() const {
+  float percent_of_singletons = 100.0 * num_singletons() / num_different_words();
+  return ListData{this->num_different_words(), this->total_words(), this->most_frequent(), 
+  this->num_singletons(), percent_of_singletons};
+}
+
 /**
  * @brief Takes all the words in the list and prints them in alphabetical order
  * with their associated occurences
@@ -307,6 +315,9 @@ void print_words() const{
      * 
      */
     struct RootNode : Node {
+        RootNode(const Node& node ): Node(node) {
+          
+        }
         int different_words;
         int all_words;
         int single_words;
@@ -340,6 +351,23 @@ void print_words() const{
     // No variables other than root are permitted!
     //
    WordlistTest() {};
+
+   WordlistTest(const string& filename) {
+    string word;
+    ifstream file(filename);
+    /**
+     * @brief Add the words to the list while there is input
+     * to precess
+     * 
+     */
+
+      while (file >> word) {
+        this->balanced_word_insertion(word);
+      }
+
+      file.close();
+   }
+
   ~WordlistTest() {
     delete this->root;
   }
@@ -358,6 +386,7 @@ RootNode* mk_root(const string& word) {
     return rt;
 }
 
+
 /**
  * @brief Takes a node and returns a root node 
  * which has the information about the state of the list
@@ -368,12 +397,12 @@ RootNode* mk_root(const string& word) {
  * and the information solely found in the node passed
  */
 RootNode* mk_root(Node* new_root) {
-  return new RootNode
+  RootNode* rt = new RootNode(*this->root);
+  *rt = *new_root;
+
+  return new RootNode(*new_root)
   {
-    {
-      new_root->word, new_root->count, new_root->left, new_root->right, new_root->parent,
-       new_root->left_height, new_root->right_height
-    },
+    *new_root,
   this->root->different_words, 
   this->root->single_words, 
   this->root->all_words,
@@ -410,7 +439,6 @@ Node* add_child(Node* target, const string& word) {
   
   child->parent = target;
 
-  this->root->all_words++;
   this->root->different_words++;
   this->root->single_words++;
 
@@ -470,7 +498,6 @@ void update_most_frequent_word(Node* node, RootNode* rt) {
  * @param node the node given
  */
 void update_wordlist_info(Node* node) {
-  this->root->all_words++;
   /**
    * @brief Reducing the amount of singletons if the word is 
    * duplicated
@@ -633,32 +660,20 @@ void connect_child_to(Node* child, Node* parent) {
  * @param child the child given
  */
 void connect_child_to_parent(Node* parent, Node* child) {
-  /**
-   * @brief Checking if the child is the root
-   * 
-   */
+  assert(child);
+
+   // Checking if the child is the root
   if (!parent) {
-    child->parent = 0;
+    child->parent = nullptr;
     return;
   }
 
-  
-
-  if (!child) {
-    return;
-  }
-
-  /**
-   * @brief Connecting the child and parent nodes together
-   *
-   */
+   // Connecting the child and parent nodes together
   child->parent = parent;
-  switch ((int)(parent->word > child->word)) {
-    case 1: 
+  
+  if(parent->word > child->word) {
     parent->left = child;
-    break;
-
-    default: 
+  } else {
     parent->right = child;
   }
 
@@ -672,20 +687,13 @@ void connect_child_to_parent(Node* parent, Node* child) {
  * @param new_parent the node to convert
  */
 Node* shift_root(Node* new_parent) {
-  /**
-   * @brief Creating the new root and connecting it 
-   * to its children
-   * 
-   */
+   //  Creating the new root and connecting it to its children
   RootNode* updated_root = mk_root(new_parent);
   new_parent->right = new_parent->left = new_parent->parent = 0;
   this->root = updated_root;
 
-  // revisar: sacar la conexion entre el padre del nodo y el hijo y explorar el 
-  // error
-  connect_child_to_parent(updated_root->parent, updated_root);
-  connect_child_to_parent(updated_root, updated_root->right);
-  connect_child_to_parent(updated_root, updated_root->left);
+  updated_root->right->parent = updated_root;
+  updated_root->left->parent = updated_root;
 
   delete new_parent;
   return updated_root;
@@ -747,23 +755,14 @@ void left_rotation(Node* node) {
  * @param node the node given
  */
 void right_rotation(Node* node) {
-  /**
-   * @brief Separating the nodes to be moved around
-   * 
-   */
+
+   // Separating the nodes to be moved around
   Node* child = node->right;
   Node* left_grandchild = child->left;
 
-  /**
-   * @brief Moving the nodes to their correct position
-   * 
-   */
+  //Moving the nodes to their correct position
 
   child->left = node;
-  /**
-   * @brief Revisar porque un error pasa cuando usas child->parent y no conectas el padre al hijo 
-   * 
-   */
   connect_child_to_parent(node->parent, child);
   // child->parent = node->parent;
   node->parent = child;
@@ -1019,6 +1018,7 @@ void update_tree(Node* start, function<void(Node*)> f) {
  * 
  * @param word the word to add
  */
+// Arreglar esta cuando lo quieres entregar
 void add_word(const string& word) {
   /**
    * @brief Set root of tree if it is empty
@@ -1087,6 +1087,13 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
     return;
   }
 
+  cout << "----" << endl;
+  cout << "The number of words " << this->total_words() << endl;
+  cout << "The word " << word << endl;
+  cout << "----" << endl;
+
+  this->root->all_words++;
+
   Node* target = find_word(word);
   /**
    * @brief Adjust the number of occurences for the word if
@@ -1095,17 +1102,22 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
    */
   if (target->word == word) {
     target->count++;
+    cout << "The duplicate word is " << word << endl;
     update_wordlist_info(target);
-
   } 
+
   /**
    * @brief Insert the word into its position and rebalance the 
    * tree if necessary
    */
   else {
+    // cout << "Adding a word " << endl;
     Node* child = add_child(target, word);
     update_most_frequent_word(child, this->root);
-    f(child);
+    // f(child);
+    if (58 > 100) {
+      f(child);
+    }
   }
 }
 
