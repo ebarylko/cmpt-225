@@ -84,6 +84,7 @@ class WordlistTest : public Wordlist_base {
 
     struct WordNode {
       WordNode(string word, int occurences) : word(word), count(occurences), next(0) {};
+
       string word;
       int count;
       WordNode* next;
@@ -117,8 +118,7 @@ class WordlistTest : public Wordlist_base {
      * @return true if the queue is empty
      * @return false otherwise
      */
-    bool is_empty()
-    {
+    bool is_empty() const {
       return this->size == 0;
     }
 
@@ -128,11 +128,15 @@ class WordlistTest : public Wordlist_base {
      * @return true if the queue is not empty
      * @return false otherwise
      */
-    bool is_not_empty()
-    {
+    bool is_not_empty () const {
       return !this->is_empty();
     }
 
+    /**
+     * @brief Returns the number of elements in the list
+     * 
+     * @return int the number of elements in the list
+     */
     int num_of_elements() const {
       return this->size;
     }
@@ -142,8 +146,7 @@ class WordlistTest : public Wordlist_base {
      *
      * @return WordNode* the first element
      */
-    WordNode *peek()
-    {
+    WordNode *peek() const {
       return this->start;
     }
 
@@ -161,6 +164,11 @@ class WordlistTest : public Wordlist_base {
       this->size--;
     }
 
+    /**
+     * @brief Returns all the words in the list ordered alphabetically
+     * 
+     * @return vector<WordInfo> the words in the list in alphabetical order
+     */
     vector<WordInfo> all_words()
     {
       vector<WordInfo> words;

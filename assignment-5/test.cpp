@@ -727,14 +727,14 @@ typedef WordlistTest::WordQueue WordQueue;
 typedef WordlistTest::WordInfo WordInfo;
 
 TEST_CASE("WordQueue") {
-    // SUBCASE("An empty WordQueue") {
-    //     GIVEN("An empty WordQueue") {
-    //         THEN("It is empty") {
-    //             WordQueue q;
-    //             REQUIRE(q.is_empty());
-    //         }
-    //     }
-    // }
+    SUBCASE("An empty WordQueue") {
+        GIVEN("An empty WordQueue") {
+            THEN("It is empty") {
+                WordQueue q;
+                REQUIRE(q.is_empty());
+            }
+        }
+    }
     SUBCASE("A WordQueue with one word") {
         GIVEN("An empty WordQueue") {
             WordQueue q;
@@ -743,7 +743,6 @@ TEST_CASE("WordQueue") {
             WHEN("Adding a word") {
                 q.add_word(lst.root);
                 THEN("The WordQueue only has the word 'hi'") {
-                    // REQUIRE(1 == q.size());
                     REQUIRE(1 == q.num_of_elements());
                     vector<WordInfo> expected{make_pair("hi", 1)};
                     REQUIRE(expected == q.all_words());
@@ -760,6 +759,33 @@ TEST_CASE("inorder_traversal_iterative") {
             WHEN("Doing an inorder traversal of the list") {
                 THEN("The resulting collection is empty") {
                     REQUIRE(lst.inorder_traverse().empty());
+                }
+            }
+        }
+       }
+
+       SUBCASE("Small list") {
+        GIVEN("An empty list") {
+            WordlistTest lst;
+            lst.add_n({"a", "a", "b", "c"});
+            WHEN("Doing an inorder traversal of the list") {
+                vector<WordInfo> expected{make_pair("a", 2), make_pair("b", 1), make_pair("c", 1)};
+                THEN("The list contains all the words in alphabetical order along with their occurences") {
+                    vector<WordInfo> actual = lst.inorder_traverse();
+                    REQUIRE(expected == actual);
+                }
+            }
+        }
+       }
+       SUBCASE("Large list") {
+        GIVEN("An empty list") {
+            WordlistTest lst;
+            lst.add_n({"z", "t", "b", "z", "g", "u"});
+            WHEN("Doing an inorder traversal of the list") {
+                vector<WordInfo> expected{make_pair("b", 1), make_pair("g", 1), make_pair("t", 1), make_pair("u", 1), make_pair("z", 2)};
+                THEN("The list contains all the words in alphabetical order along with their occurences") {
+                    vector<WordInfo> actual = lst.inorder_traverse();
+                    REQUIRE(expected == actual);
                 }
             }
         }
