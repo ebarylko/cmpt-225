@@ -822,7 +822,7 @@ TEST_CASE("data") {
                     REQUIRE(expected_words == actual_words);
                     REQUIRE(9 == lst.total_words());
 
-                    ListData expected{7, 9, "a 2", 5, 0.71};
+                    ListData expected{7, 9, "a 2", 5, 71};
                     REQUIRE(expected == actual);
                 }
                 

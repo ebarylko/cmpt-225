@@ -43,6 +43,7 @@ using namespace std;
 // It is okay to define helper functions defined outside the class.
 //
 
+#include <cmath>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -281,10 +282,10 @@ vector<WordInfo> inorder_traverse() {
   return q.all_words();
 }
 
-typedef tuple<int, int, string, int, float> ListData;
+typedef tuple<int, int, string, int, int> ListData;
 
 ListData data() const {
-  float percent_of_singletons = 100.0 * num_singletons() / num_different_words();
+  float percent_of_singletons = round(100.0 * num_singletons() / num_different_words());
   return ListData{this->num_different_words(), this->total_words(), this->most_frequent(), 
   this->num_singletons(), percent_of_singletons};
 }
@@ -377,31 +378,6 @@ void print_words() const{
   ~WordlistTest() {
     delete this->root;
   }
-
-
-/**
- * @brief Takes a word and creates a root node which
- * has the same word as the one passed and has no children
- * 
- * @param word the word passed
- * @return RootNode* the root of the tree with the word passed
- */
-RootNode* mk_root(const string& word) {
-    return new RootNode(word);
-}
-
-
-/**
- * @brief Takes a node and returns a root node 
- * which has the information about the state of the list
- * and the information unique to the node given
- * 
- * @param new_root the node given
- * @return RootNode* a root node with the information about the state of the list
- * and the information solely found in the node passed
- */
-RootNode* replace_root_with_info_from(Node& new_root) {
-}
 
 /**
  * @brief Takes a word and returns a new node for the word passed
@@ -1038,10 +1014,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
    // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
     update_most_frequent_word(*child);
-    // f(child);
-    if (58 > 100) {
-      f(child);
-    }
+    f(child);
   }
 }
 
