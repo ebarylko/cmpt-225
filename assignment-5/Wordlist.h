@@ -313,8 +313,9 @@ bool is_imbalanced_on_left(Node* node) const {
 */
 RotationType left_rotation_type(Node* node) {
   Node* child = node->left;
-  Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
-  return is_left_child_of(taller_grandchild, child) ? RotationType::left : RotationType::left_right ;
+  return child->left_height > child->right_height ? RotationType::left : RotationType::left_right ;
+  // Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
+  // return is_left_child_of(taller_grandchild, child) ? RotationType::left : RotationType::left_right ;
 }
 
 /**
@@ -323,8 +324,9 @@ RotationType left_rotation_type(Node* node) {
 */
 RotationType right_rotation_type(Node* node) {
   Node* child = node->right;
-  Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
-  return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::right ;
+  return child->left_height > child->right_height ? RotationType::right_left : RotationType::right;
+  // Node* taller_grandchild = child->left_height > child->right_height ? child->left : child->right;
+  // return is_left_child_of(taller_grandchild, child) ? RotationType::right_left : RotationType::right ;
 }
 
 
@@ -386,7 +388,9 @@ void transform_child_into_root(Node *new_parent)
 void left_rotation(Node* node) {
    // Separating the nodes to be moved around
   Node* child = node->left;
+  assert(child);
   Node* a = child->right;
+  
 
    // Moving the nodes to their correct position
   child->right = node;
@@ -471,13 +475,12 @@ void right_left_rotation(Node* node) {
    * 
    */
   Node* child = node->right;
+  assert(child);
   Node* left_grandchild = child->left;
   child->left = 0;
 
-  /**
-   * @brief Arranging the nodes for a right rotation
-   * 
-   */
+   // Arranging the nodes for a right rotation
+  assert(left_grandchild);
   connect_child_to_parent(node, left_grandchild);
   connect_child_to_parent(left_grandchild, child);
 
@@ -516,26 +519,27 @@ void left_right_rotation(Node* node) {
  * left rotation, right rotation, left right rotation, right left rotation
  * 
  */
-void trinode_rotation(Node*& node) {
-  switch (rotation_type(node)) {
+void trinode_rotation(Node *node)
+{
+  switch (rotation_type(node))
+  {
 
-    case left: 
+  case left:
     left_rotation(node);
 
     break;
 
-    case right:
+  case right:
     right_rotation(node);
     break;
 
-    case left_right:
+  case left_right:
     left_right_rotation(node);
     break;
-    
-    case right_left: 
+
+  case right_left:
     right_left_rotation(node);
   }
-  
 }
 
 /**
@@ -569,7 +573,7 @@ Node* find_unbalanced_node(Node* start) {
   while (height_diff_less_than_2(curr) && is_not_root(curr)) {
     curr = curr->parent;
   }
-  return height_diff_less_than_2(curr) ? 0 : curr;
+  return height_diff_less_than_2(curr) ? nullptr : curr;
 }
 
 /**
@@ -579,21 +583,14 @@ Node* find_unbalanced_node(Node* start) {
  * @param node 
  */
 void rotate_tree(Node* node) {
-  /**
-   * @brief Finding the unbalanced node
-   */
   Node* target = find_unbalanced_node(node);
 
-  /**
-   * Do nothing if tree is balanced
-  */
+  // Do nothing if tree is balanced
   if (!target) {
     return;
   }
 
-  /**
-   * @brief  Rotate the tree so it becomes balanced
-   */
+  // Rotate the tree so it becomes balanced
   trinode_rotation(target);
 }
 
@@ -810,13 +807,10 @@ string most_frequent() const {
    WordlistTest(const string& filename) {
     string word;
     ifstream file(filename);
-    /**
-     * @brief Add the words to the list while there is input
-     * to precess
-     * 
-     */
+     // Add the words to the list while there is input to process
 
       while (file >> word) {
+        cout << "-- Word: " << word << endl;
         this->add_word(word);
       }
 
