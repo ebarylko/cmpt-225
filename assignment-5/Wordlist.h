@@ -64,7 +64,11 @@ class WordlistTest : public Wordlist_base {
       left = right = parent = nullptr;
       count = left_height = right_height = 0;
     };
-    Node(const string& w) :word(w), count(1) {};
+    Node(const string& w) : Node(){
+      this->word = w;
+      this->count = 1;
+
+    };
 
         string word;
         int count;
