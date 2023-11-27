@@ -60,7 +60,10 @@ class WordlistTest : public Wordlist_base {
           delete this->right;
         };
 
-    Node(){};
+    Node() {
+      left = right = parent = nullptr;
+      count = left_height = right_height = 0;
+    };
     Node(const string& w) :word(w), count(1) {};
 
         string word;
@@ -143,7 +146,9 @@ Node* next_node(Node* curr) const {
      * 
      */
     struct RootNode : Node {
-        RootNode() : Node() {};
+        RootNode() : Node() {
+          this->most_frequent = nullptr;
+        };
 
         RootNode(const string& word)  {
           this->count = 1;
