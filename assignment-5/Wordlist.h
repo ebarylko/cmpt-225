@@ -315,6 +315,15 @@ void print_words() const{
      * 
      */
     struct RootNode : Node {
+        RootNode() : Node() {};
+
+        RootNode(const string& word)  {
+          this->count = 1;
+          this->word = word;
+          this->all_words = this->different_words = this->single_words = 1;
+          this->most_frequent = this;
+        }
+
         RootNode(const Node& node ): Node(node) {
           
         }
@@ -381,9 +390,7 @@ void print_words() const{
  * @return RootNode* the root of the tree with the word passed
  */
 RootNode* mk_root(const string& word) {
-    RootNode* rt = new RootNode{{word, 1, 0, 0, 0, 0, 0}, 1, 1, 1, 0};
-    rt->most_frequent = rt;
-    return rt;
+    return new RootNode(word);
 }
 
 
@@ -763,11 +770,18 @@ void right_rotation(Node* node) {
   //Moving the nodes to their correct position
 
   child->left = node;
-  connect_child_to_parent(node->parent, child);
-  // child->parent = node->parent;
+  child->parent = node->parent;
+
+  if (child->parent) {
+    if (child->parent->right == node) {
+      child->parent->right = child;
+    } else {
+      child->parent->left = child;
+    }
+  }
+  
   node->parent = child;
   node->right = left_grandchild;
-
 
   /**
    * @brief Updating the heights of the changed nodes
@@ -1029,7 +1043,7 @@ void add_word(const string& word) {
     return;
   }
 
-  Node* target = find_word(word);
+  Node* target = find_word_or_parent(word);
   /**
    * @brief Adjust the number of occurences for the word if
    * it is in the list. 
@@ -1078,31 +1092,19 @@ void unbalanced_word_insertion(const string& word) {
  * @param f the function to apply
  */
 void add_word_using_f(const string& word, function<void(Node*)> f) {
-  /**
-   * @brief Set root of tree if it is empty
-   * 
-   */
+  // brief Set root of tree if it is empty
   if (!this->root) {
-    this->root = mk_root(word);
+    this->root = new RootNode(word);
     return;
   }
 
-  cout << "----" << endl;
-  cout << "The number of words " << this->total_words() << endl;
-  cout << "The word " << word << endl;
-  cout << "----" << endl;
-
   this->root->all_words++;
 
-  Node* target = find_word(word);
-  /**
-   * @brief Adjust the number of occurences for the word if
-   * it is in the list. 
-   * 
-   */
+  Node* target = find_word_or_parent(word);
+
+  // Adjust the number of occurences for the word if it is in the list. 
   if (target->word == word) {
     target->count++;
-    cout << "The duplicate word is " << word << endl;
     update_wordlist_info(target);
   } 
 
@@ -1148,7 +1150,7 @@ void unbalanced_add_n(initializer_list<string> words) {
  * @param word the word to search for
  * @return Node* the node corresponding to the word being searched for
  */
-Node* find_word(const string& word) const {
+Node* find_word_or_parent(const string& word) const {
   Node* curr = this->root;
   Node* parent = curr;
 
@@ -1177,11 +1179,9 @@ Node* find_word(const string& word) const {
 
   }
 
-  /**
-   * Return the node if it is in the list. Otherwise, return the parent
-  */
+  // Return the node if it is in the list. Otherwise, return the parent
+  assert(curr || parent);
   return curr ? curr : parent; 
-
 }
 
 /**
@@ -1192,7 +1192,7 @@ Node* find_word(const string& word) const {
  * @return int the number of times the word appears in the list
  */
 int get_count(const string& w) const {
-  Node* target = find_word(w);
+  Node* target = find_word_or_parent(w);
   return target ? target->count : 0;
 };
 
@@ -1542,7 +1542,7 @@ string most_frequent() const {
 //     return;
 //   }
 
-//   Node* target = find_word(word);
+//   Node* target = find_word_or_parent(word);
 //   /**
 //    * @brief Adjust the number of occurences for the word if
 //    * it is in the list. 
@@ -1570,7 +1570,7 @@ string most_frequent() const {
 //  * @param word the word to search for
 //  * @return Node* the node corresponding to the word being searched for
 //  */
-// Node* find_word(const string& word) const {
+// Node* find_word_or_parent(const string& word) const {
 //   Node* curr = this->root;
 //   Node* parent = curr;
 
@@ -1611,7 +1611,7 @@ string most_frequent() const {
 //  * @return int the number of times the word appears in the list
 //  */
 // int get_count(const string& w) const {
-//   Node* target = find_word(w);
+//   Node* target = find_word_or_parent(w);
 //   return target ? target->count : 0;
 // };
 

@@ -294,14 +294,14 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 //     }
 // }
 
-// typedef vector<string> words;
+typedef vector<string> Words;
 
-// TEST_CASE("find_word") {
+// TEST_CASE("find_word_or_parent") {
 //     SUBCASE("Finding a word not in the list") {
 //         GIVEN("An empty wordlist") {
 //             WordlistTest lst;
 //             WHEN("Searching for a word") {
-//                 WordlistTest::Node* actual = lst.find_word("hi");
+//                 WordlistTest::Node* actual = lst.find_word_or_parent("hi");
 //                 THEN("No word is found") {
 //                     REQUIRE_FALSE(actual);
 //                 }
@@ -314,7 +314,7 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 //             WordlistTest lst;
 //             lst.add_word("a");
 //             WHEN("Searching for 'a'") {
-//                 WordlistTest::Node* actual = lst.find_word("a");
+//                 WordlistTest::Node* actual = lst.find_word_or_parent("a");
 //                 THEN("The word is found") {
 //                     REQUIRE("a" == actual->word);
 //                 }
@@ -327,7 +327,7 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 //             WordlistTest lst;
 //             lst.add_n({"c", "d", "e"});
 //             WHEN("Searching for 'e'") {
-//                 WordlistTest::Node* actual = lst.find_word("e");
+//                 WordlistTest::Node* actual = lst.find_word_or_parent("e");
 //                 THEN("The word is found") {
 //                     words expected_words{"c", "d", "e"};
 //                     words actual_words = lst.words_in_order();
@@ -343,7 +343,7 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 //             WordlistTest lst;
 //             lst.add_n({"u", "f", "c", "d"});
 //             WHEN("Searching for 'd'") {
-//                 WordlistTest::Node* actual = lst.find_word("d");
+//                 WordlistTest::Node* actual = lst.find_word_or_parent("d");
 //                 THEN("The word is found") {
 //                     REQUIRE("d" == actual->word);
 //                     REQUIRE("c" == actual->parent->word);
@@ -440,22 +440,23 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 
 // typedef WordlistTest::Node Node;
 
-// TEST_CASE("shift_root") {
-//     GIVEN("A root node and a normal node") {
-//         WordlistTest lst;
-//         lst.unbalanced_add_n({"hi" ,"b", "a"});
-//         WHEN("Changing the root node from 'hi' to 'b") {
-//             lst.left_rotation(lst.root);
-//             THEN("The root is 'b' and contains the information of the previous root") {
-//                 vector<int> list_data{3, 3, 3};
-//                 words expected{"a", "b", "hi"};
-//                 REQUIRE(list_data == lst.list_info());
-//                 REQUIRE(expected == lst.words_in_order());
-//             }
-//         }
+TEST_CASE("shift_root") {
+    GIVEN("A root node and a normal node") {
+        WordlistTest lst;
+        lst.add_n({"hi" ,"b"});
+        REQUIRE(Words{"b", "hi"} == lst.words_in_order());
+        WHEN("Changing the root node from 'hi' to 'b") {
+            lst.balanced_word_insertion("a");
+            THEN("The root is 'b' and contains the information of the previous root") {
+                vector<int> list_data{3, 3, 3};
+                Words expected{"a", "b", "hi"};
+                REQUIRE(list_data == lst.list_info());
+                REQUIRE(expected == lst.words_in_order());
+            }
+        }
          
-//     }
-// }
+    }
+}
 
 // TEST_CASE("word_counts") {
 //     SUBCASE("Difference of occurences is positive") {
