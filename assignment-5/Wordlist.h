@@ -745,6 +745,9 @@ void add_word(const string& word) {
  * @return int the number of times the word appears in the list
  */
 int get_count(const string& w) const {
+  if (!this->root) {
+    return 0;
+  }
   Node* target = find_word_or_parent(w);
   return target->word == w ? target->count : 0;
 };
