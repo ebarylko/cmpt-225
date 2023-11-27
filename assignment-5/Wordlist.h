@@ -324,9 +324,6 @@ void print_words() const{
           this->most_frequent = this;
         }
 
-        RootNode(const Node& node ): Node(node) {
-          
-        }
         int different_words;
         int all_words;
         int single_words;
@@ -403,18 +400,7 @@ RootNode* mk_root(const string& word) {
  * @return RootNode* a root node with the information about the state of the list
  * and the information solely found in the node passed
  */
-RootNode* mk_root(Node* new_root) {
-  RootNode* rt = new RootNode(*this->root);
-  *rt = *new_root;
-
-  return new RootNode(*new_root)
-  {
-    *new_root,
-  this->root->different_words, 
-  this->root->single_words, 
-  this->root->all_words,
-  this->root->most_frequent
-  };
+RootNode* replace_root_with_info_from(Node& new_root) {
 }
 
 /**
@@ -685,17 +671,19 @@ void connect_child_to_parent(Node* parent, Node* child) {
  * 
  * @param new_parent the node to convert
  */
-Node* shift_root(Node* new_parent) {
-   //  Creating the new root and connecting it to its children
-  RootNode* updated_root = mk_root(new_parent);
-  new_parent->right = new_parent->left = new_parent->parent = 0;
+void transform_child_into_root(Node *new_parent)
+{
+  //  Creating the new root and connecting it to its children
+  RootNode *updated_root = new RootNode(*this->root);
+  (Node &)*updated_root = *new_parent;
+
+  new_parent->right = new_parent->left = new_parent->parent = nullptr;
   this->root = updated_root;
 
   updated_root->right->parent = updated_root;
   updated_root->left->parent = updated_root;
 
   delete new_parent;
-  return updated_root;
 }
 
 vector<int> list_info() {
@@ -736,14 +724,9 @@ void left_rotation(Node* node) {
   update_right_height_of_parent(child, node);
   update_height_to_root_from(node);
 
-  /**
-   * @brief Changing the root if it was moved in the rotation. 
-   * Connecting the nodes to the new root
-   * 
-   */
-
+   // Updating the root with the old information and the new node
   if (is_root(node)) {
-    child = shift_root(child);
+    transform_child_into_root(child);
   }
 }
 
@@ -775,20 +758,14 @@ void right_rotation(Node* node) {
   node->parent = child;
   node->right = left_grandchild;
 
-  /**
-   * @brief Updating the heights of the changed nodes
-   * 
-   */
+   // Updating the heights of the changed nodes
   update_right_height_of_parent(node, left_grandchild);
   update_left_height_of_parent(child, node);
   update_height_to_root_from(child);
-  /**
-   * @brief Changing the root if the original one was moved
-   * and reconnecting the nodes 
-   * 
-   */
+
+   // Updating the root with the old information and the new node
   if (is_root(node)) {
-    child = shift_root(child);
+    transform_child_into_root(child);
   }
 }
 
@@ -1060,7 +1037,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   } else {
    // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
-    update_most_frequent_word(child, this->root);
+    update_most_frequent_word(*child);
     // f(child);
     if (58 > 100) {
       f(child);

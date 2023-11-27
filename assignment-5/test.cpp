@@ -440,7 +440,7 @@ typedef vector<string> Words;
 
 // typedef WordlistTest::Node Node;
 
-TEST_CASE("shift_root") {
+TEST_CASE("transform_child_into_root") {
     GIVEN("A root node and a normal node") {
         WordlistTest lst;
         lst.add_n({"hi" ,"b"});
