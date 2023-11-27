@@ -371,7 +371,7 @@ void print_words() const{
      */
 
       while (file >> word) {
-        this->balanced_word_insertion(word);
+        this->add_word(word);
       }
 
       file.close();
@@ -463,12 +463,9 @@ Node* add_child(Node* target, const string& word) {
  * @return int a value which indicates if the difference of the occurences of both nodes
  * is negative, 0, or positive
  */
-int compare_word_counts(Node* node, RootNode* rt) {
- int difference = node->count - rt->count;
- if (difference < 0)  {
-  return -1;
- }
- return difference == 0 ? 0 : 1;
+int compare_word_counts(Node& node) {
+ int difference = node.count - this->root->most_frequent->count;
+ return difference < 0 ? -1 : difference == 0 ?  0 : 1;
 
 }
 
@@ -479,22 +476,19 @@ int compare_word_counts(Node* node, RootNode* rt) {
  * @param node the node being checked
  * @param rt the root 
  */
-void update_most_frequent_word(Node* node, RootNode* rt) {
-  /**
-   * @brief Changing the most frequent word if 
-   * another word appears more often or if a another
-   * word with the same frequency of appearances is alphabetically smaller
-   */
-  switch (compare_word_counts(node, rt)) {
-    case -1: 
+void update_most_frequent_word(Node& node) {
+  switch (compare_word_counts(node))
+  {
+  case -1:
     break;
 
-    case 0: 
-    rt->most_frequent = rt->word > node->word ? node : rt;
+  case 0:
+    // When two words have the same frequency, the smaller word is chosen
+    this->root->most_frequent = this->root->word > node.word ? &node : this->root;
     break;
 
-    default: 
-    rt->most_frequent = node;
+  default:
+    this->root->most_frequent = &node;
   }
 }
 
@@ -504,17 +498,15 @@ void update_most_frequent_word(Node* node, RootNode* rt) {
  * 
  * @param node the node given
  */
-void update_wordlist_info(Node* node) {
-  /**
-   * @brief Reducing the amount of singletons if the word is 
-   * duplicated
-   * 
-   */
-  if (node->count == 2) {
+void increase_word_count(Node& node) {
+   // Reducing the amount of singletons if the word is duplicated
+  if (node.count == 1) {
     this->root->single_words--;
   }
 
-  update_most_frequent_word(node, this->root);
+  node.count++;
+
+  update_most_frequent_word(node);
 }
 
 int largest_child_height(Node* child) {
@@ -1024,53 +1016,13 @@ void update_tree(Node* start, function<void(Node*)> f) {
   f(start);
 }
 
-/**
- * @brief Takes a word and adds it to the list. If it is already there,
- * it increments the number of times it appeared. Otherwise, it adds the
- * word in in it's correct alphabetical position
-
- * 
- * @param word the word to add
- */
-// Arreglar esta cuando lo quieres entregar
-void add_word(const string& word) {
-  /**
-   * @brief Set root of tree if it is empty
-   * 
-   */
-  if (!this->root) {
-    this->root = mk_root(word);
-    return;
-  }
-
-  Node* target = find_word_or_parent(word);
-  /**
-   * @brief Adjust the number of occurences for the word if
-   * it is in the list. 
-   * 
-   */
-  if (target->word == word) {
-    target->count++;
-    update_wordlist_info(target);
-  } 
-  /**
-   * @brief Insert the word into its position and rebalance the 
-   * tree if necessary
-   */
-  else {
-    Node* child = add_child(target, word);
-    update_most_frequent_word(child, this->root);
-    rebalance_tree(child);
-  }
-  
-}
 
 /**
  * @brief Takes a word and balances the list after adding it
  * 
  * @param word the word to add
  */
-void balanced_word_insertion(const string& word) {
+void add_word(const string& word) {
   add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
 }
 
@@ -1092,7 +1044,7 @@ void unbalanced_word_insertion(const string& word) {
  * @param f the function to apply
  */
 void add_word_using_f(const string& word, function<void(Node*)> f) {
-  // brief Set root of tree if it is empty
+  // Set root of tree if it is empty
   if (!this->root) {
     this->root = new RootNode(word);
     return;
@@ -1104,16 +1056,9 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
 
   // Adjust the number of occurences for the word if it is in the list. 
   if (target->word == word) {
-    target->count++;
-    update_wordlist_info(target);
-  } 
-
-  /**
-   * @brief Insert the word into its position and rebalance the 
-   * tree if necessary
-   */
-  else {
-    // cout << "Adding a word " << endl;
+    increase_word_count(*target);
+  } else {
+   // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
     update_most_frequent_word(child, this->root);
     // f(child);
@@ -1129,7 +1074,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
  * @param words the collection of words to add
  */
 void add_n(initializer_list<string> words) {
-  for_each(words.begin(), words.end(), bind(&WordlistTest::balanced_word_insertion, this, placeholders::_1));
+  for_each(words.begin(), words.end(), bind(&WordlistTest::add_word, this, placeholders::_1));
 }
 
 /**
@@ -1193,7 +1138,7 @@ Node* find_word_or_parent(const string& word) const {
  */
 int get_count(const string& w) const {
   Node* target = find_word_or_parent(w);
-  return target ? target->count : 0;
+  return target->word == w ? target->count : 0;
 };
 
 /**
@@ -1402,7 +1347,7 @@ string most_frequent() const {
 //  * 
 //  * @param node the node given
 //  */
-// void update_wordlist_info(Node* node) {
+// void increase_word_count(Node* node) {
 //   this->root->all_words++;
 //   /**
 //    * @brief Reducing the amount of singletons if the word is 
@@ -1550,7 +1495,7 @@ string most_frequent() const {
 //    */
 //   if (target) {
 //     target->count++;
-//     update_wordlist_info(target);
+//     increase_word_count(target);
 //   } 
 //   /**
 //    * @brief Insert the word into its position and rebalance the 

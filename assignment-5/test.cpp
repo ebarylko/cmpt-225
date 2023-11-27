@@ -228,7 +228,7 @@ heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 //     SUBCASE("A node with no children") {
 //         GIVEN("A childless node") {
 //            WordlistTest lst;
-//            lst.balanced_word_insertion("a");
+//            lst.add_word("a");
 //            WHEN("Calling the function") {
 //             THEN("It returns false") {
 //                 REQUIRE_FALSE(lst.is_imbalanced_on_left(lst.root));
@@ -446,7 +446,7 @@ TEST_CASE("shift_root") {
         lst.add_n({"hi" ,"b"});
         REQUIRE(Words{"b", "hi"} == lst.words_in_order());
         WHEN("Changing the root node from 'hi' to 'b") {
-            lst.balanced_word_insertion("a");
+            lst.add_word("a");
             THEN("The root is 'b' and contains the information of the previous root") {
                 vector<int> list_data{3, 3, 3};
                 Words expected{"a", "b", "hi"};
@@ -500,7 +500,7 @@ TEST_CASE("shift_root") {
 //     SUBCASE("List with one word") {
 //         GIVEN("An Wordlist with one word") {
 //             WordlistTest lst;
-//             lst.balanced_word_insertion("a");
+//             lst.add_word("a");
 //             WHEN("Searching for the most frequent word") {
 //                 string actual = lst.most_frequent();
 //                 string expected = "a 1";
