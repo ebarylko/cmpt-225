@@ -143,17 +143,17 @@ TEST_CASE("WordlistTest") {
             }
         }
     }
-    // SUBCASE("Searching for a word not in the WordlistTest") {
-    //     GIVEN("An empty WordlistTest") {
-    //         WordlistTest lst;
-    //         WHEN("We search for a word") {
-    //             THEN("There are no occurrences of the word") {
-    //                 REQUIRE(0 == lst.get_count("hi"));
-    //             }
+    SUBCASE("Searching for a word not in the WordlistTest") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
+            WHEN("We search for a word") {
+                THEN("There are no occurrences of the word") {
+                    REQUIRE(0 == lst.get_count("hi"));
+                }
 
-    //         }
-    //     }
-    // } 
+            }
+        }
+    } 
     // SUBCASE("Adding a word twice") {
     //     GIVEN("An empty WordlistTest") {
     //         WordlistTest lst;
