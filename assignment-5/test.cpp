@@ -332,6 +332,19 @@ TEST_CASE("WordlistTest") {
             }
         }
     }
+    SUBCASE("Reading from a large file") {
+        GIVEN("A large text file") {
+            WHEN("Adding all the content from the file") {
+                WordlistTest lst = WordlistTest("tiny_shakespeare.txt");
+                THEN("All the words from the file are in the list") {
+                    REQUIRE(25670 == lst.num_different_words());
+                    REQUIRE(202651 == lst.total_words());
+                    REQUIRE("the 5437" == lst.most_frequent());
+                    REQUIRE(14919 == lst.num_singletons());
+                }
+            }
+        }
+    }
 }
 
 
