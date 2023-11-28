@@ -509,11 +509,9 @@ void right_left_rotation(Node* node) {
   // Arranging the nodes for a right rotation
   connect_child_to_parent(node, left_grandchild);
   connect_child_to_parent(left_grandchild, child);
-  if (lgcr)
-  {
+  if (lgcr) {
     connect_child_to_parent(child, lgcr);
   }
-  
   
   update_height_of_parent(child, child->left);
   update_height_of_parent(left_grandchild, child);
@@ -549,6 +547,12 @@ void left_right_rotation(Node* node) {
   left_rotation(node);
 }
 
+/**
+ * @brief Takes a node and returns the number of nodes below it
+ * 
+ * @param node the node to start from
+ * @return int the number of nodes below the node given
+ */
 int calc_nodes_below(Node* node) {
   if (!node)
   {
@@ -648,14 +652,6 @@ void rotate_tree(Node* node) {
 }
 
 /**
- * @brief Takes a node and does nothing 
- * @param node the node given
- */
-void no_effect(Node* node) {
-  node->count += 0;
-}
-
-/**
  * @brief Takes a node N and rebalances the tree after
  * updating the heights of all the nodes on the path from N to the root. 
 
@@ -664,15 +660,15 @@ void no_effect(Node* node) {
 void update_tree(Node* start) {
   Node* curr = start;
   Node* prev;
-  /**
-   * Adjusting the heights of the nodes fron start to the root
-  */
+
+  // Adjusting the heights of the nodes fron start to the root
   while (is_not_root(curr)) {
     prev = curr;
     curr = curr->parent;
     update_height_of_parent(curr, prev);
   }
 
+// Balancing the tree
   rotate_tree(start);
 }
 
