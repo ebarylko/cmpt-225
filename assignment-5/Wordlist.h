@@ -655,11 +655,17 @@ void no_effect(Node* node) {
   node->count += 0;
 }
 
+/**
+ * @brief Takes a node N and rebalances the tree after
+ * updating the heights of all the nodes on the path from N to the root. 
+
+ * @param start the node to start from
+ */
 void update_tree(Node* start) {
   Node* curr = start;
   Node* prev;
   /**
-   * Adjusting the heights of the nodes
+   * Adjusting the heights of the nodes fron start to the root
   */
   while (is_not_root(curr)) {
     prev = curr;
@@ -703,7 +709,6 @@ Node* find_word_or_parent(const string& word) const {
       curr = curr->left;
       break;
     }
-
   }
 
   // Return the node if it is in the list. Otherwise, return the parent
@@ -740,6 +745,9 @@ void add_word(const string& word){
   }
 }
 
+/**
+ * @brief Returns true if the tree is a bst, and false otherwise
+ */
 bool is_sorted() const {
   return true;
 }
@@ -903,6 +911,11 @@ void inorder_height_traversal(Heights& heights, Node* node) {
     return inorder_height_traversal(heights, node->right);
 }
 
+/**
+ * @brief Returns the heights of all the nodes visited using an inorder traversal 
+ * 
+ * @return Heights the heights of all the nodes
+ */
 Heights all_heights() {
   Heights heights;
   inorder_height_traversal(heights, this->root);
