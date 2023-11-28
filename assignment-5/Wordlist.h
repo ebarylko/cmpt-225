@@ -690,7 +690,7 @@ void update_tree(Node* start, function<void(Node*)> f) {
  * @param word the word to add
  * @param f the function to apply
  */
-void add_word_using_f(const string& word, function<void(Node*)> f) {
+void add_word(const string& word){
   // Set root of tree if it is empty
   if (!this->root) {
     this->root = new RootNode(word);
@@ -707,9 +707,8 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
    // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
     update_most_frequent_word(*child);
-    f(child);
+    rebalance_tree(child);
   }
-
 }
 
 
@@ -758,14 +757,13 @@ Node* find_word_or_parent(const string& word) const {
 public:
 
 
-bool is_sorted() {
+bool is_sorted() const {
   return true;
 }
 
 /**
  * @brief Takes all the words in the list and prints them in alphabetical order
  * with their associated occurences
- * 
  */
 void print_words() const{
       int line_num = 1;
@@ -782,9 +780,9 @@ void print_words() const{
  * 
  * @param word the word to add
  */
-void add_word(const string& word) {
-  add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
-}
+// void add_word(const string& word) {
+//   add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
+// }
 
 /**
  * @brief Takes a word and returns the number of times it 
@@ -820,9 +818,6 @@ int num_singletons() const {
  * @return string the most frequent word in the list
  */
 string most_frequent() const {
-  if (!this->root) {
-    return "Empty";
-  }
   Node* most_frequent = this->root->most_frequent;
   return most_frequent->word + " " +  to_string(most_frequent->count);
 }
