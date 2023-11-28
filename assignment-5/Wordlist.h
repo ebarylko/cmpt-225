@@ -406,6 +406,9 @@ void left_rotation(Node* node) {
   connect_child_to_parent(node->parent, child);
   node->parent = child;
   node->left = a;
+  if (a) {
+    a->parent = node;
+  }
 
 
    // Updating the heights of the shifted nodes.

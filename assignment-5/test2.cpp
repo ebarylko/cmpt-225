@@ -111,42 +111,17 @@ Heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 
 typedef vector<string> Words;
 
-
-TEST_CASE("data") {
-    SUBCASE("A small list") {
-        GIVEN("A small list of words") {
-            // WordlistTest lst = WordlistTest("small.txt");
-            WordlistTest lst;
-            string word;
-            ifstream file("small.txt");
-            // Add the words to the list while there is input to process
-
-            while (file >> word)
-            {
-                cout << "-- Word: " << "$" <<  word  << "$" << endl;
-                lst.add_word(word);
-                // lst.add_word("is");
-                // lst.add_word("a");
-
-
-                auto words = lst.words_in_order();
-                for_each(words.begin(), words.end(), [](string word) {cout << word << ", ";});
-                cout << endl;
-            }
-
-            file.close();
-            WHEN("Getting the information about the list") {
-                ListData actual = lst.data();
-                THEN("It contains the data about the list") {
-                    vector<string> actual_words = lst.words_in_order();
-                    vector<string> expected_words{"This", "a", "is", "or", "test", "test?", "this"};
-                    REQUIRE(expected_words == actual_words);
-                    REQUIRE(9 == lst.total_words());
-
-                    ListData expected{7, 9, "a 2", 5, 71};
-                    REQUIRE(expected == actual);
+TEST_CASE("Wordlist") {
+    SUBCASE("Reading from a large file") {
+        GIVEN("A large text file") {
+            WHEN("Adding all the content from the file") {
+                WordlistTest lst = WordlistTest("tiny_shakespeare.txt");
+                THEN("All the words from the file are in the list") {
+                    REQUIRE(25670 == lst.num_different_words());
+                    REQUIRE(202651 == lst.total_words());
+                    REQUIRE("the 5437" == lst.most_frequent());
+                    REQUIRE(14919 == lst.num_singletons());
                 }
-                
             }
         }
     }
