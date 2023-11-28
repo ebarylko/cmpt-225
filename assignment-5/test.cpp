@@ -154,114 +154,114 @@ TEST_CASE("WordlistTest") {
             }
         }
     } 
-    // SUBCASE("Adding a word twice") {
-    //     GIVEN("An empty WordlistTest") {
-    //         WordlistTest lst;
-    //         WHEN("Adding the same word twice") {
-    //             lst.add_n({"1", "1"});
-    //             THEN("There is one unique word with two occurences in the list") {
-    //                 REQUIRE(1 == lst.num_different_words());
-    //                 REQUIRE(0 == lst.num_singletons());
-    //                 REQUIRE(2 == lst.total_words());
+    SUBCASE("Adding a word twice") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
+            WHEN("Adding the same word twice") {
+                lst.add_n({"1", "1"});
+                THEN("There is one unique word with two occurences in the list") {
+                    REQUIRE(1 == lst.num_different_words());
+                    REQUIRE(0 == lst.num_singletons());
+                    REQUIRE(2 == lst.total_words());
 
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
-    //                 string expected_most_frequent("1 2");
-    //                 REQUIRE(expected_most_frequent == lst.most_frequent());
-    //             }
-    //         }
-    //     }
-    // }
-    // SUBCASE("Rebalancing a tree") {
-    //     GIVEN("An empty WordlistTest") {
-    //         WordlistTest lst;
-    //         WHEN("Adding a collection of words") {
-    //             lst.add_n({"c", "b", "a"});
-    //             THEN("The WordlistTest will have the following inorder traversal: [a, b, c]") {
-    //                 REQUIRE(3 == lst.num_singletons());
-    //                 REQUIRE(3 == lst.num_different_words());
-    //                 REQUIRE(3 == lst.total_words());
+                    Heights expected_heights = mk_heights({make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                    string expected_most_frequent("1 2");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
+                }
+            }
+        }
+    }
+    SUBCASE("Rebalancing a tree") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
+            WHEN("Adding a collection of words") {
+                lst.add_n({"c", "b", "a"});
+                THEN("The WordlistTest will have the following inorder traversal: [a, b, c]") {
+                    REQUIRE(3 == lst.num_singletons());
+                    REQUIRE(3 == lst.num_different_words());
+                    REQUIRE(3 == lst.total_words());
 
-    //                 vector<string> actual = lst.words_in_order();
-    //                 vector<string> expected{"a", "b", "c"};
-    //                 REQUIRE(expected == actual);
+                    vector<string> actual = lst.words_in_order();
+                    vector<string> expected{"a", "b", "c"};
+                    REQUIRE(expected == actual);
 
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-    //                 string expected_most_frequent("a 1");
-    //                 REQUIRE(expected_most_frequent == lst.most_frequent());
-    //             }
-    //         }
-    //     }
-    // }
-    // SUBCASE("Rebalancing a tree with a large left subtree") {
-    //     GIVEN("An empty WordlistTest") {
-    //         WordlistTest lst;
-    //         WHEN("Adding a collection of words")
-    //         {
-    //             lst.add_n({"q", "r", "c", "b", "a"});
-    //             THEN("The WordlistTest will have the following inorder traversal: [a, b, c, q, r]")
-    //             {
-    //                 REQUIRE(5 == lst.num_singletons());
-    //                 REQUIRE(5 == lst.num_different_words());
-    //                 REQUIRE(5 == lst.total_words());
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
+                }
+            }
+        }
+    }
+    SUBCASE("Rebalancing a tree with a large left subtree") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
+            WHEN("Adding a collection of words")
+            {
+                lst.add_n({"q", "r", "c", "b", "a"});
+                THEN("The WordlistTest will have the following inorder traversal: [a, b, c, q, r]")
+                {
+                    REQUIRE(5 == lst.num_singletons());
+                    REQUIRE(5 == lst.num_different_words());
+                    REQUIRE(5 == lst.total_words());
 
-    //                 vector<string> actual = lst.words_in_order();
-    //                 vector<string> expected{"a", "b", "c", "q", "r"};
-    //                 REQUIRE(expected == actual);
+                    vector<string> actual = lst.words_in_order();
+                    vector<string> expected{"a", "b", "c", "q", "r"};
+                    REQUIRE(expected == actual);
 
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0,0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0,0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-    //                 string expected_most_frequent("a 1");
-    //                 REQUIRE(expected_most_frequent == lst.most_frequent());
-    //             }
-    //         }
-    //     }
-    // }
-    // SUBCASE("Right rotation") {
-    //     GIVEN("An unbalanced tree with a larger right subtree") {
-    //         WordlistTest lst;
-    //         lst.add_n({"a", "b", "c"});
-    //         WHEN("Balancing the list") {
-    //             THEN("The tree is balanced") {
-    //                 Words expected{"a", "b", "c"};
-    //                 REQUIRE(expected == lst.words_in_order());
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
-    //             }
-    //         }
-    //     }
-    // }
-    // SUBCASE("Rotating a larger unbalanced tree") {
-    //     GIVEN("An unbalanced tree with a larger right subtree") {
-    //         WordlistTest lst;
-    //         lst.add_n({"c", "b", "r", "q", "s"});
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
+                }
+            }
+        }
+    }
+    SUBCASE("Right rotation") {
+        GIVEN("An unbalanced tree with a larger right subtree") {
+            WordlistTest lst;
+            lst.add_n({"a", "b", "c"});
+            WHEN("Balancing the list") {
+                THEN("The tree is balanced") {
+                    Words expected{"a", "b", "c"};
+                    REQUIRE(expected == lst.words_in_order());
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                }
+            }
+        }
+    }
+    SUBCASE("Rotating a larger unbalanced tree") {
+        GIVEN("An unbalanced tree with a larger right subtree") {
+            WordlistTest lst;
+            lst.add_n({"c", "b", "r", "q", "s"});
 
-    //         Words expected{"b", "c", "q", "r", "s"};
-    //         REQUIRE(expected == lst.words_in_order());
+            Words expected{"b", "c", "q", "r", "s"};
+            REQUIRE(expected == lst.words_in_order());
 
-    //         Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-    //         Heights actual_heights = lst.all_heights();
-    //         REQUIRE(expected_heights == actual_heights);
+            Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+            Heights actual_heights = lst.all_heights();
+            REQUIRE(expected_heights == actual_heights);
 
-    //         WHEN("Balancing the list") {
-    //             lst.add_word("t");
-    //             THEN("The tree is balanced") {
-    //                 Words expected{"b", "c", "q", "r", "s", "t"};
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
-    //                 REQUIRE(expected == lst.words_in_order());
-    //             }
-    //         }
-    //     }
-    // }
+            WHEN("Balancing the list") {
+                lst.add_word("t");
+                THEN("The tree is balanced") {
+                    Words expected{"b", "c", "q", "r", "s", "t"};
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 2), make_pair(0, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                    REQUIRE(expected == lst.words_in_order());
+                }
+            }
+        }
+    }
     SUBCASE("Rebalancing a tree with a large right subtree") {
         GIVEN("An empty WordlistTest") {
             WordlistTest lst;
