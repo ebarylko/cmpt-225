@@ -662,7 +662,6 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   }
 
   this->root->all_words++;
-  cout << "Searching for the target node" << endl;
   Node* target = find_word_or_parent(word);
   cout << "The target node word: " << target->word << endl;
   // Adjust the number of occurences for the word if it is in the list. 
@@ -822,11 +821,13 @@ string most_frequent() const {
    WordlistTest(const string& filename) {
     string word;
     ifstream file(filename);
+    int num = 1;
      // Add the words to the list while there is input to process
 
       while (file >> word) {
-        cout << "-- Word: " << word << endl;
+        cout << "-- Word " << num << ": " << word << endl;
         this->add_word(word);
+        num++;
       }
 
       file.close();
