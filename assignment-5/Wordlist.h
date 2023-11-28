@@ -446,6 +446,9 @@ void right_rotation(Node* node) {
   
   node->parent = child;
   node->right = left_grandchild;
+  if (left_grandchild) {
+    left_grandchild->parent = node;
+  }
 
    // Updating the heights of the changed nodes
   update_right_height_of_parent(node, left_grandchild);
@@ -658,7 +661,7 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   this->root->all_words++;
   cout << "Searching for the target node" << endl;
   Node* target = find_word_or_parent(word);
-
+  cout << "The target node word: " << target->word << endl;
   // Adjust the number of occurences for the word if it is in the list. 
   if (target->word == word) {
     increase_word_count(*target);
