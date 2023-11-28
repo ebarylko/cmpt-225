@@ -656,15 +656,21 @@ void update_tree(Node* start, function<void(Node*)> f) {
 void add_word_using_f(const string& word, function<void(Node*)> f) {
   // Set root of tree if it is empty
   if (!this->root) {
-  cout << "Making the root" << endl;
     this->root = new RootNode(word);
     return;
   }
 
   this->root->all_words++;
   Node* target = find_word_or_parent(word);
-  cout << "The target node word: " << target->word << endl;
   // Adjust the number of occurences for the word if it is in the list. 
+  #ifdef TESTING
+  auto curr = this->words_in_order();
+  cout << endl;
+  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
+  cout << endl;
+  #endif
+  
+
   if (target->word == word) {
     increase_word_count(*target);
   } else {
@@ -833,7 +839,6 @@ string most_frequent() const {
     int num = 1;
      // Add the words to the list while there is input to process
       while (input >> word) {
-        cout << "-- Word " << num << ": " << word << endl;
         this->add_word(word);
         num++;
       }

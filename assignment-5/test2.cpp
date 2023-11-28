@@ -134,7 +134,9 @@ TEST_CASE("Wordlist from file") {
     SUBCASE("Just a few words") {
         GIVEN("A few words") {
             string input = "\
+First Citizen: \
 Before we proceed any further, hear me speak. \
+Speak, speak. \
 ";
             WHEN("Loading the words") {
                 stringstream stream(input);
