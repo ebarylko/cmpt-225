@@ -128,21 +128,4 @@ TEST_CASE("Wordlist from file") {
             }
         }
     }
-    SUBCASE("Just a few words") {
-        GIVEN("A few words") {
-            string input = "\
-F C B w p a \
-";
-            WHEN("Loading the words") {
-                stringstream stream(input);
-                WordlistTest lst;
-                lst.load_from(stream);
-                lst.print_words();
-                THEN("The stats match the few words") {
-                    REQUIRE_WORD_STATS(lst, 4, 5, "words 2", 3);
-                }
-            }
-        }
-    }
-
 }

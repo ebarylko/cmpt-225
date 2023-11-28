@@ -50,7 +50,7 @@ struct Wordlist_base
     // For an AVL implementation, this should return true if the AVL tree is a
     // BST, and false otherwise.
     //
-    // virtual bool is_sorted() const = 0;
+    virtual bool is_sorted() const = 0;
 
     //
     // Returns a string of the most frequent word in the format "word freq".

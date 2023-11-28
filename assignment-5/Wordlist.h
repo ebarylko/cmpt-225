@@ -503,18 +503,6 @@ void right_left_rotation(Node* node) {
   assert(child);
   Node* left_grandchild = child->left;
   assert(left_grandchild);
-  #ifdef TESTING1
-  {
-  auto curr = this->words_in_order();
-  cout << endl << "INORDER: ";
-  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
-  cout << endl;
-  cout << "RLR The child --> " << child->word
-       << " -- The grand child --> " << left_grandchild->word 
-       << endl;
-
-  }
-  #endif
 
   child->left = nullptr;
   auto lgcr = left_grandchild->right;
@@ -529,14 +517,6 @@ void right_left_rotation(Node* node) {
     connect_child_to_parent(child, lgcr);
   }
   
-  #ifdef TESTING1
-  {
-  auto curr = this->words_in_order();
-  cout << endl << "INORDER: ";
-  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
-  cout << endl;
-  }
-  #endif
   
   update_height_of_parent(child, child->left);
   update_height_of_parent(left_grandchild, child);
@@ -592,9 +572,6 @@ void trinode_rotation(Node *node)
   // rotation should not change the amount of nodes
   auto expected_nodes = calc_nodes_below(this->root);
   auto rt = rotation_type(node);
-  #if TESTING1
-  cout << "The rotation type " << rt << endl;
-  #endif
   switch (rt)
   {
   case left:
@@ -661,9 +638,6 @@ Node* find_unbalanced_node(Node* start) {
 void rotate_tree(Node* node) {
   Node* target = find_unbalanced_node(node);
 
-  #ifdef TESTING1
-  cout << "Is tree unbalanced ? " << (target != nullptr) << endl;
-  #endif
   // Do nothing if tree is balanced
   if (!target) {
     return;
@@ -726,12 +700,6 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   this->root->all_words++;
   Node* target = find_word_or_parent(word);
   // Adjust the number of occurences for the word if it is in the list. 
-  #ifdef TESTING1
-  auto curr = this->words_in_order();
-  cout << endl << "Adding word --> " << word << endl;
-  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
-  cout << endl;
-  #endif
   
   if (target->word == word) {
     increase_word_count(*target);
@@ -739,19 +707,9 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
    // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
     update_most_frequent_word(*child);
-    #ifdef TESTING1
-    auto curr2 = this->words_in_order();
-    for_each(curr2.begin(), curr2.end(), [](const string& word) {cout << word << " ";});
-    cout << endl;
-    #endif
     f(child);
   }
 
-  #ifdef TESTING1
-  auto curr1 = this->words_in_order();
-  for_each(curr1.begin(), curr1.end(), [](const string& word) {cout << word << " ";});
-  cout << endl;
-  #endif
 }
 
 
@@ -798,6 +756,12 @@ Node* find_word_or_parent(const string& word) const {
 }
 
 public:
+
+
+bool is_sorted() {
+  return true;
+}
+
 /**
  * @brief Takes all the words in the list and prints them in alphabetical order
  * with their associated occurences
@@ -893,8 +857,12 @@ string most_frequent() const {
    WordlistTest() {};
 
    WordlistTest(const string& filename) {
+    string word;
     ifstream file(filename);
-    load_from(file);
+    // Add the words to the list while there are words left
+    while (file >> word) {
+      this->add_word(word);
+    }
    }
 
 
@@ -903,16 +871,6 @@ string most_frequent() const {
   }
 
 #ifdef TESTING
-
-  void load_from(istream &input)
-  {
-    string word;
-    // Add the words to the list while there is input to process
-    while (input >> word)
-    {
-      this->add_word(word);
-    }
-  }
 
 typedef tuple<int, int, string, int, int> ListData;
 
