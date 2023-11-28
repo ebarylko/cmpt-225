@@ -133,13 +133,16 @@ TEST_CASE("Wordlist from file") {
     // }
     SUBCASE("Just a few words") {
         GIVEN("A few words") {
-            string input("A few words");
+            string input = "\
+Before we proceed any further, hear me speak. \
+";
             WHEN("Loading the words") {
                 stringstream stream(input);
                 WordlistTest lst;
                 lst.load_from(stream);
+                lst.print_words();
                 THEN("The stats match the few words") {
-                    REQUIRE_WORD_STATS(lst, 3, 3, "A 1", 3);
+                    REQUIRE_WORD_STATS(lst, 4, 5, "words 2", 3);
                 }
             }
         }

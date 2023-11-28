@@ -731,11 +731,9 @@ void print_words() const{
       Node *curr = find_smallest(this->root);
 
       while (curr) {
-        string word = "\" " + curr->word + "\"";
-        string end = ", " + to_string(line_num) + "}";
-        string line = word_start + word + end;
-        cout << line << endl;
+        cout << line_num << ". { " << quoted(curr->word) << ", "  << curr->count << "}" << endl;
         line_num += 1;
+        curr = next_node(curr);
       }
 }
 
