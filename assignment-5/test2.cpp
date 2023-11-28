@@ -11,11 +11,11 @@ ostream& operator<<(ostream& os, const pair<T1, T2>& heights) {
     os << "[" << heights.first << ", " << heights.second << "]";
     return os;
 }
-​
+
 typedef WordlistTest::ListData ListData;
-​
+
 namespace doctest {
-​
+
 template <typename T> struct StringMaker<vector<T>> {
      static String convert(const vector<T>& in) {
         stringstream os;
@@ -28,14 +28,13 @@ template <typename T> struct StringMaker<vector<T>> {
         return os.str().c_str();
 }
 };
-​
-​
+
 template <>
 struct StringMaker<vector<string>>
 {
     static String convert(const vector<string>& in) {
         ostringstream oss;
-​
+
         oss << "[";
         for (auto it = in.cbegin(); it != in.cend();) {
             oss << *it;
@@ -45,28 +44,27 @@ struct StringMaker<vector<string>>
         return oss.str().c_str();
     }
 };
-​
-​
+
 template <>
 struct StringMaker<ListData>
 {
     static String convert(const ListData& in) {
         ostringstream oss;
-​
+
         oss << "[";
         oss << "(" << get<0>(in) << ", " << get<1>(in) << ", " << get<2>(in) << ", " << get<3>(in) << ", " << get<4>(in)  << ")";
-​
+
         oss << "]";
         return oss.str().c_str();
     }
 };
-​
+
 template <>
 struct StringMaker<vector<pair<int, int>>>
 {
     static String convert(const vector<pair<int, int>>& in) {
         ostringstream oss;
-​
+
         oss << "[";
         for (auto it = in.cbegin(); it != in.cend();) {
             oss << "(" << it->first << ", " << it->second << ")";
@@ -76,13 +74,13 @@ struct StringMaker<vector<pair<int, int>>>
         return oss.str().c_str();
     }
 };
-​
+
 template <>
 struct StringMaker<vector<pair<string, int>>>
 {
     static String convert(const vector<pair<string, int>>& in) {
         ostringstream oss;
-​
+
         oss << "[";
         for (auto it = in.cbegin(); it != in.cend();) {
             oss << "(" << it->first << ", " << it->second << ")";
@@ -93,7 +91,7 @@ struct StringMaker<vector<pair<string, int>>>
     }
 };
 }
-​
+
 /**
  * @brief Takes a collection of expected heights and creates a collection of 
  * heights of the nodes visited using inorder traversal
@@ -106,15 +104,15 @@ Heights mk_heights(initializer_list<pair<int,int>> all_heights) {
     Heights tree_heights{all_heights};
     return tree_heights;
 }
-​
+
 typedef vector<string> Words;
-​
+
 #define REQUIRE_WORD_STATS(list, different, total, fq, single)\
     REQUIRE(different == list.num_different_words());\
     REQUIRE(total == list.total_words());\
     REQUIRE(fq == list.most_frequent());\
     REQUIRE(single == list.num_singletons());
-​
+
 TEST_CASE("Wordlist from file") {
     SUBCASE("Reading from a large file") {
         GIVEN("A large text file") {
@@ -146,5 +144,5 @@ F C B w p a \
             }
         }
     }
-​
+
 }
