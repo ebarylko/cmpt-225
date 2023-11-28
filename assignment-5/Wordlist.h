@@ -508,9 +508,7 @@ void right_left_rotation(Node* node) {
 
   // Arranging the nodes for a right rotation
   connect_child_to_parent(node, left_grandchild);
-  // cout << "The node " << node->word << " and to the right " << node->right->word << endl;
   connect_child_to_parent(left_grandchild, child);
-  // cout << "The node " << left_grandchild->word << " and to the right " << left_grandchild->right->word << endl;
   if (lgcr)
   {
     connect_child_to_parent(child, lgcr);
@@ -536,7 +534,6 @@ void left_right_rotation(Node* node) {
 
   auto gcl = grand_child->left;
 
-  // cout << "The child " << child->word << " -- The grand child " << grand_child->word << endl;
   // Creating an unbalanced subtree which needs a left rotation
   connect_child_to_parent(node, grand_child);
   connect_child_to_parent(grand_child, child);
@@ -658,16 +655,7 @@ void no_effect(Node* node) {
   node->count += 0;
 }
 
-/**
- * @brief Takes a node and rebalances the tree after adding the node
- * 
- * @param node the node to add
- */
-void rebalance_tree(Node* node) {
-  update_tree(node, bind(&WordlistTest::rotate_tree, this, placeholders::_1));
-}
-
-void update_tree(Node* start, function<void(Node*)> f) {
+void update_tree(Node* start) {
   Node* curr = start;
   Node* prev;
   /**
@@ -679,42 +667,8 @@ void update_tree(Node* start, function<void(Node*)> f) {
     update_height_of_parent(curr, prev);
   }
 
-  f(start);
+  rotate_tree(start);
 }
-
-
-
-
-
-/**
- * @brief Takes a word and a function and applies the function to the 
- * word after adding it to the list
- * 
- * @param word the word to add
- * @param f the function to apply
- */
-void add_word(const string& word){
-  // Set root of tree if it is empty
-  if (!this->root) {
-    this->root = new RootNode(word);
-    return;
-  }
-
-  this->root->all_words++;
-  Node* target = find_word_or_parent(word);
-  // Adjust the number of occurences for the word if it is in the list. 
-  
-  if (target->word == word) {
-    increase_word_count(*target);
-  } else {
-   // Insert the word into its position and rebalance the tree if necessary
-    Node* child = add_child(target, word);
-    update_most_frequent_word(*child);
-    rebalance_tree(child);
-  }
-}
-
-
 
 /**
  * @brief Takes a word and returns the node corresponding to the 
@@ -758,7 +712,33 @@ Node* find_word_or_parent(const string& word) const {
 }
 
 public:
+/**
+ * @brief Takes a word and a function and applies the function to the 
+ * word after adding it to the list
+ * 
+ * @param word the word to add
+ * @param f the function to apply
+ */
+void add_word(const string& word){
+  // Set root of tree if it is empty
+  if (!this->root) {
+    this->root = new RootNode(word);
+    return;
+  }
 
+  this->root->all_words++;
+  Node* target = find_word_or_parent(word);
+  // Adjust the number of occurences for the word if it is in the list. 
+  
+  if (target->word == word) {
+    increase_word_count(*target);
+  } else {
+   // Insert the word into its position and rebalance the tree if necessary
+    Node* child = add_child(target, word);
+    update_most_frequent_word(*child);
+    update_tree(child);
+  }
+}
 
 bool is_sorted() const {
   return true;
@@ -778,14 +758,6 @@ void print_words() const{
       }
 }
 
-/**
- * @brief Takes a word and balances the list after adding it
- * 
- * @param word the word to add
- */
-// void add_word(const string& word) {
-//   add_word_using_f(word, bind(&WordlistTest::rebalance_tree, this, placeholders::_1));
-// }
 
 /**
  * @brief Takes a word and returns the number of times it 
@@ -862,7 +834,6 @@ string most_frequent() const {
       this->add_word(word);
     }
    }
-
 
   ~WordlistTest() {
     delete this->root;
