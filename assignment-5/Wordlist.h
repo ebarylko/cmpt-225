@@ -55,28 +55,46 @@ using namespace std;
 class WordlistTest : public Wordlist_base {
     struct Node
     {
-        virtual ~Node() {
-          delete this->left;
-          delete this->right;
-        };
+      virtual ~Node()
+      {
+        delete this->left;
+        delete this->right;
+      };
 
-    Node() {
-      left = right = parent = nullptr;
-      count = left_height = right_height = 0;
-    };
-    Node(const string& w) : Node(){
-      this->word = w;
-      this->count = 1;
+      Node()
+      {
+        left = right = parent = nullptr;
+        count = left_height = right_height = 0;
+      };
 
-    };
+      Node(const Node& other) {
+        *this = other;
+      }
 
-        string word;
-        int count;
-        Node *left;
-        Node *right;
-        Node* parent;
-        int left_height;
-        int right_height;
+      Node(const string &w) : Node()
+      {
+        this->word = w;
+        this->count = 1;
+      };
+
+      Node& operator=(const Node&other) {
+        this->count = other.count;
+        this->right = other.right;
+        this->left = other.left;
+        this->left_height = other.left_height;
+        this->right_height = other.right_height;
+        this->word = other.word;
+        this->parent = other.parent;
+        return *this;
+      }
+
+      string word;
+      int count;
+      Node *left;
+      Node *right;
+      Node *parent;
+      int left_height;
+      int right_height;
     };
 
 /**
@@ -154,6 +172,13 @@ Node* next_node(Node* curr) const {
           this->most_frequent = nullptr;
         };
 
+        RootNode(const RootNode& other): Node(other) {
+          this->all_words = other.all_words;
+          this->different_words = other.different_words;
+          this->most_frequent = other.most_frequent;
+          this->single_words = other.single_words;
+        }
+
         RootNode(const string& word)  {
           this->count = 1;
           this->word = word;
@@ -203,22 +228,7 @@ Node* add_child(Node* target, const string& word) {
   this->root->different_words++;
   this->root->single_words++;
 
-
   return child;
-}
-
-/**
- * @brief Takes two nodes n1 and n2 and compares the difference of their occurences in the list.
- * Returns -1 if the difference is negative, 0 if it is 0, and 1 if it is positive.
- * 
- * @param node the first node 
- * @param rt the second node
- * @return int a value which indicates if the difference of the occurences of both nodes
- * is negative, 0, or positive
- */
-int compare_word_counts(Node& node) {
- int difference = node.count - this->root->most_frequent->count;
- return difference < 0 ? -1 : difference == 0 ?  0 : 1;
 }
 
 /**
@@ -226,21 +236,16 @@ int compare_word_counts(Node& node) {
  * if N appears the most often
  * 
  * @param node the node being checked
- * @param rt the root 
  */
-void update_most_frequent_word(Node& node) {
-  switch (compare_word_counts(node))
+void update_most_frequent_word(Node& potential_mf) {
+  assert(this->root);
+  assert(this->root->most_frequent);
+  Node& current_mf = *this->root->most_frequent;
+
+  if (potential_mf.count > current_mf.count ||
+      (potential_mf.count == current_mf.count && potential_mf.word < current_mf.word))
   {
-  case -1:
-    break;
-
-  case 0:
-    // When two words have the same frequency, the smaller word is chosen
-    this->root->most_frequent = this->root->word > node.word ? &node : this->root;
-    break;
-
-  default:
-    this->root->most_frequent = &node;
+    this->root->most_frequent = &potential_mf;
   }
 }
 
@@ -285,24 +290,27 @@ void update_height_of_parent(Node* parent, Node* child) {
     }
  }
 
-void update_right_height_of_parent(Node* parent, Node* child) { 
-    int updated_height = 1 + largest_child_height(child);
-      parent->right_height = updated_height;
+ void update_right_height_of_parent(Node *parent, Node *child)
+ {
+   int updated_height = 1 + largest_child_height(child);
+   parent->right_height = updated_height;
  }
 
-void update_left_height_of_parent(Node* parent, Node* child) { 
-    int updated_height = 1 + largest_child_height(child);
-      parent->left_height = updated_height;
+ void update_left_height_of_parent(Node *parent, Node *child)
+ {
+   int updated_height = 1 + largest_child_height(child);
+   parent->left_height = updated_height;
  }
 
-/**
- * Takes a node and returns true if the absolute difference of the heights of its children is
- * less than or equal to one.
-*/
-bool height_diff_less_than_2(Node* node) {
-  int height_difference = node->left_height - node->right_height;
-  return -1 <= height_difference && height_difference <= 1;
-}
+ /**
+  * Takes a node and returns true if the absolute difference of the heights of its children is
+  * less than or equal to one.
+  */
+ bool height_diff_less_than_2(Node *node)
+ {
+   int height_difference = node->left_height - node->right_height;
+   return -1 <= height_difference && height_difference <= 1;
+ }
 
 enum RotationType{left, right, left_right, right_left};
 
@@ -357,7 +365,7 @@ void connect_child_to_parent(Node* parent, Node* child) {
     return;
   }
 
-   // Connecting the child and parent nodes together
+  // Connecting the child and parent nodes together
   child->parent = parent;
   
   if(parent->word > child->word) {
@@ -365,7 +373,6 @@ void connect_child_to_parent(Node* parent, Node* child) {
   } else {
     parent->right = child;
   }
-
 }
 
 
@@ -379,14 +386,19 @@ void transform_child_into_root(Node *new_parent)
 {
   //  Creating the new root and connecting it to its children
   RootNode *updated_root = new RootNode(*this->root);
-  (Node &)*updated_root = *new_parent;
+  // Copy the new_parent values
+  static_cast<Node&>(*updated_root) = *new_parent;
 
-  new_parent->right = new_parent->left = new_parent->parent = nullptr;
+  this->root->most_frequent = nullptr;
   this->root = updated_root;
 
+  assert(updated_root->left);
+  
+  assert(updated_root->right);
   updated_root->right->parent = updated_root;
   updated_root->left->parent = updated_root;
 
+  new_parent->right = new_parent->left = new_parent->parent = nullptr;
   delete new_parent;
 }
 
@@ -395,13 +407,12 @@ void transform_child_into_root(Node *new_parent)
  * @param node the node to balance
  */
 void left_rotation(Node* node) {
-   // Separating the nodes to be moved around
+  // Separating the nodes to be moved around
   Node* child = node->left;
   assert(child);
   Node* a = child->right;
   
-
-   // Moving the nodes to their correct position
+  // Moving the nodes to their correct position
   child->right = node;
   connect_child_to_parent(node->parent, child);
   node->parent = child;
@@ -429,18 +440,19 @@ void left_rotation(Node* node) {
  * @param node the node given
  */
 void right_rotation(Node* node) {
+  assert(node);
 
-   // Separating the nodes to be moved around
+  // Separating the nodes to be moved around
   Node* child = node->right;
+  assert(child);
   Node* left_grandchild = child->left;
 
-  //Moving the nodes to their correct position
-
+  // Moving the nodes to their correct position
   child->left = node;
   child->parent = node->parent;
 
   if (child->parent) {
-    if (child->parent->right == node) {
+    if (child->parent->right == child->left) {
       child->parent->right = child;
     } else {
       child->parent->left = child;
@@ -449,16 +461,17 @@ void right_rotation(Node* node) {
   
   node->parent = child;
   node->right = left_grandchild;
+
   if (left_grandchild) {
-    left_grandchild->parent = node;
+    left_grandchild->parent = child->left;
   }
 
-   // Updating the heights of the changed nodes
+  // Updating the heights of the changed nodes
   update_right_height_of_parent(node, left_grandchild);
   update_left_height_of_parent(child, node);
   update_height_to_root_from(child);
 
-   // Updating the root with the old information and the new node
+  // Updating the root with the old information and the new node
   if (is_root(node)) {
     transform_child_into_root(child);
   }
@@ -485,20 +498,46 @@ void update_height_to_root_from(Node* child) {
  * @param node the node given
  */
 void right_left_rotation(Node* node) {
-  /**
-   * @brief Separating the nodes to be moved around
-   * 
-   */
+  // Separating the nodes to be moved around
   Node* child = node->right;
   assert(child);
   Node* left_grandchild = child->left;
-  child->left = 0;
-
-   // Arranging the nodes for a right rotation
   assert(left_grandchild);
-  connect_child_to_parent(node, left_grandchild);
-  connect_child_to_parent(left_grandchild, child);
+  #ifdef TESTING1
+  {
+  auto curr = this->words_in_order();
+  cout << endl << "INORDER: ";
+  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
+  cout << endl;
+  cout << "RLR The child --> " << child->word
+       << " -- The grand child --> " << left_grandchild->word 
+       << endl;
 
+  }
+  #endif
+
+  child->left = nullptr;
+  auto lgcr = left_grandchild->right;
+
+  // Arranging the nodes for a right rotation
+  connect_child_to_parent(node, left_grandchild);
+  // cout << "The node " << node->word << " and to the right " << node->right->word << endl;
+  connect_child_to_parent(left_grandchild, child);
+  // cout << "The node " << left_grandchild->word << " and to the right " << left_grandchild->right->word << endl;
+  if (lgcr)
+  {
+    connect_child_to_parent(child, lgcr);
+  }
+  
+  #ifdef TESTING1
+  {
+  auto curr = this->words_in_order();
+  cout << endl << "INORDER: ";
+  for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
+  cout << endl;
+  }
+  #endif
+  
   update_height_of_parent(child, child->left);
   update_height_of_parent(left_grandchild, child);
 
@@ -514,34 +553,52 @@ void right_left_rotation(Node* node) {
 void left_right_rotation(Node* node) {
   Node* child = node->left;
   Node* grand_child = child->right;
-  child->right = 0;
+  child->right = nullptr;
 
-  /**
-   * @brief Creating an unbalanced subtree which needs a left rotation
-   * 
-   */
+  auto gcl = grand_child->left;
+
+  // cout << "The child " << child->word << " -- The grand child " << grand_child->word << endl;
+  // Creating an unbalanced subtree which needs a left rotation
   connect_child_to_parent(node, grand_child);
   connect_child_to_parent(grand_child, child);
+
+  if (gcl)
+  {
+    connect_child_to_parent(child, gcl);
+  }
+  
 
   update_right_height_of_parent(child, child->right);
   update_left_height_of_parent(grand_child, child);
   left_rotation(node);
 }
 
+int calc_nodes_below(Node* node) {
+  if (!node)
+  {
+    return 0;
+  }
+  
+  return 1 + calc_nodes_below(node->left) + calc_nodes_below(node->right);
+}
+
 /**
  * @brief Takes an unbalanced node and applies one of the four following rotations
  * on it depending on the type of imbalance: 
  * left rotation, right rotation, left right rotation, right left rotation
- * 
  */
 void trinode_rotation(Node *node)
 {
-  switch (rotation_type(node))
+  // rotation should not change the amount of nodes
+  auto expected_nodes = calc_nodes_below(this->root);
+  auto rt = rotation_type(node);
+  #if TESTING1
+  cout << "The rotation type " << rt << endl;
+  #endif
+  switch (rt)
   {
-
   case left:
     left_rotation(node);
-
     break;
 
   case right:
@@ -554,7 +611,11 @@ void trinode_rotation(Node *node)
 
   case right_left:
     right_left_rotation(node);
+    break;
   }
+
+  auto actual_nodes = calc_nodes_below(this->root);
+  assert(expected_nodes == actual_nodes);
 }
 
 /**
@@ -600,6 +661,9 @@ Node* find_unbalanced_node(Node* start) {
 void rotate_tree(Node* node) {
   Node* target = find_unbalanced_node(node);
 
+  #ifdef TESTING1
+  cout << "Is tree unbalanced ? " << (target != nullptr) << endl;
+  #endif
   // Do nothing if tree is balanced
   if (!target) {
     return;
@@ -611,7 +675,6 @@ void rotate_tree(Node* node) {
 
 /**
  * @brief Takes a node and does nothing 
- * 
  * @param node the node given
  */
 void no_effect(Node* node) {
@@ -663,22 +726,32 @@ void add_word_using_f(const string& word, function<void(Node*)> f) {
   this->root->all_words++;
   Node* target = find_word_or_parent(word);
   // Adjust the number of occurences for the word if it is in the list. 
-  #ifdef TESTING
+  #ifdef TESTING1
   auto curr = this->words_in_order();
-  cout << endl;
+  cout << endl << "Adding word --> " << word << endl;
   for_each(curr.begin(), curr.end(), [](const string& word) {cout << word << " ";});
   cout << endl;
   #endif
   
-
   if (target->word == word) {
     increase_word_count(*target);
   } else {
    // Insert the word into its position and rebalance the tree if necessary
     Node* child = add_child(target, word);
     update_most_frequent_word(*child);
+    #ifdef TESTING1
+    auto curr2 = this->words_in_order();
+    for_each(curr2.begin(), curr2.end(), [](const string& word) {cout << word << " ";});
+    cout << endl;
+    #endif
     f(child);
   }
+
+  #ifdef TESTING1
+  auto curr1 = this->words_in_order();
+  for_each(curr1.begin(), curr1.end(), [](const string& word) {cout << word << " ";});
+  cout << endl;
+  #endif
 }
 
 
@@ -731,11 +804,8 @@ public:
  * 
  */
 void print_words() const{
-
       int line_num = 1;
-      string word_start = ". { ";
       Node *curr = find_smallest(this->root);
-
       while (curr) {
         cout << line_num << ". { " << quoted(curr->word) << ", "  << curr->count << "}" << endl;
         line_num += 1;
@@ -834,14 +904,14 @@ string most_frequent() const {
 
 #ifdef TESTING
 
-  void load_from(istream& input) {
+  void load_from(istream &input)
+  {
     string word;
-    int num = 1;
-     // Add the words to the list while there is input to process
-      while (input >> word) {
-        this->add_word(word);
-        num++;
-      }
+    // Add the words to the list while there is input to process
+    while (input >> word)
+    {
+      this->add_word(word);
+    }
   }
 
 typedef tuple<int, int, string, int, int> ListData;
@@ -925,4 +995,3 @@ vector<int> list_info() {
 
 #endif
 };
-
