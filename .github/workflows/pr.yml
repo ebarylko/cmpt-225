@@ -1,0 +1,22 @@
+name: C/C++ CI
+
+on: [pull_request]
+
+
+jobs:
+  ubuntu-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.0.0
+    - name: install clang
+      run: sudo apt-get update && sudo apt-get -y install libcunit1 libcunit1-doc libcunit1-dev 
+    - name: check version
+      run: g++ --version
+    - name: install valgrind
+      run: sudo apt-get -y install valgrind
+    - name: make & run with valgrind
+      working-directory: ./assignment-5
+      run: |
+        make test2
+        valgrind -v --tool=memcheck --leak-check=full ./test2 -s
