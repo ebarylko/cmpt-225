@@ -51,7 +51,6 @@ using namespace std;
 #include <utility>
 #endif
 
-
 class WordlistTest : public Wordlist_base {
     struct Node
     {
@@ -570,7 +569,9 @@ int calc_nodes_below(Node* node) {
 void trinode_rotation(Node *node)
 {
   // rotation should not change the amount of nodes
+  #ifdef TESTING
   auto expected_nodes = calc_nodes_below(this->root);
+  #endif
   auto rt = rotation_type(node);
   switch (rt)
   {
@@ -591,8 +592,10 @@ void trinode_rotation(Node *node)
     break;
   }
 
+  #ifdef TESTING
   auto actual_nodes = calc_nodes_below(this->root);
   assert(expected_nodes == actual_nodes);
+  #endif
 }
 
 /**
