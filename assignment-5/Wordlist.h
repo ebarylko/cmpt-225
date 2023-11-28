@@ -799,7 +799,7 @@ string most_frequent() const {
        return 0;
      }
 
-     return root->different_words;
+     return this->root->different_words;
    }
 
    /**
@@ -819,19 +819,10 @@ string most_frequent() const {
    WordlistTest() {};
 
    WordlistTest(const string& filename) {
-    string word;
     ifstream file(filename);
-    int num = 1;
-     // Add the words to the list while there is input to process
-
-      while (file >> word) {
-        cout << "-- Word " << num << ": " << word << endl;
-        this->add_word(word);
-        num++;
-      }
-
-      file.close();
+    load_from(file);
    }
+
 
   ~WordlistTest() {
     delete this->root;
@@ -839,6 +830,16 @@ string most_frequent() const {
 
 #ifdef TESTING
 
+  void load_from(istream& input) {
+    string word;
+    int num = 1;
+     // Add the words to the list while there is input to process
+      while (input >> word) {
+        cout << "-- Word " << num << ": " << word << endl;
+        this->add_word(word);
+        num++;
+      }
+  }
 
 typedef tuple<int, int, string, int, int> ListData;
 

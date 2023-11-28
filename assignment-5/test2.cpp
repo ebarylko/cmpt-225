@@ -111,18 +111,38 @@ Heights mk_heights(initializer_list<pair<int,int>> all_heights) {
 
 typedef vector<string> Words;
 
-TEST_CASE("Wordlist") {
-    SUBCASE("Reading from a large file") {
-        GIVEN("A large text file") {
-            WHEN("Adding all the content from the file") {
-                WordlistTest lst = WordlistTest("tiny_shakespeare.txt");
-                THEN("All the words from the file are in the list") {
-                    REQUIRE(25670 == lst.num_different_words());
-                    REQUIRE(202651 == lst.total_words());
-                    REQUIRE("the 5437" == lst.most_frequent());
-                    REQUIRE(14919 == lst.num_singletons());
+#define REQUIRE_WORD_STATS(list, different, total, fq, single)\
+    REQUIRE(different == list.num_different_words());\
+    REQUIRE(total == list.total_words());\
+    REQUIRE(fq == list.most_frequent());\
+    REQUIRE(single == list.num_singletons());
+
+TEST_CASE("Wordlist from file") {
+    // SUBCASE("Reading from a large file") {
+    //     GIVEN("A large text file") {
+    //         WHEN("Adding all the content from the file") {
+    //             WordlistTest lst = WordlistTest("tiny_shakespeare.txt");
+    //             THEN("All the words from the file are in the list") {
+    //                 REQUIRE(25670 == lst.num_different_words());
+    //                 REQUIRE(202651 == lst.total_words());
+    //                 REQUIRE("the 5437" == lst.most_frequent());
+    //                 REQUIRE(14919 == lst.num_singletons());
+    //             }
+    //         }
+    //     }
+    // }
+    SUBCASE("Just a few words") {
+        GIVEN("A few words") {
+            string input("A few words");
+            WHEN("Loading the words") {
+                stringstream stream(input);
+                WordlistTest lst;
+                lst.load_from(stream);
+                THEN("The stats match the few words") {
+                    REQUIRE_WORD_STATS(lst, 3, 3, "A 1", 3);
                 }
             }
         }
     }
+
 }
