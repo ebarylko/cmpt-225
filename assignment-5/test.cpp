@@ -262,129 +262,129 @@ TEST_CASE("WordlistTest") {
     //         }
     //     }
     // }
-//     SUBCASE("Rebalancing a tree with a large right subtree") {
-//         GIVEN("An empty WordlistTest") {
-//             WordlistTest lst;
-//             WHEN("Adding a collection of words")
-//             {
-//                 lst.add_n({"q", "r", "c", "b", "a"});
-//                 THEN("The WordlistTest will have the following inorder traversal: [a, b, c, q, r]")
-//                 {
-//                     REQUIRE(5 == lst.num_singletons());
-//                     REQUIRE(5 == lst.num_different_words());
-//                     REQUIRE(5 == lst.total_words());
+    SUBCASE("Rebalancing a tree with a large right subtree") {
+        GIVEN("An empty WordlistTest") {
+            WordlistTest lst;
+            WHEN("Adding a collection of words")
+            {
+                lst.add_n({"q", "r", "c", "b", "a"});
+                THEN("The WordlistTest will have the following inorder traversal: [a, b, c, q, r]")
+                {
+                    REQUIRE(5 == lst.num_singletons());
+                    REQUIRE(5 == lst.num_different_words());
+                    REQUIRE(5 == lst.total_words());
 
-//                     vector<string> actual = lst.words_in_order();
-//                     vector<string> expected{"a", "b", "c", "q", "r"};
-//                     REQUIRE(expected == actual);
+                    vector<string> actual = lst.words_in_order();
+                    vector<string> expected{"a", "b", "c", "q", "r"};
+                    REQUIRE(expected == actual);
 
-//                     Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0,0)});
-//                     Heights actual_heights = lst.all_heights();
-//                     REQUIRE(expected_heights == actual_heights);
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0,0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-//                     string expected_most_frequent("a 1");
-//                     REQUIRE(expected_most_frequent == lst.most_frequent());
-//                 }
-//             }
-//         }
-// }
-    // SUBCASE("Right left rotation") {
-    //     GIVEN("A tree which can be balanced by a right left rotation") {
-    //         WordlistTest lst;
-    //         lst.add_n({"a", "d", "c"});
-    //         WHEN("Balancing the tree") {
-    //             THEN("The tree is balanced") {
-    //                 Words expected{"a", "c", "d"};
-    //                 REQUIRE(expected == lst.words_in_order());
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
+                }
+            }
+        }
+}
+    SUBCASE("Right left rotation") {
+        GIVEN("A tree which can be balanced by a right left rotation") {
+            WordlistTest lst;
+            lst.add_n({"a", "d", "c"});
+            WHEN("Balancing the tree") {
+                THEN("The tree is balanced") {
+                    Words expected{"a", "c", "d"};
+                    REQUIRE(expected == lst.words_in_order());
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-    //                 string expected_most_frequent("a 1");
-    //                 REQUIRE(expected_most_frequent == lst.most_frequent());
+                    string expected_most_frequent("a 1");
+                    REQUIRE(expected_most_frequent == lst.most_frequent());
 
-    //                 REQUIRE(3 == lst.total_words());
-    //                 REQUIRE(3 == lst.num_different_words());
-    //                 REQUIRE(3 == lst.num_singletons());
-    //             }
-    //         }
-    //     }
-    // }
-    // SUBCASE("Right left rotation on a larger tree") {
-    //     GIVEN("An empty Wordlist") {
-    //         WordlistTest lst;
-    //         WHEN("Adding a collection of words") {
-    //             lst.add_n({"e", "b", "a", "h", "f", "l", "o", "m", "m"});
-    //             THEN("The tree is balanced") {
-    //                 Words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
-    //                 REQUIRE(expected_words == lst.words_in_order());
+                    REQUIRE(3 == lst.total_words());
+                    REQUIRE(3 == lst.num_different_words());
+                    REQUIRE(3 == lst.num_singletons());
+                }
+            }
+        }
+    }
+    SUBCASE("Right left rotation on a larger tree") {
+        GIVEN("An empty Wordlist") {
+            WordlistTest lst;
+            WHEN("Adding a collection of words") {
+                lst.add_n({"e", "b", "a", "h", "f", "l", "o", "m", "m"});
+                THEN("The tree is balanced") {
+                    Words expected_words{"a", "b", "e", "f", "h", "l", "m", "o"};
+                    REQUIRE(expected_words == lst.words_in_order());
 
-    //                 Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 3), make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-    //                 Heights actual_heights = lst.all_heights();
-    //                 REQUIRE(expected_heights == actual_heights);
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 3), make_pair(0, 0), make_pair(1, 2), make_pair(0, 0), make_pair(1, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-    //                 REQUIRE("m 2" == lst.most_frequent());
+                    REQUIRE("m 2" == lst.most_frequent());
 
-    //                 REQUIRE(9 == lst.total_words());
-    //                 REQUIRE(8 == lst.num_different_words());
-    //                 REQUIRE(7 == lst.num_singletons());
-    //             }
-    //         }
-    //     }
-    // }
+                    REQUIRE(9 == lst.total_words());
+                    REQUIRE(8 == lst.num_different_words());
+                    REQUIRE(7 == lst.num_singletons());
+                }
+            }
+        }
+    }
 }
 
 
 
-// TEST_CASE("left_right_rotation") {
-//     SUBCASE("A small tree") {
-//         GIVEN("A small unbalanced tree") {
-//             WordlistTest lst;
-//             lst.add_n({"e", "b"});
+TEST_CASE("left_right_rotation") {
+    SUBCASE("A small tree") {
+        GIVEN("A small unbalanced tree") {
+            WordlistTest lst;
+            lst.add_n({"e", "b"});
 
-//             REQUIRE(Words{"b", "e"} == lst.words_in_order());
+            REQUIRE(Words{"b", "e"} == lst.words_in_order());
 
-//             Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0)});
-//             Heights actual_heights = lst.all_heights();
-//             REQUIRE(expected_heights == actual_heights);
+            Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0)});
+            Heights actual_heights = lst.all_heights();
+            REQUIRE(expected_heights == actual_heights);
 
-//             WHEN("Balancing the tree") {
-//                 lst.add_word("c");
-//                 THEN("The tree is balanced") {
-//                     Words expected_words{"b", "c", "e"};
-//                     REQUIRE(expected_words == lst.words_in_order());
-//                     Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
-//                     Heights actual_heights = lst.all_heights();
-//                     REQUIRE(expected_heights == actual_heights);
+            WHEN("Balancing the tree") {
+                lst.add_word("c");
+                THEN("The tree is balanced") {
+                    Words expected_words{"b", "c", "e"};
+                    REQUIRE(expected_words == lst.words_in_order());
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
 
-//                 }
-//             }
-//         }
-//     }
-//     SUBCASE("A larger tree") {
-//         GIVEN("A larger unbalanced tree") {
-//             WordlistTest lst;
-//             lst.add_n({"q", "r", "h", "a"});
-//             Words expected_words{"a", "h", "q", "r"};
-//             REQUIRE(expected_words == lst.words_in_order());
+                }
+            }
+        }
+    }
+    SUBCASE("A larger tree") {
+        GIVEN("A larger unbalanced tree") {
+            WordlistTest lst;
+            lst.add_n({"q", "r", "h", "a"});
+            Words expected_words{"a", "h", "q", "r"};
+            REQUIRE(expected_words == lst.words_in_order());
 
-//             Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(1, 1), make_pair(0, 0)});
-//             Heights actual_heights = lst.all_heights();
-//             REQUIRE(expected_heights == actual_heights);
-//             WHEN("Balancing the tree") {
-//                 lst.add_word("b");
-//                 THEN("The tree is balanced") {
-//                     Words expected_words{"a", "b", "h", "q", "r"};
-//                     REQUIRE(expected_words == lst.words_in_order());
+            Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 0), make_pair(2, 1), make_pair(0, 0)});
+            Heights actual_heights = lst.all_heights();
+            REQUIRE(expected_heights == actual_heights);
+            WHEN("Balancing the tree") {
+                lst.add_word("b");
+                THEN("The tree is balanced") {
+                    Words expected_words{"a", "b", "h", "q", "r"};
+                    REQUIRE(expected_words == lst.words_in_order());
 
-//                     Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0, 0)});
-//                     Heights actual_heights = lst.all_heights();
-//                     REQUIRE(expected_heights == actual_heights);
-//                 }
-//             }
-//         }
-//     }
-// }
+                    Heights expected_heights = mk_heights({make_pair(0, 0), make_pair(1, 1), make_pair(0, 0), make_pair(2, 1), make_pair(0, 0)});
+                    Heights actual_heights = lst.all_heights();
+                    REQUIRE(expected_heights == actual_heights);
+                }
+            }
+        }
+    }
+}
 
 TEST_CASE("data") {
     SUBCASE("A small list") {
